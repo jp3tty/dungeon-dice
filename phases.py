@@ -382,53 +382,125 @@ class MonsterPhase:
                 print("Invalid input.")
                 return False
         
-        # Calculate how many monsters this champion can defeat
-        monsters_to_defeat = 1
-        # If using Bard (Master) specialty, Champions defeat an extra monster
-        if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
-            monsters_to_defeat = 2
-            print("Bard's specialty: Champion can defeat 2 monsters!")
+        # Show monster type options
+        print("\nChampion can defeat:")
+        print("1. Any number of Goblins")
+        print("2. Any number of Skeletons")
+        print("3. Any number of Oozes")
+        
+        choice = input("Choose which type of monsters to defeat (1-3): ").strip()
         
         # Move champion to graveyard
         game_state.use_party_die(champion_idx)
+        print(f"Champion moved to Graveyard.")
         
-        # Choose monsters to defeat
-        monsters_defeated = 0
-        while monsters_defeated < monsters_to_defeat and monsters:
-            print("\nCurrent Monsters:")
-            monster_dict = {}
-            for i, monster in enumerate(monsters):
-                monster_dict[i] = monster
-                print(f"{i+1}. {monster}")
-            
-            # If only one monster or automatic selection for efficiency
-            if len(monsters) == 1 or (monsters_defeated == 0 and monsters_to_defeat >= len(monsters)):
-                monster_idx = 0
-                print(f"Automatically selecting {monster_dict[monster_idx]}")
+        if choice == "1":
+            # Handle Goblins
+            goblin_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.GOBLIN.value]
+            if goblin_indices:
+                print(f"\nChampion can defeat any number of Goblins!")
+                print("Available Goblins:")
+                for i, monster_idx in enumerate(goblin_indices):
+                    print(f"{i+1}. Goblin at position {monster_idx+1}")
+                
+                # Ask how many Goblins to defeat
+                while True:
+                    num_goblins = input(f"How many Goblins to defeat (1-{len(goblin_indices)})? ").strip()
+                    try:
+                        num_goblins = min(len(goblin_indices), max(1, int(num_goblins)))
+                        break
+                    except ValueError:
+                        print("Invalid input. Please enter a number.")
+                
+                # Remove Goblins (from highest index to lowest to avoid shifting issues)
+                goblins_defeated = 0
+                for monster_idx in sorted(goblin_indices[:num_goblins], reverse=True):
+                    game_state.dungeon_dice.remove(DungeonDiceFace.GOBLIN.value)
+                    monsters.pop(monster_idx)
+                    goblins_defeated += 1
+                
+                print(f"{goblins_defeated} Goblin(s) defeated!")
+                
+                # Gain experience (1 per monster)
+                game_state.experience_tokens += goblins_defeated
+                print(f"Gained {goblins_defeated} experience token(s)! Total: {game_state.experience_tokens}")
+                return True
             else:
-                choice = input(f"Choose monster to defeat ({monsters_defeated+1}/{monsters_to_defeat}): ").strip()
-                try:
-                    monster_idx = int(choice) - 1
-                    if not (0 <= monster_idx < len(monsters)):
-                        print("Invalid choice.")
-                        continue
-                except ValueError:
-                    print("Invalid input.")
-                    continue
-            
-            # Defeat the monster
-            defeated_monster = monsters[monster_idx]
-            game_state.dungeon_dice.remove(defeated_monster)
-            monsters.pop(monster_idx)
-            print(f"Champion defeats {defeated_monster}!")
-            monsters_defeated += 1
-            
-            # Gain experience
-            game_state.experience_tokens += 1
-            print(f"Gained 1 experience token! Total: {game_state.experience_tokens}")
-        
-        print(f"Champion defeated {monsters_defeated} monster(s)!")
-        return True
+                print("No Goblins available for the Champion to defeat!")
+                return False
+                
+        elif choice == "2":
+            # Handle Skeletons
+            skeleton_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.SKELETON.value]
+            if skeleton_indices:
+                print(f"\nChampion can defeat any number of Skeletons!")
+                print("Available Skeletons:")
+                for i, monster_idx in enumerate(skeleton_indices):
+                    print(f"{i+1}. Skeleton at position {monster_idx+1}")
+                
+                # Ask how many Skeletons to defeat
+                while True:
+                    num_skeletons = input(f"How many Skeletons to defeat (1-{len(skeleton_indices)})? ").strip()
+                    try:
+                        num_skeletons = min(len(skeleton_indices), max(1, int(num_skeletons)))
+                        break
+                    except ValueError:
+                        print("Invalid input. Please enter a number.")
+                
+                # Remove Skeletons (from highest index to lowest to avoid shifting issues)
+                skeletons_defeated = 0
+                for monster_idx in sorted(skeleton_indices[:num_skeletons], reverse=True):
+                    game_state.dungeon_dice.remove(DungeonDiceFace.SKELETON.value)
+                    monsters.pop(monster_idx)
+                    skeletons_defeated += 1
+                
+                print(f"{skeletons_defeated} Skeleton(s) defeated!")
+                
+                # Gain experience (1 per monster)
+                game_state.experience_tokens += skeletons_defeated
+                print(f"Gained {skeletons_defeated} experience token(s)! Total: {game_state.experience_tokens}")
+                return True
+            else:
+                print("No Skeletons available for the Champion to defeat!")
+                return False
+                
+        elif choice == "3":
+            # Handle Oozes
+            ooze_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.OOZE.value]
+            if ooze_indices:
+                print(f"\nChampion can defeat any number of Oozes!")
+                print("Available Oozes:")
+                for i, monster_idx in enumerate(ooze_indices):
+                    print(f"{i+1}. Ooze at position {monster_idx+1}")
+                
+                # Ask how many Oozes to defeat
+                while True:
+                    num_oozes = input(f"How many Oozes to defeat (1-{len(ooze_indices)})? ").strip()
+                    try:
+                        num_oozes = min(len(ooze_indices), max(1, int(num_oozes)))
+                        break
+                    except ValueError:
+                        print("Invalid input. Please enter a number.")
+                
+                # Remove Oozes (from highest index to lowest to avoid shifting issues)
+                oozes_defeated = 0
+                for monster_idx in sorted(ooze_indices[:num_oozes], reverse=True):
+                    game_state.dungeon_dice.remove(DungeonDiceFace.OOZE.value)
+                    monsters.pop(monster_idx)
+                    oozes_defeated += 1
+                
+                print(f"{oozes_defeated} Ooze(s) defeated!")
+                
+                # Gain experience (1 per monster)
+                game_state.experience_tokens += oozes_defeated
+                print(f"Gained {oozes_defeated} experience token(s)! Total: {game_state.experience_tokens}")
+                return True
+            else:
+                print("No Oozes available for the Champion to defeat!")
+                return False
+        else:
+            print("Invalid choice!")
+            return False
     
     @staticmethod
     def use_companions(game_state, monsters, hero_card, specialty_active):
@@ -478,134 +550,326 @@ class MonsterPhase:
                 
                 # Special handling for Fighters vs Goblins
                 if companion_type == PartyDiceFace.FIGHTER.value:
-                    # Count available Goblins
-                    goblin_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.GOBLIN.value]
-                    if goblin_indices:
-                        print(f"\nFighter can defeat any number of Goblins!")
-                        print("Available Goblins:")
-                        for i, monster_idx in enumerate(goblin_indices):
-                            print(f"{i+1}. Goblin at position {monster_idx+1}")
-                        
-                        # Ask how many Goblins to defeat
-                        while True:
-                            num_goblins = input(f"How many Goblins to defeat (1-{len(goblin_indices)})? ").strip()
-                            try:
-                                num_goblins = min(len(goblin_indices), max(1, int(num_goblins)))
-                                break
-                            except ValueError:
-                                print("Invalid input. Please enter a number.")
-                        
-                        # Use the companion
-                        if source == "party":
-                            game_state.use_party_die(idx)
-                            print(f"{companion_type} moved to Graveyard.")
-                        else:  # treasure
-                            game_state.use_treasure(idx)
-                            print(f"{companion.name} used and returned to treasure pool.")
-                        
-                        # Remove Goblins (from highest index to lowest to avoid shifting issues)
-                        goblins_defeated = 0
-                        for monster_idx in sorted(goblin_indices[:num_goblins], reverse=True):
-                            game_state.dungeon_dice.remove(DungeonDiceFace.GOBLIN.value)
+                    # First, show all available monster options
+                    print("\nFighter can defeat:")
+                    print("1. One Skeleton")
+                    print("2. One Ooze")
+                    print("3. Any number of Goblins")
+                    
+                    choice = input("Choose what to defeat (1-3): ").strip()
+                    
+                    if choice == "1":
+                        # Check for Skeletons
+                        skeleton_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.SKELETON.value]
+                        if skeleton_indices:
+                            # Use the companion
+                            if source == "party":
+                                game_state.use_party_die(idx)
+                                print(f"{companion_type} moved to Graveyard.")
+                            else:  # treasure
+                                game_state.use_treasure(idx)
+                                print(f"{companion.name} used and returned to treasure pool.")
+                            
+                            # Remove one Skeleton
+                            monster_idx = skeleton_indices[0]
+                            game_state.dungeon_dice.remove(DungeonDiceFace.SKELETON.value)
                             monsters.pop(monster_idx)
-                            goblins_defeated += 1
-                        
-                        print(f"{goblins_defeated} Goblin(s) defeated!")
-                        
-                        # Gain experience (1 per monster)
-                        game_state.experience_tokens += goblins_defeated
-                        print(f"Gained {goblins_defeated} experience token(s)! Total: {game_state.experience_tokens}")
-                        return True
+                            print("Fighter defeats 1 Skeleton!")
+                            
+                            # Gain experience
+                            game_state.experience_tokens += 1
+                            print(f"Gained 1 experience token! Total: {game_state.experience_tokens}")
+                            return True
+                        else:
+                            print("No Skeletons available for the Fighter to defeat!")
+                            return False
+                            
+                    elif choice == "2":
+                        # Check for Oozes
+                        ooze_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.OOZE.value]
+                        if ooze_indices:
+                            # Use the companion
+                            if source == "party":
+                                game_state.use_party_die(idx)
+                                print(f"{companion_type} moved to Graveyard.")
+                            else:  # treasure
+                                game_state.use_treasure(idx)
+                                print(f"{companion.name} used and returned to treasure pool.")
+                            
+                            # Remove one Ooze
+                            monster_idx = ooze_indices[0]
+                            game_state.dungeon_dice.remove(DungeonDiceFace.OOZE.value)
+                            monsters.pop(monster_idx)
+                            print("Fighter defeats 1 Ooze!")
+                            
+                            # Gain experience
+                            game_state.experience_tokens += 1
+                            print(f"Gained 1 experience token! Total: {game_state.experience_tokens}")
+                            return True
+                        else:
+                            print("No Oozes available for the Fighter to defeat!")
+                            return False
+                            
+                    elif choice == "3":
+                        # Count available Goblins
+                        goblin_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.GOBLIN.value]
+                        if goblin_indices:
+                            print(f"\nFighter can defeat any number of Goblins!")
+                            print("Available Goblins:")
+                            for i, monster_idx in enumerate(goblin_indices):
+                                print(f"{i+1}. Goblin at position {monster_idx+1}")
+                            
+                            # Ask how many Goblins to defeat
+                            while True:
+                                num_goblins = input(f"How many Goblins to defeat (1-{len(goblin_indices)})? ").strip()
+                                try:
+                                    num_goblins = min(len(goblin_indices), max(1, int(num_goblins)))
+                                    break
+                                except ValueError:
+                                    print("Invalid input. Please enter a number.")
+                            
+                            # Use the companion
+                            if source == "party":
+                                game_state.use_party_die(idx)
+                                print(f"{companion_type} moved to Graveyard.")
+                            else:  # treasure
+                                game_state.use_treasure(idx)
+                                print(f"{companion.name} used and returned to treasure pool.")
+                            
+                            # Remove Goblins (from highest index to lowest to avoid shifting issues)
+                            goblins_defeated = 0
+                            for monster_idx in sorted(goblin_indices[:num_goblins], reverse=True):
+                                game_state.dungeon_dice.remove(DungeonDiceFace.GOBLIN.value)
+                                monsters.pop(monster_idx)
+                                goblins_defeated += 1
+                            
+                            print(f"{goblins_defeated} Goblin(s) defeated!")
+                            
+                            # Gain experience (1 per monster)
+                            game_state.experience_tokens += goblins_defeated
+                            print(f"Gained {goblins_defeated} experience token(s)! Total: {game_state.experience_tokens}")
+                            return True
+                        else:
+                            print("No Goblins available for the Fighter to defeat!")
+                            return False
                     else:
-                        print("No Goblins available for the Fighter to defeat!")
+                        print("Invalid choice!")
                         return False
                 
                 # Special handling for Clerics vs Skeletons
                 elif companion_type == PartyDiceFace.CLERIC.value:
-                    # Count available Skeletons
-                    skeleton_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.SKELETON.value]
-                    if skeleton_indices:
-                        print(f"\nCleric can defeat any number of Skeletons!")
-                        print("Available Skeletons:")
-                        for i, monster_idx in enumerate(skeleton_indices):
-                            print(f"{i+1}. Skeleton at position {monster_idx+1}")
-                        
-                        # Ask how many Skeletons to defeat
-                        while True:
-                            num_skeletons = input(f"How many Skeletons to defeat (1-{len(skeleton_indices)})? ").strip()
-                            try:
-                                num_skeletons = min(len(skeleton_indices), max(1, int(num_skeletons)))
-                                break
-                            except ValueError:
-                                print("Invalid input. Please enter a number.")
-                        
-                        # Use the companion
-                        if source == "party":
-                            game_state.use_party_die(idx)
-                            print(f"{companion_type} moved to Graveyard.")
-                        else:  # treasure
-                            game_state.use_treasure(idx)
-                            print(f"{companion.name} used and returned to treasure pool.")
-                        
-                        # Remove Skeletons (from highest index to lowest to avoid shifting issues)
-                        skeletons_defeated = 0
-                        for monster_idx in sorted(skeleton_indices[:num_skeletons], reverse=True):
-                            game_state.dungeon_dice.remove(DungeonDiceFace.SKELETON.value)
+                    # First, show all available monster options
+                    print("\nCleric can defeat:")
+                    print("1. One Goblin")
+                    print("2. One Ooze")
+                    print("3. Any number of Skeletons")
+                    
+                    choice = input("Choose what to defeat (1-3): ").strip()
+                    
+                    if choice == "1":
+                        # Check for Goblins
+                        goblin_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.GOBLIN.value]
+                        if goblin_indices:
+                            # Use the companion
+                            if source == "party":
+                                game_state.use_party_die(idx)
+                                print(f"{companion_type} moved to Graveyard.")
+                            else:  # treasure
+                                game_state.use_treasure(idx)
+                                print(f"{companion.name} used and returned to treasure pool.")
+                            
+                            # Remove one Goblin
+                            monster_idx = goblin_indices[0]
+                            game_state.dungeon_dice.remove(DungeonDiceFace.GOBLIN.value)
                             monsters.pop(monster_idx)
-                            skeletons_defeated += 1
-                        
-                        print(f"{skeletons_defeated} Skeleton(s) defeated!")
-                        
-                        # Gain experience (1 per monster)
-                        game_state.experience_tokens += skeletons_defeated
-                        print(f"Gained {skeletons_defeated} experience token(s)! Total: {game_state.experience_tokens}")
-                        return True
-                    else:
-                        print("No Skeletons available for the Cleric to defeat!")
-                        return False
-
-                # Special handling for Mages vs Oozes
-                elif companion_type == PartyDiceFace.MAGE.value:
-                    # Count available Oozes
-                    ooze_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.OOZE.value]
-                    if ooze_indices:
-                        print(f"\nMage can defeat any number of Oozes!")
-                        print("Available Oozes:")
-                        for i, monster_idx in enumerate(ooze_indices):
-                            print(f"{i+1}. Ooze at position {monster_idx+1}")
-                        
-                        # Ask how many Oozes to defeat
-                        while True:
-                            num_oozes = input(f"How many Oozes to defeat (1-{len(ooze_indices)})? ").strip()
-                            try:
-                                num_oozes = min(len(ooze_indices), max(1, int(num_oozes)))
-                                break
-                            except ValueError:
-                                print("Invalid input. Please enter a number.")
-                        
-                        # Use the companion
-                        if source == "party":
-                            game_state.use_party_die(idx)
-                            print(f"{companion_type} moved to Graveyard.")
-                        else:  # treasure
-                            game_state.use_treasure(idx)
-                            print(f"{companion.name} used and returned to treasure pool.")
-                        
-                        # Remove Oozes (from highest index to lowest to avoid shifting issues)
-                        oozes_defeated = 0
-                        for monster_idx in sorted(ooze_indices[:num_oozes], reverse=True):
+                            print("Cleric defeats 1 Goblin!")
+                            
+                            # Gain experience
+                            game_state.experience_tokens += 1
+                            print(f"Gained 1 experience token! Total: {game_state.experience_tokens}")
+                            return True
+                        else:
+                            print("No Goblins available for the Cleric to defeat!")
+                            return False
+                            
+                    elif choice == "2":
+                        # Check for Oozes
+                        ooze_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.OOZE.value]
+                        if ooze_indices:
+                            # Use the companion
+                            if source == "party":
+                                game_state.use_party_die(idx)
+                                print(f"{companion_type} moved to Graveyard.")
+                            else:  # treasure
+                                game_state.use_treasure(idx)
+                                print(f"{companion.name} used and returned to treasure pool.")
+                            
+                            # Remove one Ooze
+                            monster_idx = ooze_indices[0]
                             game_state.dungeon_dice.remove(DungeonDiceFace.OOZE.value)
                             monsters.pop(monster_idx)
-                            oozes_defeated += 1
-                        
-                        print(f"{oozes_defeated} Ooze(s) defeated!")
-                        
-                        # Gain experience (1 per monster)
-                        game_state.experience_tokens += oozes_defeated
-                        print(f"Gained {oozes_defeated} experience token(s)! Total: {game_state.experience_tokens}")
-                        return True
+                            print("Cleric defeats 1 Ooze!")
+                            
+                            # Gain experience
+                            game_state.experience_tokens += 1
+                            print(f"Gained 1 experience token! Total: {game_state.experience_tokens}")
+                            return True
+                        else:
+                            print("No Oozes available for the Cleric to defeat!")
+                            return False
+                            
+                    elif choice == "3":
+                        # Count available Skeletons
+                        skeleton_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.SKELETON.value]
+                        if skeleton_indices:
+                            print(f"\nCleric can defeat any number of Skeletons!")
+                            print("Available Skeletons:")
+                            for i, monster_idx in enumerate(skeleton_indices):
+                                print(f"{i+1}. Skeleton at position {monster_idx+1}")
+                            
+                            # Ask how many Skeletons to defeat
+                            while True:
+                                num_skeletons = input(f"How many Skeletons to defeat (1-{len(skeleton_indices)})? ").strip()
+                                try:
+                                    num_skeletons = min(len(skeleton_indices), max(1, int(num_skeletons)))
+                                    break
+                                except ValueError:
+                                    print("Invalid input. Please enter a number.")
+                            
+                            # Use the companion
+                            if source == "party":
+                                game_state.use_party_die(idx)
+                                print(f"{companion_type} moved to Graveyard.")
+                            else:  # treasure
+                                game_state.use_treasure(idx)
+                                print(f"{companion.name} used and returned to treasure pool.")
+                            
+                            # Remove Skeletons (from highest index to lowest to avoid shifting issues)
+                            skeletons_defeated = 0
+                            for monster_idx in sorted(skeleton_indices[:num_skeletons], reverse=True):
+                                game_state.dungeon_dice.remove(DungeonDiceFace.SKELETON.value)
+                                monsters.pop(monster_idx)
+                                skeletons_defeated += 1
+                            
+                            print(f"{skeletons_defeated} Skeleton(s) defeated!")
+                            
+                            # Gain experience (1 per monster)
+                            game_state.experience_tokens += skeletons_defeated
+                            print(f"Gained {skeletons_defeated} experience token(s)! Total: {game_state.experience_tokens}")
+                            return True
+                        else:
+                            print("No Skeletons available for the Cleric to defeat!")
+                            return False
                     else:
-                        print("No Oozes available for the Mage to defeat!")
+                        print("Invalid choice!")
+                        return False
+                
+                # Special handling for Mages vs Oozes
+                elif companion_type == PartyDiceFace.MAGE.value:
+                    # First, show all available monster options
+                    print("\nMage can defeat:")
+                    print("1. One Goblin")
+                    print("2. One Skeleton")
+                    print("3. Any number of Oozes")
+                    
+                    choice = input("Choose what to defeat (1-3): ").strip()
+                    
+                    if choice == "1":
+                        # Check for Goblins
+                        goblin_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.GOBLIN.value]
+                        if goblin_indices:
+                            # Use the companion
+                            if source == "party":
+                                game_state.use_party_die(idx)
+                                print(f"{companion_type} moved to Graveyard.")
+                            else:  # treasure
+                                game_state.use_treasure(idx)
+                                print(f"{companion.name} used and returned to treasure pool.")
+                            
+                            # Remove one Goblin
+                            monster_idx = goblin_indices[0]
+                            game_state.dungeon_dice.remove(DungeonDiceFace.GOBLIN.value)
+                            monsters.pop(monster_idx)
+                            print("Mage defeats 1 Goblin!")
+                            
+                            # Gain experience
+                            game_state.experience_tokens += 1
+                            print(f"Gained 1 experience token! Total: {game_state.experience_tokens}")
+                            return True
+                        else:
+                            print("No Goblins available for the Mage to defeat!")
+                            return False
+                            
+                    elif choice == "2":
+                        # Check for Skeletons
+                        skeleton_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.SKELETON.value]
+                        if skeleton_indices:
+                            # Use the companion
+                            if source == "party":
+                                game_state.use_party_die(idx)
+                                print(f"{companion_type} moved to Graveyard.")
+                            else:  # treasure
+                                game_state.use_treasure(idx)
+                                print(f"{companion.name} used and returned to treasure pool.")
+                            
+                            # Remove one Skeleton
+                            monster_idx = skeleton_indices[0]
+                            game_state.dungeon_dice.remove(DungeonDiceFace.SKELETON.value)
+                            monsters.pop(monster_idx)
+                            print("Mage defeats 1 Skeleton!")
+                            
+                            # Gain experience
+                            game_state.experience_tokens += 1
+                            print(f"Gained 1 experience token! Total: {game_state.experience_tokens}")
+                            return True
+                        else:
+                            print("No Skeletons available for the Mage to defeat!")
+                            return False
+                            
+                    elif choice == "3":
+                        # Count available Oozes
+                        ooze_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.OOZE.value]
+                        if ooze_indices:
+                            print(f"\nMage can defeat any number of Oozes!")
+                            print("Available Oozes:")
+                            for i, monster_idx in enumerate(ooze_indices):
+                                print(f"{i+1}. Ooze at position {monster_idx+1}")
+                            
+                            # Ask how many Oozes to defeat
+                            while True:
+                                num_oozes = input(f"How many Oozes to defeat (1-{len(ooze_indices)})? ").strip()
+                                try:
+                                    num_oozes = min(len(ooze_indices), max(1, int(num_oozes)))
+                                    break
+                                except ValueError:
+                                    print("Invalid input. Please enter a number.")
+                            
+                            # Use the companion
+                            if source == "party":
+                                game_state.use_party_die(idx)
+                                print(f"{companion_type} moved to Graveyard.")
+                            else:  # treasure
+                                game_state.use_treasure(idx)
+                                print(f"{companion.name} used and returned to treasure pool.")
+                            
+                            # Remove Oozes (from highest index to lowest to avoid shifting issues)
+                            oozes_defeated = 0
+                            for monster_idx in sorted(ooze_indices[:num_oozes], reverse=True):
+                                game_state.dungeon_dice.remove(DungeonDiceFace.OOZE.value)
+                                monsters.pop(monster_idx)
+                                oozes_defeated += 1
+                            
+                            print(f"{oozes_defeated} Ooze(s) defeated!")
+                            
+                            # Gain experience (1 per monster)
+                            game_state.experience_tokens += oozes_defeated
+                            print(f"Gained {oozes_defeated} experience token(s)! Total: {game_state.experience_tokens}")
+                            return True
+                        else:
+                            print("No Oozes available for the Mage to defeat!")
+                            return False
+                    else:
+                        print("Invalid choice!")
                         return False
                 
                 # Regular monster selection for other companions
@@ -690,18 +954,35 @@ class MonsterPhase:
         champions = available_dice.count(PartyDiceFace.CHAMPION.value)
         
         # Champions first - they're most efficient
-        champion_defeats = champions
-        if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
-            # Bard specialty: Champions defeat an extra monster
-            champion_defeats *= 2
+        if champions > 0:
+            # Each champion can defeat all monsters of one type
+            # Count monsters by type
+            goblins = remaining_monsters.count(DungeonDiceFace.GOBLIN.value)
+            skeletons = remaining_monsters.count(DungeonDiceFace.SKELETON.value)
+            oozes = remaining_monsters.count(DungeonDiceFace.OOZE.value)
+            
+            # For each champion, remove all monsters of the type that has the most
+            for _ in range(champions):
+                max_count = max(goblins, skeletons, oozes)
+                if max_count == 0:
+                    break
+                if goblins == max_count:
+                    # Remove all goblins
+                    remaining_monsters = [m for m in remaining_monsters if m != DungeonDiceFace.GOBLIN.value]
+                    goblins = 0
+                elif skeletons == max_count:
+                    # Remove all skeletons
+                    remaining_monsters = [m for m in remaining_monsters if m != DungeonDiceFace.SKELETON.value]
+                    skeletons = 0
+                elif oozes == max_count:
+                    # Remove all oozes
+                    remaining_monsters = [m for m in remaining_monsters if m != DungeonDiceFace.OOZE.value]
+                    oozes = 0
+            
+            if not remaining_monsters:
+                return True
         
-        # Remove as many monsters as champions can defeat
-        if champion_defeats >= len(remaining_monsters):
-            return True
-        
-        remaining_monsters = remaining_monsters[champion_defeats:]
-        
-        # Count monsters by type
+        # Count monsters by type for remaining monsters
         goblins = remaining_monsters.count(DungeonDiceFace.GOBLIN.value)
         skeletons = remaining_monsters.count(DungeonDiceFace.SKELETON.value)
         oozes = remaining_monsters.count(DungeonDiceFace.OOZE.value)
@@ -710,26 +991,47 @@ class MonsterPhase:
         if specialty_active and hero_card.name in ["Minstrel", "Bard"]:
             # Thieves may be used as Mages and Mages may be used as Thieves
             # For simplicity in checking, we'll just make both able to defeat both monster types
-            fighter_can_defeat = [DungeonDiceFace.GOBLIN.value]  # Fighters can defeat all Goblins
-            cleric_can_defeat = [DungeonDiceFace.SKELETON.value]  # Clerics can defeat all Skeletons
-            mage_can_defeat = [DungeonDiceFace.OOZE.value, DungeonDiceFace.GOBLIN.value]  # Can defeat all Oozes and Goblins
-            thief_can_defeat = [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]
+            fighter_can_defeat = {"Goblin": float('inf'), "Skeleton": 1, "Ooze": 1}  # Fighters can defeat all Goblins or one Skeleton or one Ooze
+            cleric_can_defeat = {"Skeleton": float('inf'), "Goblin": 1, "Ooze": 1}  # Clerics can defeat all Skeletons or one Goblin or one Ooze
+            mage_can_defeat = {"Ooze": float('inf'), "Goblin": 1, "Skeleton": 1}  # Can defeat all Oozes or one Goblin or one Skeleton
+            thief_can_defeat = {"Goblin": 1, "Skeleton": 1, "Ooze": 1}  # Can defeat any one monster
         else:
-            fighter_can_defeat = [DungeonDiceFace.GOBLIN.value]  # Fighters can defeat all Goblins
-            cleric_can_defeat = [DungeonDiceFace.SKELETON.value]  # Clerics can defeat all Skeletons
-            mage_can_defeat = [DungeonDiceFace.OOZE.value]  # Mages can defeat all Oozes
-            thief_can_defeat = [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]
+            fighter_can_defeat = {"Goblin": float('inf'), "Skeleton": 1, "Ooze": 1}  # Fighters can defeat all Goblins or one Skeleton or one Ooze
+            cleric_can_defeat = {"Skeleton": float('inf'), "Goblin": 1, "Ooze": 1}  # Clerics can defeat all Skeletons or one Goblin or one Ooze
+            mage_can_defeat = {"Ooze": float('inf'), "Goblin": 1, "Skeleton": 1}  # Can defeat all Oozes or one Goblin or one Skeleton
+            thief_can_defeat = {"Goblin": 1, "Skeleton": 1, "Ooze": 1}  # Can defeat any one monster
         
         # Try to match companions to monsters optimally
         # First handle specialists who can defeat multiple monsters
         if fighters > 0:
-            goblins = 0  # One Fighter can defeat all Goblins
+            # Each fighter can defeat either all Goblins, one Skeleton, or one Ooze
+            # We'll prioritize using fighters for Goblins if there are any
+            if goblins > 0:
+                goblins = 0  # One Fighter can defeat all Goblins
+            elif skeletons > 0:
+                skeletons = max(0, skeletons - fighters)  # Each remaining fighter can defeat one Skeleton
+            elif oozes > 0:
+                oozes = max(0, oozes - fighters)  # Each remaining fighter can defeat one Ooze
+
         if clerics > 0:
-            skeletons = 0  # One Cleric can defeat all Skeletons
+            # Each cleric can defeat either all Skeletons, one Goblin, or one Ooze
+            # We'll prioritize using clerics for Skeletons if there are any
+            if skeletons > 0:
+                skeletons = 0  # One Cleric can defeat all Skeletons
+            elif goblins > 0:
+                goblins = max(0, goblins - clerics)  # Each remaining cleric can defeat one Goblin
+            elif oozes > 0:
+                oozes = max(0, oozes - clerics)  # Each remaining cleric can defeat one Ooze
+
         if mages > 0:
-            oozes = 0  # One Mage can defeat all Oozes
-            if specialty_active and hero_card.name in ["Minstrel", "Bard"]:
-                goblins = 0  # With specialty, Mage can also defeat all Goblins
+            # Each mage can defeat either all Oozes, one Goblin, or one Skeleton
+            # We'll prioritize using mages for Oozes if there are any
+            if oozes > 0:
+                oozes = 0  # One Mage can defeat all Oozes
+            elif goblins > 0:
+                goblins = max(0, goblins - mages)  # Each remaining mage can defeat one Goblin
+            elif skeletons > 0:
+                skeletons = max(0, skeletons - mages)  # Each remaining mage can defeat one Skeleton
         
         # Count remaining monsters that need to be defeated
         remaining_count = goblins + skeletons + oozes
@@ -781,15 +1083,15 @@ class MonsterPhase:
             # Apply Minstrel/Bard specialty if active
             if specialty_active and hero_card.name in ["Minstrel", "Bard"]:
                 # Thieves may be used as Mages and Mages may be used as Thieves
-                fighter_can_defeat = [DungeonDiceFace.GOBLIN.value]
-                cleric_can_defeat = [DungeonDiceFace.SKELETON.value]
-                mage_can_defeat = [DungeonDiceFace.OOZE.value, DungeonDiceFace.GOBLIN.value]  # Can defeat Goblins too
-                thief_can_defeat = [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]
+                fighter_can_defeat = {"Goblin": float('inf'), "Skeleton": 1, "Ooze": 1}
+                cleric_can_defeat = {"Skeleton": float('inf'), "Goblin": 1, "Ooze": 1}
+                mage_can_defeat = {"Ooze": float('inf'), "Goblin": 1}
+                thief_can_defeat = {"Goblin": 1, "Skeleton": 1, "Ooze": 1}
             else:
-                fighter_can_defeat = [DungeonDiceFace.GOBLIN.value]
-                cleric_can_defeat = [DungeonDiceFace.SKELETON.value]
-                mage_can_defeat = [DungeonDiceFace.OOZE.value]
-                thief_can_defeat = [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]
+                fighter_can_defeat = {"Goblin": float('inf'), "Skeleton": 1, "Ooze": 1}
+                cleric_can_defeat = {"Skeleton": float('inf'), "Goblin": 1, "Ooze": 1}
+                mage_can_defeat = {"Ooze": float('inf')}
+                thief_can_defeat = {"Goblin": 1, "Skeleton": 1, "Ooze": 1}
             
             # Sort monsters by most restrictive first
             # Goblins (only Fighter/Thief), Skeletons (only Cleric/Thief), Oozes (only Mage/Thief)
