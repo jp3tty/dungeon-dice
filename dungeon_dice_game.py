@@ -132,6 +132,7 @@ class GameState:
         self.experience_tokens = 0
         self.selected_hero_card = None
         self.current_phase = None
+        self.graveyard = []
 
 class DungeonDiceGame:
     def __init__(self):
@@ -216,9 +217,9 @@ class DungeonDiceGame:
         print("\n--- SETUP PHASE ---")
         
         # Step 1: Roll all 7 Party Dice
-        print("Rolling 7 Party Dice to form your starting party...")
         self.state.party_dice = self.roll_party_dice(self.MAX_PARTY_DICE)
-        self.print_party_dice()
+        # Reset graveyard
+        self.state.graveyard = []
         
         # Step 2: Refresh Hero Card if exhausted
         if self.state.selected_hero_card and self.state.selected_hero_card.is_exhausted:
@@ -226,12 +227,9 @@ class DungeonDiceGame:
         
         # Step 3: Set Level Die to 1
         self.state.level = 1
-        print("Dungeon Level set to 1")
         
         # Step 4: Roll 1 Dungeon Die to populate the dungeon
-        print("Rolling 1 Dungeon Die to populate the dungeon...")
         self.state.dungeon_dice = self.roll_dungeon_dice(1)
-        self.print_dungeon_dice()
         
         # Reset dragon's lair
         self.state.dragons_lair = []
