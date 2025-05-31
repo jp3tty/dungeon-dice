@@ -299,12 +299,18 @@ class DungeonDiceGame:
         
     def start_game(self):
         """Start a new game with 3 delves."""
-        print("\n=== WELCOME TO DUNGEON DICE ===")
-        print("You have 3 delves to prove your worth and gather treasure!")
+        print("\n" + "="*50)
+        print("🎲 WELCOME TO DUNGEON DICE 🎲".center(50))
+        print("="*50)
+        print("\nPrepare yourself for an epic adventure!")
+        print("You have 3 delves to prove your worth, gather treasure,")
+        print("and become a legendary hero!\n")
         
         # Choose a hero card - for now we only have one
         self.state.selected_hero_card = self.available_hero_cards[0]
-        print(f"\nYour hero: {self.state.selected_hero_card.name}")
+        print("🦸 Your Chosen Hero 🦸".center(50))
+        print("-"*50)
+        print(f"Name: {self.state.selected_hero_card.name}")
         self.state.selected_hero_card.display_card_info()
         
         self.state.delve_count = 0
@@ -313,9 +319,9 @@ class DungeonDiceGame:
         
         # Main game loop - 3 delves
         while self.state.delve_count < self.MAX_DELVES:
-            print(f"\n{'='*20}")
-            print(f"DELVE {self.state.delve_count + 1} OF {self.MAX_DELVES}")
-            print(f"{'='*20}")
+            print(f"\n{'='*50}")
+            print(f"🗡️  DELVE {self.state.delve_count + 1} OF {self.MAX_DELVES}  🗡️".center(50))
+            print(f"{'='*50}")
             
             self.start_delve()
             
@@ -325,9 +331,9 @@ class DungeonDiceGame:
                 self.state.selected_hero_card.check_level_up(self.state.experience_tokens)
             
             # Show progress after each delve
-            print(f"\nEnd of Delve {self.state.delve_count}:")
-            print(f"Current Experience: {self.state.experience_tokens} tokens")
-            print(f"Current Treasure: {self.state.treasure_tokens} tokens")
+            print(f"\n📊 End of Delve {self.state.delve_count} Summary:")
+            print(f"🌟 Experience: {self.state.experience_tokens} tokens")
+            print(f"💎 Treasure: {self.state.treasure_tokens} tokens")
             self.state.display_treasure_info()
         
         self.end_game()
@@ -419,7 +425,7 @@ class DungeonDiceGame:
                 delve_active = False
     
     def setup_delve(self):
-        """Set up for a new delve following the 4 steps described."""
+        """Set up for a new delve (one game round) with proper setup."""
         print("\n--- SETUP PHASE ---")
         
         # Step 1: Roll all 7 Party Dice
@@ -427,7 +433,6 @@ class DungeonDiceGame:
         self.state.party_dice = self.dice_manager.roll_party_dice(self.MAX_PARTY_DICE)
         # Reset graveyard
         self.state.graveyard = []
-        self.print_party_dice()
         
         # Step 2: Refresh Hero Card if exhausted
         if self.state.selected_hero_card and self.state.selected_hero_card.is_exhausted:
@@ -440,7 +445,6 @@ class DungeonDiceGame:
         # Step 4: Roll 1 Dungeon Die to populate the dungeon
         print("Rolling 1 Dungeon Die to populate the dungeon...")
         self.state.dungeon_dice = self.roll_dungeon_dice(1)
-        self.print_dungeon_dice()
         
         # Reset dragon's lair
         self.state.dragons_lair = []

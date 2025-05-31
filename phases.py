@@ -98,7 +98,9 @@ class MonsterPhase:
     @staticmethod
     def execute(game_state, hero_card):
         """Execute the Monster Phase."""
-        print("\n--- MONSTER PHASE ---")
+        print("\n" + "="*50)
+        print("🗡️  MONSTER PHASE  🗡️".center(50))
+        print("="*50)
         
         # Display current state
         MonsterPhase.print_state(game_state)
@@ -109,25 +111,25 @@ class MonsterPhase:
                   [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]]
         
         if not monsters:
-            print("No monsters encountered in this phase.")
+            print("\n🌟 Lucky! No monsters encountered in this phase! 🌟")
             return True
         
-        print(f"\nEncountered {len(monsters)} monsters!")
+        print(f"\n⚔️  You've encountered {len(monsters)} fearsome monster(s)! ⚔️")
         
         # Track if specialty is active for this phase
         specialty_active = False
         
         # Phase actions
         while monsters and (game_state.party_dice or game_state.get_usable_companions()):
-            print("\nAvailable Monster Phase Actions:")
-            print("A) Use a Scroll to re-roll dice")
-            print("B) Activate Hero Ability")
-            print("C) Use a Champion to defeat monster(s)")
-            print("D) Use other Companions to defeat monsters")
-            print("E) Use Treasure")
-            print("F) End monster phase (attempt to defeat remaining monsters)")
+            print("\n📋 Available Monster Phase Actions:")
+            print("🎲 A) Use a Scroll to re-roll dice")
+            print("💫 B) Activate Hero Ability")
+            print("🛡️ C) Use a Champion to defeat monster(s)")
+            print("🤝 D) Use other Companions to defeat monsters")
+            print("💎 E) Use Treasure")
+            print("🏃 F) End monster phase (attempt to defeat remaining monsters)")
             
-            choice = input("Choose action (letter): ").strip().upper()
+            choice = input("\nChoose action (letter): ").strip().upper()
             
             if choice == "A":
                 if MonsterPhase.use_scroll(game_state):
@@ -194,7 +196,7 @@ class MonsterPhase:
     @staticmethod
     def print_state(game_state):
         """Display the current state."""
-        print("\nActive Party Dice:")
+        print("\n📊 Active Party Dice:")
         dice_counts = {}
         total_companions = 0
         for die in game_state.party_dice:
@@ -202,21 +204,21 @@ class MonsterPhase:
             if die != PartyDiceFace.SCROLL.value:  # Don't count scrolls as companions
                 total_companions += 1
         for die_face, count in dice_counts.items():
-            print(f"- {die_face}: {count} dice")
-        print(f"Total Companions: {total_companions}")
-        print(f"Total Scrolls: {dice_counts.get(PartyDiceFace.SCROLL.value, 0)}")
+            print(f"  ▫️ {die_face}: {count} dice")
+        print(f"  Total Companions: {total_companions}")
+        print(f"  Total Scrolls: {dice_counts.get(PartyDiceFace.SCROLL.value, 0)}")
         
-        print("\nGraveyard (Used Dice):")
+        print("\n⚰️  Graveyard (Used Dice):")
         graveyard_counts = {}
         for die in game_state.graveyard:
             graveyard_counts[die] = graveyard_counts.get(die, 0) + 1
         if graveyard_counts:
             for die_face, count in graveyard_counts.items():
-                print(f"- {die_face}: {count} dice")
+                print(f"  ▫️ {die_face}: {count} dice")
         else:
-            print("- Empty")
+            print("  ▫️ Empty")
         
-        print("\nDungeon Encounter:")
+        print("\n🎲 Dungeon Encounter:")
         dungeon_counts = {}
         total_monsters = 0
         for die in game_state.dungeon_dice:
@@ -224,14 +226,14 @@ class MonsterPhase:
             if die in [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]:
                 total_monsters += 1
         for die_face, count in dungeon_counts.items():
-            print(f"- {die_face}: {count} dice")
-        print(f"Total Monsters: {total_monsters}")
-        print(f"Total Chests: {dungeon_counts.get(DungeonDiceFace.CHEST.value, 0)}")
-        print(f"Total Potions: {dungeon_counts.get(DungeonDiceFace.POTION.value, 0)}")
+            print(f"  ▫️ {die_face}: {count} dice")
+        print(f"  Total Monsters: {total_monsters}")
+        print(f"  Total Chests: {dungeon_counts.get(DungeonDiceFace.CHEST.value, 0)}")
+        print(f"  Total Potions: {dungeon_counts.get(DungeonDiceFace.POTION.value, 0)}")
         
         if game_state.dragons_lair:
-            print("\nDragon's Lair:")
-            print(f"- Dragon: {len(game_state.dragons_lair)} dice")
+            print("\n🐉 Dragon's Lair:")
+            print(f"  ▫️ Dragon: {len(game_state.dragons_lair)} dice")
     
     @staticmethod
     def use_scroll(game_state):
@@ -1173,51 +1175,60 @@ class LootPhase:
     @staticmethod
     def execute(game_state):
         """Execute the Loot Phase."""
-        print("\n--- LOOT PHASE ---")
+        print("\n" + "="*50)
+        print("💎 LOOT PHASE 💎".center(50))
+        print("="*50)
         
         # Count available chests and potions
         chests = game_state.dungeon_dice.count(DungeonDiceFace.CHEST.value)
         potions = game_state.dungeon_dice.count(DungeonDiceFace.POTION.value)
         
-        print(f"Available: {chests} Chest(s), {potions} Potion(s)")
+        print(f"\n📦 Available Loot:")
+        print(f"  ▫️ Chests: {chests}")
+        print(f"  ▫️ Potions: {potions}")
         LootPhase.print_state(game_state)
         
         # Allow actions while there are chests or potions
         while chests > 0 or potions > 0:
-            print("\nLoot Phase Actions:")
+            print("\n📋 Loot Phase Actions:")
             actions = []
             if chests > 0:
-                actions.append("Open Chests")
+                actions.append("Open Treasure Chests")
             if potions > 0:
-                actions.append("Quaff Potions")
+                actions.append("Drink Healing Potions")
             actions.append("End Loot Phase")
             
             for i, action in enumerate(actions, 1):
-                print(f"{i}. {action}")
+                if "Chest" in action:
+                    print(f"{i}. 📦 {action}")
+                elif "Potion" in action:
+                    print(f"{i}. 🧪 {action}")
+                else:
+                    print(f"{i}. 🚪 {action}")
             
-            choice = input("Choose action (number): ").strip()
+            choice = input("\nChoose action (number): ").strip()
             try:
                 choice_idx = int(choice) - 1
                 if 0 <= choice_idx < len(actions):
                     selected_action = actions[choice_idx]
                     
-                    if selected_action == "Open Chests":
+                    if selected_action == "Open Treasure Chests":
                         chests = LootPhase.open_chests(game_state, chests)
-                    elif selected_action == "Quaff Potions":
+                    elif selected_action == "Drink Healing Potions":
                         potions = LootPhase.quaff_potions(game_state, potions)
                     else:  # End Loot Phase
                         break
                 else:
-                    print("Invalid choice. Please try again.")
+                    print("❌ Invalid choice. Please try again.")
             except ValueError:
-                print("Invalid input. Please enter a number.")
+                print("❌ Invalid input. Please enter a number.")
             
             LootPhase.print_state(game_state)
         
         # Return unused Chests and Potions to available pool
         if chests > 0 or potions > 0:
-            print("\nReturning unused Chests and Potions to available pool...")
-            print(f"Returned {chests} Chest(s) and {potions} Potion(s)")
+            print("\n🔄 Returning unused items to available pool...")
+            print(f"  ▫️ Returned {chests} Chest(s) and {potions} Potion(s)")
         
         return True
     

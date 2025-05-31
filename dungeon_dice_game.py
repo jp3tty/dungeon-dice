@@ -84,14 +84,17 @@ class HeroCard:
     
     def display_card_info(self):
         """Display detailed hero card information"""
-        rank_text = "MASTER" if self.current_rank == HeroRank.MASTER else "NOVICE"
-        print(f"\n==== {self.name} ({rank_text}) ====")
-        print(f"Specialty: {self.specialty}")
-        print(f"Ultimate: {self.ultimate}")
-        status = "EXHAUSTED" if self.is_exhausted else "READY"
-        print(f"Status: {status}")
+        rank_text = "✨ MASTER ✨" if self.current_rank == HeroRank.MASTER else "NOVICE"
+        print(f"\n{'='*50}")
+        print(f"📜 {self.name} ({rank_text}) 📜".center(50))
+        print(f"{'='*50}")
+        print(f"🔮 Specialty: {self.specialty}")
+        print(f"⚡ Ultimate: {self.ultimate}")
+        status = "❌ EXHAUSTED" if self.is_exhausted else "✅ READY"
+        print(f"📋 Status: {status}")
         if self.current_rank == HeroRank.NOVICE:
-            print(f"XP needed to master: {self.xp_to_master}")
+            print(f"📈 XP needed to master: {self.xp_to_master}")
+        print("-"*50)
 
 
 class MinstrelBardHero(HeroCard):
