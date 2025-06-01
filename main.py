@@ -152,27 +152,38 @@ class RegroupPhase:
         if game_state.dragons_lair:
             print(f"Dragons in Lair: {len(game_state.dragons_lair)}")
         
-        # Force retirement at level 10
+        # Check for Stuff of Legend (Level 10 victory)
         if game_state.level == 10:
-            print("\nYou've cleared the dungeon! You must retire as a legend!")
-            return RegroupPhase.retire_to_tavern(game_state, forced_retirement=True)
+            print("\n🏆 STUFF OF LEGEND! 🏆")
+            print("You've cleared the dungeon at Level 10!")
+            print("This is a legendary achievement!")
+            
+            # Award experience tokens
+            game_state.experience_tokens += 10
+            print(f"You gain 10 Experience tokens for this legendary feat!")
+            print(f"Total Experience tokens: {game_state.experience_tokens}")
+            
+            # Return dragons to available pool if any
+            if game_state.dragons_lair:
+                print(f"\nReturning {len(game_state.dragons_lair)} Dragon dice to the available pool.")
+                game_state.dragons_lair = []
+            
+            return False  # End the delve
         
-        print("\nChoose your Regroup action:")
-        print("1) Retire to the Tavern (End delve and gain Experience)")
-        print("2) Stuff of Legend (Attempt to gain extra party dice)")
-        print("3) Seek Glory (Challenge the next dungeon level)")
-        
-        choice = input("Choose action (number): ").strip()
-        
-        if choice == "1":
-            return RegroupPhase.retire_to_tavern(game_state, forced_retirement=False)
-        elif choice == "2":
-            return RegroupPhase.stuff_of_legend(game_state)
-        elif choice == "3":
-            return RegroupPhase.seek_glory(game_state)
-        else:
-            print("Invalid choice. You must retire to the tavern.")
-            return RegroupPhase.retire_to_tavern(game_state, forced_retirement=False)
+        # Regular regroup choices
+        while True:  # Keep prompting until a valid choice is made
+            print("\nChoose your Regroup action:")
+            print("1) Retire to the Tavern (End delve and gain Experience)")
+            print("2) Seek Glory (Challenge the next dungeon level)")
+            
+            choice = input("Choose action (number): ").strip()
+            
+            if choice == "1":
+                return RegroupPhase.retire_to_tavern(game_state, forced_retirement=False)
+            elif choice == "2":
+                return RegroupPhase.seek_glory(game_state)
+            else:
+                print("❌ Invalid choice. Please enter 1 or 2.")
     
     @staticmethod
     def retire_to_tavern(game_state, forced_retirement):
@@ -196,41 +207,6 @@ class RegroupPhase:
         
         # End this delve
         return False
-    
-    @staticmethod
-    def stuff_of_legend(game_state):
-        """Attempt to gain extra party dice."""
-        print("\nAttempting to recruit more heroes...")
-        
-        # Roll a die to determine success
-        if random.random() < 0.6:  # 60% chance
-            new_hero = random.choice([face.value for face in PartyDiceFace])
-            game_state.party_dice.append(new_hero)
-            print(f"Success! A {new_hero} joins your party!")
-            
-            # Ask if player wants to continue or retire
-            print("\nYou may:")
-            print("1) Retire to the Tavern")
-            print("2) Seek Glory in the next level")
-            choice = input("Choose action (number): ").strip()
-            
-            if choice == "2":
-                return RegroupPhase.seek_glory(game_state)
-            else:
-                return RegroupPhase.retire_to_tavern(game_state, forced_retirement=False)
-        else:
-            print("No new heroes were willing to join your quest.")
-            
-            # Ask if player wants to continue or retire
-            print("\nYou may:")
-            print("1) Retire to the Tavern")
-            print("2) Seek Glory in the next level")
-            choice = input("Choose action (number): ").strip()
-            
-            if choice == "2":
-                return RegroupPhase.seek_glory(game_state)
-            else:
-                return RegroupPhase.retire_to_tavern(game_state, forced_retirement=False)
     
     @staticmethod
     def seek_glory(game_state):
