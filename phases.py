@@ -122,6 +122,7 @@ class MonsterPhase:
             print("🎲 A) Use a Scroll to re-roll dice")
             print("🤝 B) Use Companions to defeat monsters")
             print("💎 C) Use Treasure")
+            print("⚡ D) Use Hero Ultimate Ability")
             
             choice = input("\nChoose action (letter): ").strip().upper()
             
@@ -175,8 +176,15 @@ class MonsterPhase:
                 monsters = [die for die in game_state.dungeon_dice if die in 
                           [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]]
                 MonsterPhase.print_state(game_state)
+            elif choice == "D":
+                # Use hero's ultimate ability
+                if hero_card.use_ultimate(game_state):
+                    # Update monster list after ultimate use
+                    monsters = [die for die in game_state.dungeon_dice if die in 
+                              [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]]
+                    MonsterPhase.print_state(game_state)
             else:
-                print("Invalid choice. Please enter a letter A-C.")
+                print("Invalid choice. Please enter a letter A-D.")
                 continue
             
             # After each action, check if all monsters are defeated
