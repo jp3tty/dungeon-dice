@@ -116,16 +116,12 @@ class MonsterPhase:
         
         print(f"\n⚔️  You've encountered {len(monsters)} fearsome monster(s)! ⚔️")
         
-        # Track if specialty is active for this phase
-        specialty_active = False
-        
         # Phase actions
         while monsters and (game_state.party_dice or game_state.get_usable_companions()):
             print("\n📋 Available Monster Phase Actions:")
             print("🎲 A) Use a Scroll to re-roll dice")
-            print("💫 B) Activate Hero Ability")
-            print("🤝 C) Use Companions to defeat monsters")
-            print("�� D) Use Treasure")
+            print("🤝 B) Use Companions to defeat monsters")
+            print("💎 C) Use Treasure")
             
             choice = input("\nChoose action (letter): ").strip().upper()
             
@@ -136,11 +132,6 @@ class MonsterPhase:
                               [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]]
                     MonsterPhase.print_state(game_state)
             elif choice == "B":
-                if not specialty_active:
-                    specialty_active = MonsterPhase.activate_hero_ability(game_state, hero_card)
-                else:
-                    print("Hero ability is already active for this phase.")
-            elif choice == "C":
                 # First show companion options
                 print("\nChoose companion type to use:")
                 print("1) Use a Champion (can defeat multiple monsters of same type)")
@@ -149,17 +140,17 @@ class MonsterPhase:
                 sub_choice = input("Choose option (number): ").strip()
                 
                 if sub_choice == "1":
-                    MonsterPhase.use_champion(game_state, monsters, hero_card, specialty_active)
+                    MonsterPhase.use_champion(game_state, monsters, hero_card, True)  # Always pass specialty_active as True
                 elif sub_choice == "2":
-                    MonsterPhase.use_companions(game_state, monsters, hero_card, specialty_active)
+                    MonsterPhase.use_companions(game_state, monsters, hero_card, True)  # Always pass specialty_active as True
                 elif sub_choice == "3":
                     # Check if we can defeat remaining monsters
                     if monsters:
-                        if MonsterPhase.can_defeat_monsters(game_state, monsters, hero_card, specialty_active):
+                        if MonsterPhase.can_defeat_monsters(game_state, monsters, hero_card, True):  # Always pass specialty_active as True
                             print("\nYour remaining party can defeat all monsters!")
                             print("Automatically using companions to defeat monsters...")
                             # Use companions to defeat remaining monsters
-                            MonsterPhase.use_companions_for_remaining_monsters(game_state, monsters, hero_card, specialty_active)
+                            MonsterPhase.use_companions_for_remaining_monsters(game_state, monsters, hero_card, True)  # Always pass specialty_active as True
                             return True
                         else:
                             print("\nYou must flee the Dungeon! The monsters are too powerful!")
@@ -176,7 +167,7 @@ class MonsterPhase:
                 monsters = [die for die in game_state.dungeon_dice if die in 
                           [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]]
                 MonsterPhase.print_state(game_state)
-            elif choice == "D":
+            elif choice == "C":
                 result = TreasureActions.use_treasure(game_state)
                 if result == "END_DELVE":
                     return False
@@ -185,7 +176,7 @@ class MonsterPhase:
                           [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]]
                 MonsterPhase.print_state(game_state)
             else:
-                print("Invalid choice. Please enter a letter A-D.")
+                print("Invalid choice. Please enter a letter A-C.")
                 continue
             
             # After each action, check if all monsters are defeated
@@ -198,21 +189,11 @@ class MonsterPhase:
             print("All monsters have been defeated!")
             return True
         else:
-            print(f"\nThere are still {len(monsters)} monsters remaining!")
-            # See if automatic defeat is possible with remaining companions
-            if MonsterPhase.can_defeat_monsters(game_state, monsters, hero_card, specialty_active):
-                print("Your remaining party automatically defeats the monsters!")
-                for monster in monsters:
-                    game_state.dungeon_dice.remove(monster)
-                
-                # Gain experience
-                exp_gained = len(monsters)
-                game_state.experience_tokens += exp_gained
-                print(f"Gained {exp_gained} experience tokens! Total: {game_state.experience_tokens}")
-                
-                # Move all companions used to the graveyard
-                MonsterPhase.use_companions_for_remaining_monsters(game_state, monsters, hero_card, specialty_active)
-                
+            if MonsterPhase.can_defeat_monsters(game_state, monsters, hero_card, True):  # Always pass specialty_active as True
+                print("\nYour remaining party can defeat all monsters!")
+                print("Automatically using companions to defeat monsters...")
+                # Use companions to defeat remaining monsters
+                MonsterPhase.use_companions_for_remaining_monsters(game_state, monsters, hero_card, True)  # Always pass specialty_active as True
                 return True
             else:
                 print("\nYou must flee the Dungeon! The monsters are too powerful!")
@@ -371,15 +352,6 @@ class MonsterPhase:
                 print("Invalid input. Please enter numbers separated by commas.")
             except IndexError:
                 print("Invalid selection. Please try again.")
-    
-    @staticmethod
-    def activate_hero_ability(game_state, hero_card):
-        """Activate the hero's specialty ability."""
-        use_specialty = input(f"Activate {hero_card.name}'s specialty: {hero_card.specialty}? (y/n): ").lower().strip()
-        if use_specialty == 'y':
-            print(f"Activating {hero_card.name}'s specialty: {hero_card.specialty}")
-            return True
-        return False
     
     @staticmethod
     def use_champion(game_state, monsters, hero_card, specialty_active):
