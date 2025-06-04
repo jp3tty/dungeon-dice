@@ -3,7 +3,7 @@ from dice import PartyDiceFace, DungeonDiceFace, DiceManager
 from game_state import GameState
 from phases import MonsterPhase, LootPhase
 from treasure import TreasureActions, TreasureType
-from hero import HeroRank, MinstrelBardHero
+from hero import HeroRank, MinstrelBardHero, AlchemistThaumaturgeHero
 
 class DragonPhase:
     @staticmethod
@@ -271,10 +271,10 @@ class DungeonDiceGame:
         
     def initialize_hero_cards(self):
         """Initialize available hero cards"""
-        return [MinstrelBardHero()]
+        return [MinstrelBardHero(), AlchemistThaumaturgeHero()]
         
     def start_game(self):
-        """Start a new game with 3 delves."""
+        """Start a new game."""
         print("\n" + "="*50)
         print("🎲 WELCOME TO DUNGEON DICE 🎲".center(50))
         print("="*50)
@@ -282,23 +282,50 @@ class DungeonDiceGame:
         print("You have 3 delves to prove your worth, gather treasure,")
         print("and become a legendary hero!\n")
         
-        # Choose a hero card - for now we only have one
-        self.state.selected_hero_card = self.available_hero_cards[0]
-        print("🦸 Your Chosen Hero 🦸".center(50))
+        # Choose a hero card
+        print("Available Heroes:")
+        for i, hero in enumerate([MinstrelBardHero(), AlchemistThaumaturgeHero()], 1):
+            print(f"\n{i}) {hero.novice_name}/{hero.master_name}")
+            print(f"   Specialty: {hero.novice_specialty}")
+            print(f"   Novice Ability: {hero.novice_ultimate}")
+            print(f"   Master Ability: {hero.master_ultimate}")
+        
+        while True:
+            try:
+                choice = int(input("\nChoose your hero (number): ").strip())
+                if choice == 1:
+                    self.state.selected_hero_card = MinstrelBardHero()
+                    break
+                elif choice == 2:
+                    self.state.selected_hero_card = AlchemistThaumaturgeHero()
+                    break
+                else:
+                    print("Please enter either 1 or 2")
+            except ValueError:
+                print("Please enter a valid number")
+        
+        print("\n🦸 Your Chosen Hero 🦸".center(50))
         print("-"*50)
         print(f"Name: {self.state.selected_hero_card.name}")
         self.state.selected_hero_card.display_card_info()
         
+        # Initialize game state
         self.state.delve_count = 0
+        self.state.level = 1
+        self.state.party_dice = []
+        self.state.dungeon_dice = []
+        self.state.dragons_lair = []
         self.state.treasure_tokens = 0
         self.state.experience_tokens = 0
+        self.state.graveyard = []
+        
+        # Start first delve
+        print(f"\n{'='*50}")
+        print(f"🗡️  DELVE {self.state.delve_count + 1} OF {self.MAX_DELVES}  🗡️".center(50))
+        print(f"{'='*50}")
         
         # Main game loop - 3 delves
         while self.state.delve_count < self.MAX_DELVES:
-            print(f"\n{'='*50}")
-            print(f"🗡️  DELVE {self.state.delve_count + 1} OF {self.MAX_DELVES}  🗡️".center(50))
-            print(f"{'='*50}")
-            
             self.start_delve()
             
             # Check for hero level up between delves

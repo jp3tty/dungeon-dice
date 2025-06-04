@@ -530,28 +530,47 @@ class DungeonDiceGame:
         print(f"You found {treasure_found} treasure! Total treasure: {self.state.treasure_tokens}")
     
     def quaff_potion(self):
-        """Use a potion for its effect."""
+        """Use a potion to recover a die from the graveyard."""
         print("Quaffing potion...")
         
-        # Simple potion effects
-        effects = [
-            "Gain a temporary Fighter die for this delve",
-            "Gain a temporary Cleric die for this delve",
-            "Gain a temporary Mage die for this delve",
-            "Gain a temporary Thief die for this delve",
-            "Refresh your hero card ability"
-        ]
+        if not self.state.graveyard:
+            print("No dice in Graveyard to recover!")
+            return False
+            
+        print("Choose a die face for the recovered Party die:")
+        for i, face in enumerate(PartyDiceFace):
+            print(f"{i+1}. {face.value}")
         
-        effect = random.choice(effects)
-        print(f"Potion effect: {effect}")
-        
-        if "temporary" in effect:
-            hero_type = effect.split("temporary ")[1].split(" die")[0]
-            self.state.party_dice.append(hero_type)
-            print(f"A {hero_type} joins your party temporarily!")
-        elif "Refresh" in effect and self.state.selected_hero_card:
-            self.state.selected_hero_card.refresh()
-            print(f"{self.state.selected_hero_card.name}'s ability is now refreshed!")
+        face_choice = input("Choose face (number): ").strip()
+        try:
+            face_idx = int(face_choice) - 1
+            if 0 <= face_idx < len(PartyDiceFace):
+                # Remove a die from graveyard
+                self.state.graveyard.pop()
+                # Add new die with chosen face
+                chosen_face = list(PartyDiceFace)[face_idx].value
+                self.state.party_dice.append(chosen_face)
+                print(f"Added a {chosen_face} to your active party!")
+                
+                # Move potion to graveyard
+                self.state.graveyard.append(DungeonDiceFace.POTION.value)
+                return True
+            else:
+                print("Invalid face choice. Using Fighter.")
+                self.state.graveyard.pop()
+                self.state.party_dice.append(PartyDiceFace.FIGHTER.value)
+                
+                # Move potion to graveyard
+                self.state.graveyard.append(DungeonDiceFace.POTION.value)
+                return True
+        except ValueError:
+            print("Invalid input. Using Fighter.")
+            self.state.graveyard.pop()
+            self.state.party_dice.append(PartyDiceFace.FIGHTER.value)
+            
+            # Move potion to graveyard
+            self.state.graveyard.append(DungeonDiceFace.POTION.value)
+            return True
     
     def dragon_phase(self):
         """Dragon Phase: Occurs if Dragon is attracted to the dungeon."""

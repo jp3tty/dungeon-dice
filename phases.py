@@ -407,6 +407,8 @@ class MonsterPhase:
             goblin_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.GOBLIN.value]
             if goblin_indices:
                 print(f"\nChampion can defeat any number of Goblins!")
+                if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
+                    print("Bard's specialty: Champion can defeat 1 extra monster!")
                 print("Available Goblins:")
                 for i, monster_idx in enumerate(goblin_indices):
                     print(f"{i+1}. Goblin at position {monster_idx+1}")
@@ -416,6 +418,9 @@ class MonsterPhase:
                     num_goblins = input(f"How many Goblins to defeat (1-{len(goblin_indices)})? ").strip()
                     try:
                         num_goblins = min(len(goblin_indices), max(1, int(num_goblins)))
+                        # If Bard's specialty is active, add 1 extra monster
+                        if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
+                            num_goblins = min(len(goblin_indices), num_goblins + 1)
                         break
                     except ValueError:
                         print("Invalid input. Please enter a number.")
@@ -442,6 +447,8 @@ class MonsterPhase:
             skeleton_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.SKELETON.value]
             if skeleton_indices:
                 print(f"\nChampion can defeat any number of Skeletons!")
+                if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
+                    print("Bard's specialty: Champion can defeat 1 extra monster!")
                 print("Available Skeletons:")
                 for i, monster_idx in enumerate(skeleton_indices):
                     print(f"{i+1}. Skeleton at position {monster_idx+1}")
@@ -451,6 +458,9 @@ class MonsterPhase:
                     num_skeletons = input(f"How many Skeletons to defeat (1-{len(skeleton_indices)})? ").strip()
                     try:
                         num_skeletons = min(len(skeleton_indices), max(1, int(num_skeletons)))
+                        # If Bard's specialty is active, add 1 extra monster
+                        if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
+                            num_skeletons = min(len(skeleton_indices), num_skeletons + 1)
                         break
                     except ValueError:
                         print("Invalid input. Please enter a number.")
@@ -477,6 +487,8 @@ class MonsterPhase:
             ooze_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.OOZE.value]
             if ooze_indices:
                 print(f"\nChampion can defeat any number of Oozes!")
+                if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
+                    print("Bard's specialty: Champion can defeat 1 extra monster!")
                 print("Available Oozes:")
                 for i, monster_idx in enumerate(ooze_indices):
                     print(f"{i+1}. Ooze at position {monster_idx+1}")
@@ -486,6 +498,9 @@ class MonsterPhase:
                     num_oozes = input(f"How many Oozes to defeat (1-{len(ooze_indices)})? ").strip()
                     try:
                         num_oozes = min(len(ooze_indices), max(1, int(num_oozes)))
+                        # If Bard's specialty is active, add 1 extra monster
+                        if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
+                            num_oozes = min(len(ooze_indices), num_oozes + 1)
                         break
                     except ValueError:
                         print("Invalid input. Please enter a number.")
@@ -1065,10 +1080,7 @@ class MonsterPhase:
         
         for idx in sorted(champion_indices, reverse=True):
             # Calculate how many monsters this champion can defeat
-            monsters_to_defeat = 1
-            # If using Bard (Master) specialty, Champions defeat an extra monster
-            if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
-                monsters_to_defeat = 2
+            monsters_to_defeat = len(remaining_monsters)  # Champions can defeat any number of same-type monsters
             
             # Move champion to graveyard
             game_state.use_party_die(idx)
@@ -1082,72 +1094,71 @@ class MonsterPhase:
                 remaining_monsters.pop(0)
                 print(f"Champion defeats {monster}!")
                 defeats += 1
+                
+                # If using Bard (Master) specialty, Champions can defeat 1 extra monster of a different type
+                if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER and remaining_monsters:
+                    next_monster = remaining_monsters[0]
+                    if next_monster != monster:  # Only if it's a different type
+                        if next_monster in game_state.dungeon_dice:
+                            game_state.dungeon_dice.remove(next_monster)
+                        remaining_monsters.pop(0)
+                        print(f"Champion defeats {next_monster} (Bard's specialty: +1 monster)!")
+                        defeats += 1
+                        break  # Only one extra monster
             
             if not remaining_monsters:
                 break
-        
-        # If we still have monsters, use specific companions
-        if remaining_monsters:
-            # Apply Minstrel/Bard specialty if active
-            if specialty_active and hero_card.name in ["Minstrel", "Bard"]:
-                # Thieves may be used as Mages and Mages may be used as Thieves
-                fighter_can_defeat = {"Goblin": float('inf'), "Skeleton": 1, "Ooze": 1}
-                cleric_can_defeat = {"Skeleton": float('inf'), "Goblin": 1, "Ooze": 1}
-                mage_can_defeat = {"Ooze": float('inf'), "Goblin": 1}
-                thief_can_defeat = {"Goblin": 1, "Skeleton": 1, "Ooze": 1}
-            else:
-                fighter_can_defeat = {"Goblin": float('inf'), "Skeleton": 1, "Ooze": 1}
-                cleric_can_defeat = {"Skeleton": float('inf'), "Goblin": 1, "Ooze": 1}
-                mage_can_defeat = {"Ooze": float('inf')}
-                thief_can_defeat = {"Goblin": 1, "Skeleton": 1, "Ooze": 1}
-            
-            # Sort monsters by most restrictive first
-            # Goblins (only Fighter/Thief), Skeletons (only Cleric/Thief), Oozes (only Mage/Thief)
-            sorted_monsters = []
-            # Prioritize monsters that fewer heroes can defeat
-            for monster_type in [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]:
-                for monster in remaining_monsters[:]:
-                    if monster == monster_type:
-                        sorted_monsters.append(monster)
-                        remaining_monsters.remove(monster)
-            
-            # Process each monster
-            for monster in sorted_monsters:
-                # Try to find the most appropriate hero to defeat this monster
-                defeated = False
+
+            # If we still have monsters, use specific companions
+            if remaining_monsters:
+                # Apply Minstrel/Bard specialty if active
+                if specialty_active and hero_card.name in ["Minstrel", "Bard"]:
+                    # Thieves may be used as Mages and Mages may be used as Thieves
+                    fighter_can_defeat = {"Goblin": float('inf'), "Skeleton": 1, "Ooze": 1}
+                    cleric_can_defeat = {"Skeleton": float('inf'), "Goblin": 1, "Ooze": 1}
+                    mage_can_defeat = {"Ooze": float('inf'), "Goblin": 1}
+                    thief_can_defeat = {"Goblin": 1, "Skeleton": 1, "Ooze": 1}
+                else:
+                    fighter_can_defeat = {"Goblin": float('inf'), "Skeleton": 1, "Ooze": 1}
+                    cleric_can_defeat = {"Skeleton": float('inf'), "Goblin": 1, "Ooze": 1}
+                    mage_can_defeat = {"Ooze": float('inf')}
+                    thief_can_defeat = {"Goblin": 1, "Skeleton": 1, "Ooze": 1}
+
+                # Sort monsters by most restrictive first
+                # Goblins (only Fighter/Thief), Skeletons (only Cleric/Thief), Oozes (only Mage/Thief)
+                sorted_monsters = []
+                # Prioritize monsters that fewer heroes can defeat
+                for monster_type in [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]:
+                    for monster in remaining_monsters[:]:
+                        if monster == monster_type:
+                            sorted_monsters.append(monster)
+                            remaining_monsters.remove(monster)
                 
-                # Look for the appropriate specialists first
-                if monster == DungeonDiceFace.GOBLIN.value:
-                    for i, die in enumerate(game_state.party_dice):
-                        if die == PartyDiceFace.FIGHTER.value:
-                            game_state.use_party_die(i)
-                            if monster in game_state.dungeon_dice:  # Check if monster is still in dungeon dice
-                                game_state.dungeon_dice.remove(monster)
-                            print(f"Fighter defeats {monster}!")
-                            defeated = True
-                            break
-                elif monster == DungeonDiceFace.SKELETON.value:
-                    for i, die in enumerate(game_state.party_dice):
-                        if die == PartyDiceFace.CLERIC.value:
-                            game_state.use_party_die(i)
-                            if monster in game_state.dungeon_dice:  # Check if monster is still in dungeon dice
-                                game_state.dungeon_dice.remove(monster)
-                            print(f"Cleric defeats {monster}!")
-                            defeated = True
-                            break
-                elif monster == DungeonDiceFace.OOZE.value:
-                    for i, die in enumerate(game_state.party_dice):
-                        if die == PartyDiceFace.MAGE.value:
-                            game_state.use_party_die(i)
-                            if monster in game_state.dungeon_dice:  # Check if monster is still in dungeon dice
-                                game_state.dungeon_dice.remove(monster)
-                            print(f"Mage defeats {monster}!")
-                            defeated = True
-                            break
-                
-                # If not defeated yet, consider specialty rules
-                if not defeated and specialty_active and hero_card.name in ["Minstrel", "Bard"]:
+                # Process each monster
+                for monster in sorted_monsters:
+                    # Try to find the most appropriate hero to defeat this monster
+                    defeated = False
+                    
+                    # Look for the appropriate specialists first
                     if monster == DungeonDiceFace.GOBLIN.value:
+                        for i, die in enumerate(game_state.party_dice):
+                            if die == PartyDiceFace.FIGHTER.value:
+                                game_state.use_party_die(i)
+                                if monster in game_state.dungeon_dice:  # Check if monster is still in dungeon dice
+                                    game_state.dungeon_dice.remove(monster)
+                                print(f"Fighter defeats {monster}!")
+                                defeated = True
+                                break
+                    elif monster == DungeonDiceFace.SKELETON.value:
+                        for i, die in enumerate(game_state.party_dice):
+                            if die == PartyDiceFace.CLERIC.value:
+                                game_state.use_party_die(i)
+                                if monster in game_state.dungeon_dice:  # Check if monster is still in dungeon dice
+                                    game_state.dungeon_dice.remove(monster)
+                                print(f"Cleric defeats {monster}!")
+                                defeated = True
+                                break
+                    elif monster == DungeonDiceFace.OOZE.value:
                         for i, die in enumerate(game_state.party_dice):
                             if die == PartyDiceFace.MAGE.value:
                                 game_state.use_party_die(i)
@@ -1156,26 +1167,38 @@ class MonsterPhase:
                                 print(f"Mage defeats {monster} (using {hero_card.name}'s specialty)!")
                                 defeated = True
                                 break
-                    elif monster == DungeonDiceFace.OOZE.value:
+                    
+                    # If not defeated yet, consider specialty rules
+                    if not defeated and specialty_active and hero_card.name in ["Minstrel", "Bard"]:
+                        if monster == DungeonDiceFace.GOBLIN.value:
+                            for i, die in enumerate(game_state.party_dice):
+                                if die == PartyDiceFace.MAGE.value:
+                                    game_state.use_party_die(i)
+                                    if monster in game_state.dungeon_dice:  # Check if monster is still in dungeon dice
+                                        game_state.dungeon_dice.remove(monster)
+                                    print(f"Mage defeats {monster} (using {hero_card.name}'s specialty)!")
+                                    defeated = True
+                                    break
+                        elif monster == DungeonDiceFace.OOZE.value:
+                            for i, die in enumerate(game_state.party_dice):
+                                if die == PartyDiceFace.THIEF.value:
+                                    game_state.use_party_die(i)
+                                    if monster in game_state.dungeon_dice:  # Check if monster is still in dungeon dice
+                                        game_state.dungeon_dice.remove(monster)
+                                    print(f"Thief defeats {monster} (using {hero_card.name}'s specialty)!")
+                                    defeated = True
+                                    break
+                    
+                    # If still not defeated, try a thief as last resort
+                    if not defeated:
                         for i, die in enumerate(game_state.party_dice):
                             if die == PartyDiceFace.THIEF.value:
                                 game_state.use_party_die(i)
                                 if monster in game_state.dungeon_dice:  # Check if monster is still in dungeon dice
                                     game_state.dungeon_dice.remove(monster)
-                                print(f"Thief defeats {monster} (using {hero_card.name}'s specialty)!")
+                                print(f"Thief defeats {monster}!")
                                 defeated = True
                                 break
-                
-                # If still not defeated, try a thief as last resort
-                if not defeated:
-                    for i, die in enumerate(game_state.party_dice):
-                        if die == PartyDiceFace.THIEF.value:
-                            game_state.use_party_die(i)
-                            if monster in game_state.dungeon_dice:  # Check if monster is still in dungeon dice
-                                game_state.dungeon_dice.remove(monster)
-                            print(f"Thief defeats {monster}!")
-                            defeated = True
-                            break
 
 class LootPhase:
     @staticmethod
@@ -1184,6 +1207,15 @@ class LootPhase:
         print("\n" + "="*50)
         print("💎 LOOT PHASE 💎".center(50))
         print("="*50)
+        
+        # If Alchemist/Thaumaturge is active, convert all chests to potions
+        if game_state.selected_hero_card.__class__.__name__ == "AlchemistThaumaturgeHero":
+            chest_indices = [i for i, die in enumerate(game_state.dungeon_dice) 
+                           if die == DungeonDiceFace.CHEST.value]
+            if chest_indices:
+                for idx in reversed(chest_indices):
+                    game_state.dungeon_dice[idx] = DungeonDiceFace.POTION.value
+                print(f"\n✨ The {game_state.selected_hero_card.name}'s alchemy transforms {len(chest_indices)} chest(s) into potions! ✨")
         
         # Count available chests and potions
         chests = game_state.dungeon_dice.count(DungeonDiceFace.CHEST.value)
