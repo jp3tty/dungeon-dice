@@ -1,5 +1,6 @@
 import random
 from enum import Enum
+from hero import HeroRank, MinstrelBardHero, AlchemistThaumaturgeHero
 
 class PartyDiceFace(Enum):
     FIGHTER = "Fighter"
@@ -16,10 +17,6 @@ class DungeonDiceFace(Enum):
     DRAGON = "Dragon"
     CHEST = "Chest"
     POTION = "Potion"
-
-class HeroRank(Enum):
-    NOVICE = "Novice"
-    MASTER = "Master"
 
 class HeroCard:
     def __init__(self, novice_name, master_name, novice_specialty, master_specialty, 
@@ -148,23 +145,51 @@ class DungeonDiceGame:
         
     def initialize_hero_cards(self):
         """Initialize available hero cards"""
-        return [MinstrelBardHero()]
+        return [MinstrelBardHero(), AlchemistThaumaturgeHero()]
         
     def start_game(self):
         """Start a new game with 3 delves."""
-        print("=== DUNGEON DICE GAME ===")
-        print("Setting up the game...")
+        print("\n" + "="*50)
+        print("🎲 WELCOME TO DUNGEON DICE 🎲".center(50))
+        print("="*50)
+        print("\nPrepare yourself for an epic adventure!")
+        print("You have 3 delves to prove your worth, gather treasure,")
+        print("and become a legendary hero!\n")
         
-        # Choose a hero card - for now we only have one
-        self.state.selected_hero_card = self.available_hero_cards[0]
-        print(f"Your hero: {self.state.selected_hero_card.name}")
+        # Choose a hero card
+        print("Available Heroes:")
+        for i, hero in enumerate(self.available_hero_cards, 1):
+            print(f"\n{i}) {hero.novice_name}/{hero.master_name}")
+            print(f"   Specialty: {hero.novice_specialty}")
+            print(f"   Novice Ability: {hero.novice_ultimate}")
+            print(f"   Master Ability: {hero.master_ultimate}")
+        
+        while True:
+            try:
+                choice = int(input("\nChoose your hero (number): ").strip())
+                if 1 <= choice <= len(self.available_hero_cards):
+                    self.state.selected_hero_card = self.available_hero_cards[choice - 1]
+                    break
+                else:
+                    print(f"Please enter a number between 1 and {len(self.available_hero_cards)}")
+            except ValueError:
+                print("Please enter a valid number")
+        
+        print("\n🦸 Your Chosen Hero 🦸".center(50))
+        print("-"*50)
+        print(f"Name: {self.state.selected_hero_card.name}")
         self.state.selected_hero_card.display_card_info()
         
         self.state.delve_count = 0
         self.state.treasure_tokens = 0
         self.state.experience_tokens = 0
         
+        # Main game loop - 3 delves
         while self.state.delve_count < self.MAX_DELVES:
+            print(f"\n{'='*50}")
+            print(f"🗡️  DELVE {self.state.delve_count + 1} OF {self.MAX_DELVES}  🗡️".center(50))
+            print(f"{'='*50}")
+            
             self.start_delve()
             
             # Check for hero level up between delves
@@ -172,7 +197,13 @@ class DungeonDiceGame:
                 self.state.experience_tokens >= self.state.selected_hero_card.xp_to_master):
                 self.state.selected_hero_card.check_level_up(self.state.experience_tokens)
             
-        print(f"\nGame Over! Final Score: {self.state.treasure_tokens} treasure tokens and {self.state.experience_tokens} experience tokens")
+            # Show progress after each delve
+            print(f"\n📊 End of Delve {self.state.delve_count} Summary:")
+            print(f"🌟 Experience: {self.state.experience_tokens} tokens")
+            print(f"💎 Treasure: {self.state.treasure_tokens} tokens")
+            self.state.display_treasure_info()
+        
+        self.end_game()
     
     def start_delve(self):
         """Start a new delve (one game round) with proper setup."""
@@ -305,14 +336,8 @@ class DungeonDiceGame:
         if monsters:
             print(f"\nEncountered {len(monsters)} monsters!")
             
-            # Give player option to use hero specialty before combat
-            use_specialty = input(f"Use {self.state.selected_hero_card.name}'s specialty? (y/n): ").lower().strip()
-            if use_specialty == 'y':
-                # For Minstrel/Bard, we'll implement the specialty in the can_defeat_monsters method
-                # Just acknowledge the specialty activation here
-                print(f"Activating {self.state.selected_hero_card.name}'s specialty: {self.state.selected_hero_card.specialty}")
-            
-            if self.can_defeat_monsters(monsters, use_specialty == 'y'):
+            # Specialty is now always active
+            if self.can_defeat_monsters(monsters, True):  # Always pass True for using_specialty
                 print("Your party successfully defeats all monsters!")
                 # Remove monsters from dungeon dice
                 for monster in monsters:
@@ -339,8 +364,8 @@ class DungeonDiceGame:
                         # For Minstrel/Bard, the ultimate clears dragons, not helps with monsters
                         self.state.selected_hero_card.use_ultimate(self.state)
                         
-                        # Recheck monster combat with specialty if active
-                        if self.can_defeat_monsters(monsters, use_specialty == 'y'):
+                        # Recheck monster combat with specialty always active
+                        if self.can_defeat_monsters(monsters, True):  # Always pass True for using_specialty
                             print("Your party now defeats the monsters!")
                             # Remove monsters from dungeon dice
                             for monster in monsters:
@@ -361,7 +386,7 @@ class DungeonDiceGame:
                         self.state.dungeon_dice.remove(DungeonDiceFace.POTION.value)
                         
                         # Final check if monsters can be defeated
-                        if self.can_defeat_monsters(monsters, use_specialty == 'y'):
+                        if self.can_defeat_monsters(monsters, True):  # Always pass True for using_specialty
                             print("With the potion's help, your party defeats the monsters!")
                             # Remove monsters from dungeon dice
                             for monster in monsters:
@@ -435,6 +460,15 @@ class DungeonDiceGame:
         """Loot Phase: Open Chests or Quaff Potions (two actions)."""
         self.state.current_phase = "Loot Phase"
         print("\n--- LOOT PHASE ---")
+        
+        # If Alchemist/Thaumaturge is active, convert all chests to potions
+        if isinstance(self.state.selected_hero_card, AlchemistThaumaturgeHero):
+            chest_indices = [i for i, die in enumerate(self.state.dungeon_dice) 
+                           if die == DungeonDiceFace.CHEST.value]
+            if chest_indices:
+                for idx in chest_indices:
+                    self.state.dungeon_dice[idx] = DungeonDiceFace.POTION.value
+                print(f"The {self.state.selected_hero_card.name}'s alchemy transforms {len(chest_indices)} chest(s) into potions!")
         
         # Count available chests and potions
         chests = self.state.dungeon_dice.count(DungeonDiceFace.CHEST.value)

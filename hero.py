@@ -1,4 +1,6 @@
 from enum import Enum
+import random
+from dice import DungeonDiceFace
 
 class HeroRank(Enum):
     NOVICE = "Novice"
@@ -40,12 +42,6 @@ class HeroCard:
             return True
         return False
     
-    def use_specialty(self, game_state):
-        """Use the hero's specialty ability based on current rank"""
-        print(f"Using {self.name}'s specialty: {self.specialty}")
-        # Implementation specific to each hero will be in subclasses
-        return False
-    
     def use_ultimate(self, game_state):
         """Use the hero's ultimate ability based on current rank"""
         if not self.is_exhausted:
@@ -71,7 +67,7 @@ class HeroCard:
         print(f"\n{'='*50}")
         print(f"📜 {self.name} ({rank_text}) 📜".center(50))
         print(f"{'='*50}")
-        print(f"🔮 Active Specialty: {self.specialty}")
+        print(f"🔮 Passive Specialty: {self.specialty}")
         print(f"⚡ Ultimate: {self.ultimate}")
         status = "❌ EXHAUSTED" if self.is_exhausted else "✅ READY"
         print(f"📋 Status: {status}")
@@ -104,4 +100,39 @@ class MinstrelBardHero(HeroCard):
                 # Don't exhaust the hero if there were no dragons
                 self.is_exhausted = False
                 return False
+        return False 
+
+class AlchemistThaumaturgeHero(HeroCard):
+    def __init__(self):
+        super().__init__(
+            novice_name="Alchemist",
+            master_name="Thaumaturge",
+            novice_specialty="All Chests become Potions.",
+            master_specialty="All Chests become Potions.",
+            novice_ultimate="Healing Salve: Roll 1 Party die from the Graveyard and add it to your Party.",
+            master_ultimate="Transformation Potion: Roll 2 dice from the Graveyard and add them to your Party.",
+            xp_to_master=5
+        )
+    
+    def use_ultimate(self, game_state):
+        """Roll dice from the Graveyard based on current rank"""
+        if super().use_ultimate(game_state):
+            dice_to_roll = 2 if self.current_rank == HeroRank.MASTER else 1
+            if not game_state.graveyard:
+                print("The Graveyard is empty!")
+                self.is_exhausted = False
+                return False
+                
+            dice_rolled = []
+            for _ in range(min(dice_to_roll, len(game_state.graveyard))):
+                if game_state.graveyard:
+                    die = random.choice(game_state.graveyard)
+                    game_state.graveyard.remove(die)
+                    game_state.party_dice.append(die)
+                    dice_rolled.append(die)
+            
+            if dice_rolled:
+                print(f"The {self.name} revives {len(dice_rolled)} die/dice: {', '.join(dice_rolled)}")
+                return True
+            return False
         return False 
