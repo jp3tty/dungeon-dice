@@ -1,6 +1,14 @@
 import random
+import os
+import time
 from enum import Enum
 from hero import HeroRank, MinstrelBardHero, AlchemistThaumaturgeHero
+
+def clear_screen():
+    """Clear the terminal screen using ANSI escape codes and newlines."""
+    print("\n" * 50)  # Print fewer newlines for better spacing
+    print("\033[2J\033[H", end="")  # ANSI escape sequence to clear screen and move cursor to top
+    print("\n")  # Just one newline for padding
 
 class PartyDiceFace(Enum):
     FIGHTER = "Fighter"
@@ -149,6 +157,7 @@ class DungeonDiceGame:
         
     def start_game(self):
         """Start a new game with 3 delves."""
+        clear_screen()
         print("\n" + "="*50)
         print("🎲 WELCOME TO DUNGEON DICE 🎲".center(50))
         print("="*50)
@@ -169,6 +178,7 @@ class DungeonDiceGame:
                 choice = int(input("\nChoose your hero (number): ").strip())
                 if 1 <= choice <= len(self.available_hero_cards):
                     self.state.selected_hero_card = self.available_hero_cards[choice - 1]
+                    clear_screen()  # Clear screen after selection
                     break
                 else:
                     print(f"Please enter a number between 1 and {len(self.available_hero_cards)}")
@@ -201,17 +211,18 @@ class DungeonDiceGame:
             print(f"\n📊 End of Delve {self.state.delve_count} Summary:")
             print(f"🌟 Experience: {self.state.experience_tokens} tokens")
             print(f"💎 Treasure: {self.state.treasure_tokens} tokens")
-            self.state.display_treasure_info()
         
         self.end_game()
     
     def start_delve(self):
         """Start a new delve (one game round) with proper setup."""
+        clear_screen()
         self.state.delve_count += 1
-        print(f"\n=== DELVE {self.state.delve_count} ===")
         
         # Setup phase
         self.setup_delve()
+        self.display_game_state()
+        print(f"\n=== Starting Delve {self.state.delve_count} ===")
         
         # Continue until the delve is over (player chooses to end or fails)
         delve_active = True
@@ -237,14 +248,6 @@ class DungeonDiceGame:
             if not regroup_result:
                 print("You've chosen to end this delve.")
                 delve_active = False
-            else:
-                # Increase dungeon level for the next round if continuing
-                self.state.level = min(self.state.level + 1, self.MAX_LEVEL)
-                print(f"Proceeding to dungeon level {self.state.level}...")
-                
-                # Roll additional dungeon dice based on level
-                new_dice = self.roll_dungeon_dice(1)  # Roll 1 die per level
-                self.state.dungeon_dice.extend(new_dice)
     
     def setup_delve(self):
         """Set up for a new delve following the 4 steps described."""
@@ -305,29 +308,47 @@ class DungeonDiceGame:
         """Display the dungeon dice and dragon's lair."""
         print("\nDungeon Encounter:")
         
-        # Count dice by type for cleaner display
-        dice_counts = {}
-        for die in self.state.dungeon_dice:
-            dice_counts[die] = dice_counts.get(die, 0) + 1
-        
-        for die_face, count in dice_counts.items():
-            print(f"- {die_face}: {count} dice")
+        if not self.state.dungeon_dice:
+            print("- No dungeon dice present")
+        else:
+            # Count dice by type for cleaner display
+            dice_counts = {}
+            for die in self.state.dungeon_dice:
+                dice_counts[die] = dice_counts.get(die, 0) + 1
+            
+            for die_face, count in dice_counts.items():
+                print(f"- {die_face}: {count} dice")
         
         if self.state.dragons_lair:
             print("\nDragon's Lair:")
             print(f"- Dragon: {len(self.state.dragons_lair)} dice")
+        elif self.state.current_phase == "Dragon Phase":
+            print("\nDragon's Lair: Empty")
     
-    def monster_phase(self):
-        """Monster Phase: Adventurers fight monsters."""
-        self.state.current_phase = "Monster Phase"
-        print("\n--- MONSTER PHASE ---")
+    def display_game_state(self):
+        """Display the current state of the game."""
+        print(f"\n{'='*50}")
+        print(f"🎲 DUNGEON DICE - DELVE {self.state.delve_count} OF {self.MAX_DELVES} 🎲".center(50))
+        print(f"{'='*50}")
+        print(f"\n📊 Current Status:")
+        print(f"🌟 Experience: {self.state.experience_tokens} tokens")
+        print(f"💎 Treasure: {self.state.treasure_tokens} tokens")
+        print(f"📈 Dungeon Level: {self.state.level}")
         
-        # Print current dungeon state
+        # Display hero info
+        self.state.selected_hero_card.display_card_info()
+        
+        # Display dice info
         self.print_party_dice()
         self.print_dungeon_dice()
-        
-        # Display hero card info
-        self.state.selected_hero_card.display_card_info()
+        print(f"\n{'-'*50}\n")
+
+    def monster_phase(self):
+        """Monster Phase: Adventurers fight monsters."""
+        clear_screen()
+        self.state.current_phase = "Monster Phase"
+        self.display_game_state()
+        print("\n--- MONSTER PHASE ---")
         
         # Process monster encounters
         monsters = [die for die in self.state.dungeon_dice if die in 
@@ -458,7 +479,9 @@ class DungeonDiceGame:
     
     def loot_phase(self):
         """Loot Phase: Open Chests or Quaff Potions (two actions)."""
+        clear_screen()
         self.state.current_phase = "Loot Phase"
+        self.display_game_state()
         print("\n--- LOOT PHASE ---")
         
         # If Alchemist/Thaumaturge is active, convert all chests to potions
@@ -577,7 +600,9 @@ class DungeonDiceGame:
         if not self.state.dragons_lair:
             return True
             
+        clear_screen()
         self.state.current_phase = "Dragon Phase"
+        self.display_game_state()
         print("\n--- DRAGON PHASE ---")
         
         dragon_count = len(self.state.dragons_lair)
@@ -642,55 +667,108 @@ class DungeonDiceGame:
     
     def regroup_phase(self):
         """Regroup Phase: Make decisions after the delve."""
+        clear_screen()
         self.state.current_phase = "Regroup Phase"
+        self.display_game_state()
         print("\n--- REGROUP PHASE ---")
+        
+        # Check if level 10 was cleared
+        if self.state.level == 10:
+            print("\n🏆 STUFF OF LEGEND! 🏆")
+            print("You've cleared the dungeon at Level 10!")
+            print("This is a legendary achievement!")
+            
+            # Award experience tokens
+            self.state.experience_tokens += 10
+            print(f"You gain 10 Experience tokens for this legendary feat!")
+            print(f"Total Experience tokens: {self.state.experience_tokens}")
+            
+            # Return dragons to available pool if any
+            if self.state.dragons_lair:
+                print(f"\nReturning {len(self.state.dragons_lair)} Dragon dice to the available pool.")
+                self.state.dragons_lair = []
+            
+            return False  # End the delve
         
         print("Choose your regroup action:")
         print("1. Retire to the Tavern (End delve and bank treasure)")
-        print("2. Stuff of Legend (Attempt to gain extra party dice)")
-        print("3. Seek Glory (Continue delving to the next level)")
+        print("2. Seek Glory (Continue delving to the next level)")
         
         choice = input("Choose action (number): ").strip()
         
         if choice == "1":
             return self.retire_to_tavern()
-        elif choice == "2":
-            return self.stuff_of_legend()
         else:
             return self.seek_glory()
     
+    def seek_glory(self):
+        """Continue with the same party to the next level."""
+        print("Your party continues their quest for glory!")
+        
+        # Increase dungeon level
+        self.state.level = min(self.state.level + 1, self.MAX_LEVEL)
+        print(f"\nProceeding to dungeon level {self.state.level}...")
+        
+        # Calculate available dice
+        total_dungeon_dice = self.MAX_DUNGEON_DICE
+        available_dice = total_dungeon_dice - len(self.state.dragons_lair)
+        dice_to_roll = min(self.state.level, available_dice)
+        
+        print(f"\nWARNING! The Dungeon Lord will roll {dice_to_roll} Dungeon dice.")
+        print("Once rolled, you must defeat all monsters and possibly the Dragon,")
+        print("or you must Flee, gaining NO Experience for this delve!")
+        print("There is no turning back once the Dungeon dice are cast!")
+        
+        proceed = input("\nDo you wish to proceed? (y/n): ").lower().strip()
+        if proceed != 'y':
+            print("Wise choice. You retire to the tavern.")
+            return self.retire_to_tavern()
+        
+        # Roll dungeon dice
+        print(f"\nRolling {dice_to_roll} Dungeon dice...")
+        new_dice = self.roll_dungeon_dice(dice_to_roll)
+        self.state.dungeon_dice.extend(new_dice)
+        
+        return True
+
     def retire_to_tavern(self):
         """End the delve and bank treasure."""
         print("You retire to the tavern, ending this delve.")
+        
+        # Award experience based on current level
+        exp_gained = self.state.level
+        self.state.experience_tokens += exp_gained
+        print(f"You gain {exp_gained} Experience tokens for reaching level {self.state.level}!")
+        print(f"Total Experience tokens: {self.state.experience_tokens}")
         
         # Bank treasure - in this implementation we just keep it
         banked = self.state.treasure_tokens
         print(f"You've collected {banked} treasure tokens so far.")
         
+        # Return dragons to available pool if any
+        if self.state.dragons_lair:
+            print(f"\nReturning {len(self.state.dragons_lair)} Dragon dice to the available pool.")
+            self.state.dragons_lair = []
+        
         # End this delve
         return False
-    
-    def stuff_of_legend(self):
-        """Attempt to gain extra party dice."""
-        print("Attempting to recruit more heroes...")
+
+    def end_game(self):
+        """Handle end game scoring and final display."""
+        clear_screen()
+        print("\n" + "="*40)
+        print("GAME OVER - FINAL SCORING")
+        print("="*40)
         
-        # Roll a die to determine success
-        if random.random() < 0.6:  # 60% chance
-            new_hero = random.choice([face.value for face in PartyDiceFace])
-            self.state.party_dice.append(new_hero)
-            print(f"Success! A {new_hero} joins your party!")
-        else:
-            print("No new heroes were willing to join your quest.")
-        
-        # Ask if player wants to continue delving
-        continue_delve = input("Continue delving to the next level? (y/n): ").lower().strip()
-        return continue_delve == 'y'
-    
-    def seek_glory(self):
-        """Continue with the same party to the next level."""
-        print("Your party continues their quest for glory!")
-        # Continue delving
-        return True
+        # Display hero final state
+        print("\n" + "="*50)
+        print("📜 Final Hero State 📜".center(50))
+        print("="*50)
+        print(f"Name: {self.state.selected_hero_card.name}")
+        self.state.selected_hero_card.display_card_info()
+        print(f"🌟 Experience: {self.state.experience_tokens} tokens")
+        print(f"💎 Treasure: {self.state.treasure_tokens} tokens")
+        print("-"*50)
 
 if __name__ == "__main__":
     game = DungeonDiceGame()
