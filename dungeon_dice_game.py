@@ -3,6 +3,7 @@ import os
 import time
 from enum import Enum
 from hero import HeroRank, MinstrelBardHero, AlchemistThaumaturgeHero
+from dice import PartyDiceFace, DungeonDiceFace, DiceManager
 
 def clear_screen():
     """Clear the terminal screen using ANSI escape codes and newlines."""
@@ -17,14 +18,6 @@ class PartyDiceFace(Enum):
     THIEF = "Thief"
     CHAMPION = "Champion"
     SCROLL = "Scroll"
-
-class DungeonDiceFace(Enum):
-    GOBLIN = "Goblin"
-    SKELETON = "Skeleton"
-    OOZE = "Ooze"
-    DRAGON = "Dragon"
-    CHEST = "Chest"
-    POTION = "Potion"
 
 class HeroCard:
     def __init__(self, novice_name, master_name, novice_specialty, master_specialty, 
@@ -145,6 +138,7 @@ class GameState:
 class DungeonDiceGame:
     def __init__(self):
         self.state = GameState()
+        self.dice_manager = DiceManager()  # Initialize the dice manager
         self.MAX_DELVES = 3
         self.MAX_PARTY_DICE = 7
         self.MAX_DUNGEON_DICE = 7
@@ -254,6 +248,7 @@ class DungeonDiceGame:
         print("\n--- SETUP PHASE ---")
         
         # Step 1: Roll all 7 Party Dice
+        print("Rolling 7 Party Dice to form your starting party...")
         self.state.party_dice = self.roll_party_dice(self.MAX_PARTY_DICE)
         # Reset graveyard
         self.state.graveyard = []
@@ -266,29 +261,53 @@ class DungeonDiceGame:
         self.state.level = 1
         
         # Step 4: Roll 1 Dungeon Die to populate the dungeon
-        self.state.dungeon_dice = self.roll_dungeon_dice(1)
+        print("\nRolling 1 Dungeon Die to populate the dungeon...")
+        initial_roll = self.dice_manager.roll_dungeon_dice(1)  # This returns a list
+        if not initial_roll:  # Safety check
+            print("Error: No dice were rolled!")
+            return
+            
+        die_result = initial_roll[0]  # Get the first (and only) die result
+        print(f"Rolled a {die_result}!")
         
-        # Reset dragon's lair
-        self.state.dragons_lair = []
+        # Handle the roll appropriately
+        if die_result == DungeonDiceFace.DRAGON.value:
+            self.state.dragons_lair.append(die_result)
+            print("The Dragon moves to the Dragon's Lair!")
+            self.state.dungeon_dice = []  # No dice in dungeon area
+        else:
+            self.state.dungeon_dice = [die_result]  # Place die in dungeon area
+        
+        # Display the result
+        if self.state.dungeon_dice:
+            print(f"Dungeon Area: {', '.join(self.state.dungeon_dice)}")
+        if self.state.dragons_lair:
+            print(f"Dragon's Lair: {len(self.state.dragons_lair)} Dragon(s)")
+            
+        # Reset dragon's lair if empty (for clarity)
+        if not self.state.dragons_lair:
+            self.state.dragons_lair = []
     
     def roll_party_dice(self, num_dice=7):
         """Roll the white party dice."""
-        party_faces = [face.value for face in PartyDiceFace]
-        return [random.choice(party_faces) for _ in range(num_dice)]
+        return self.dice_manager.roll_party_dice(num_dice)
     
     def roll_dungeon_dice(self, num_dice=1):
         """Roll the black dungeon dice, handling dragons specially."""
-        dungeon_faces = [face.value for face in DungeonDiceFace]
         result = []
         
-        for _ in range(num_dice):
-            face = random.choice(dungeon_faces)
-            if face == DungeonDiceFace.DRAGON.value:
+        # Roll the dice using the dice manager
+        new_dice = self.dice_manager.roll_dungeon_dice(num_dice)
+        
+        # Process each die
+        for die in new_dice:
+            if die == DungeonDiceFace.DRAGON.value:
                 # Dragon dice go to the Dragon's Lair
-                self.state.dragons_lair.append(face)
+                self.state.dragons_lair.append(die)
                 print("A Dragon appears! The die is moved to the Dragon's Lair.")
             else:
-                result.append(face)
+                result.append(die)
+                print(f"Rolled a {die}!")
         
         return result
     
@@ -478,7 +497,7 @@ class DungeonDiceGame:
         return total_remaining <= 0
     
     def loot_phase(self):
-        """Loot Phase: Open Chests or Quaff Potions (two actions)."""
+        """Loot Phase: Open Chests or Quaff Potions (up to two actions)."""
         clear_screen()
         self.state.current_phase = "Loot Phase"
         self.display_game_state()
@@ -499,22 +518,20 @@ class DungeonDiceGame:
         
         print(f"Available: {chests} chests, {potions} potions")
         
-        # Allow two actions
+        # Allow up to two actions
         actions_taken = 0
         while actions_taken < 2:
-            print(f"\nAction {actions_taken + 1}/2:")
-            
             if chests <= 0 and potions <= 0:
-                print("No chests or potions available.")
+                print("No more items available.")
                 break
                 
+            print(f"\nAction {actions_taken + 1}/2:")
             actions = []
             if chests > 0:
                 actions.append("Open Chest")
             if potions > 0:
                 actions.append("Quaff Potion")
-                
-            actions.append("Skip")
+            actions.append("End Loot Phase")  # Always provide option to end early
             
             for i, act in enumerate(actions):
                 print(f"{i+1}. {act}")
@@ -532,14 +549,13 @@ class DungeonDiceGame:
                         self.state.dungeon_dice.remove(DungeonDiceFace.CHEST.value)
                         actions_taken += 1
                     elif selected_action == "Quaff Potion":
-                        self.quaff_potion()
-                        potions -= 1
-                        # Remove a potion die from dungeon dice
-                        self.state.dungeon_dice.remove(DungeonDiceFace.POTION.value)
-                        actions_taken += 1
-                    else:  # Skip
-                        print("Action skipped.")
-                        actions_taken += 1
+                        if self.quaff_potion():  # Only count action if potion was successfully used
+                            potions -= 1
+                            # Remove a potion die from dungeon dice
+                            self.state.dungeon_dice.remove(DungeonDiceFace.POTION.value)
+                            actions_taken += 1
+                    else:  # End Loot Phase
+                        return  # Exit the phase immediately
                 else:
                     print("Invalid choice. Please try again.")
             except ValueError:

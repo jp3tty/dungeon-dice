@@ -28,4 +28,7 @@ class DiceManager:
     def roll_dungeon_dice(num_dice=1):
         """Roll the black dungeon dice."""
         dungeon_faces = [face.value for face in DungeonDiceFace]
-        return [random.choice(dungeon_faces) for _ in range(num_dice)] 
+        print(f"DEBUG: Available dungeon faces: {dungeon_faces}")  # Debug output
+        result = [random.choice(dungeon_faces) for _ in range(num_dice)]
+        print(f"DEBUG: Rolled: {result}")  # Debug output
+        return result 
