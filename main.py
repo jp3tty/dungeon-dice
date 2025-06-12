@@ -4,11 +4,13 @@ from game_state import GameState
 from phases import MonsterPhase, LootPhase
 from treasure import TreasureActions, TreasureType
 from hero import HeroRank, MinstrelBardHero, AlchemistThaumaturgeHero
+from dungeon_dice_game import clear_screen
 
 class DragonPhase:
     @staticmethod
     def execute(game_state, hero_card):
         """Execute the Dragon Phase."""
+        clear_screen()
         if len(game_state.dragons_lair) < 3:
             print("\n--- DRAGON PHASE ---")
             print("Not enough dragons to attract attention. Proceeding to Regroup Phase...")
@@ -45,6 +47,7 @@ class DragonPhase:
     @staticmethod
     def battle_dragon(game_state):
         """Battle the Dragon using companions and treasures."""
+        clear_screen()
         # Display current party state
         print("\nYour Active Party and Treasures:")
         companions = []
@@ -145,6 +148,7 @@ class RegroupPhase:
     @staticmethod
     def execute(game_state):
         """Execute the Regroup Phase."""
+        clear_screen()
         print("\n--- REGROUP PHASE ---")
         
         # Display current state
