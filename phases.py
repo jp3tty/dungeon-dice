@@ -1376,22 +1376,27 @@ class LootPhase:
                 print(f"{companion} moved to Graveyard.")
                 
                 # Open chests and gain treasure
-                MAX_TREASURE = 20  # Maximum treasure tokens in the game
                 for _ in range(num_chests):
                     # Remove chest from dungeon dice
                     game_state.dungeon_dice.remove(DungeonDiceFace.CHEST.value)
                     available_chests -= 1
                     
-                    # Check if treasure tokens are available
-                    if game_state.treasure_tokens < MAX_TREASURE:
-                        game_state.treasure_tokens += 1
-                        print("You found a Treasure token!")
+                    # Draw a treasure token
+                    treasure = game_state.treasure_manager.draw_treasure()
+                    if treasure:
+                        game_state.add_treasure(treasure)
+                        print(f"\nYou found: {treasure.name}")
+                        print(f"Effect: {treasure.get_description()}")
+                        
+                        # If it's a companion-type treasure, show it in the party section
+                        if treasure.can_use_as_companion():
+                            print(f"This treasure can be used as a {treasure.get_companion_type()} in your party!")
                     else:
+                        # If no treasure tokens remain, gain experience instead
                         game_state.experience_tokens += 1
-                        print("No Treasure tokens remain! You gain an Experience token instead.")
+                        print("\nNo Treasure tokens remain! You gain an Experience token instead.")
                 
-                print(f"\nTotal Treasure tokens: {game_state.treasure_tokens}")
-                print(f"Total Experience tokens: {game_state.experience_tokens}")
+                print(f"\nTotal Experience tokens: {game_state.experience_tokens}")
                 
                 return available_chests
             else:
