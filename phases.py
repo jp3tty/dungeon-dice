@@ -133,35 +133,77 @@ class MonsterPhase:
                               [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]]
                     MonsterPhase.print_state(game_state)
             elif choice == "B":
-                # First show companion options
+                # First show companion options with available dice and abilities
                 print("\nChoose companion type to use:")
-                print("1) Use a Champion (can defeat multiple monsters of same type)")
-                print("2) Use other companions (Fighters, Clerics, Mages, Thieves)")
-                print("3) Done using companions")
+                
+                # Check available party dice
+                dice_counts = {}
+                for die in game_state.party_dice:
+                    dice_counts[die] = dice_counts.get(die, 0) + 1
+                
+                # Show all available companions with counts and abilities
+                companion_options = []
+                
+                # Check each companion type
+                champion_count = dice_counts.get(PartyDiceFace.CHAMPION.value, 0)
+                fighter_count = dice_counts.get(PartyDiceFace.FIGHTER.value, 0)
+                cleric_count = dice_counts.get(PartyDiceFace.CLERIC.value, 0)
+                mage_count = dice_counts.get(PartyDiceFace.MAGE.value, 0)
+                thief_count = dice_counts.get(PartyDiceFace.THIEF.value, 0)
+                
+                if champion_count > 0:
+                    companion_options.append(f"1) Champion ({champion_count} available) - can defeat any single monster")
+                if fighter_count > 0:
+                    companion_options.append(f"{len(companion_options)+1}) Fighter ({fighter_count} available) - can defeat any number of Goblins")
+                if cleric_count > 0:
+                    companion_options.append(f"{len(companion_options)+1}) Cleric ({cleric_count} available) - can defeat any number of Skeletons")
+                if mage_count > 0:
+                    companion_options.append(f"{len(companion_options)+1}) Mage ({mage_count} available) - can defeat any number of Oozes")
+                if thief_count > 0:
+                    companion_options.append(f"{len(companion_options)+1}) Thief ({thief_count} available) - can defeat any single monster")
+                
+                # Display all available companions
+                for option in companion_options:
+                    print(option)
+                
+                # Add done option
+                print(f"{len(companion_options)+1}) Done using companions")
+                
                 sub_choice = input("Choose option (number): ").strip()
                 
-                if sub_choice == "1":
-                    MonsterPhase.use_champion(game_state, monsters, hero_card, True)  # Always pass specialty_active as True
-                elif sub_choice == "2":
-                    MonsterPhase.use_companions(game_state, monsters, hero_card, True)  # Always pass specialty_active as True
-                elif sub_choice == "3":
-                    # Check if we can defeat remaining monsters
-                    if monsters:
-                        if MonsterPhase.can_defeat_monsters(game_state, monsters, hero_card, True):  # Always pass specialty_active as True
-                            print("\nYour remaining party can defeat all monsters!")
-                            print("Automatically using companions to defeat monsters...")
-                            # Use companions to defeat remaining monsters
-                            MonsterPhase.use_companions_for_remaining_monsters(game_state, monsters, hero_card, True)  # Always pass specialty_active as True
-                            return True
+                try:
+                    choice_num = int(sub_choice)
+                    if choice_num == len(companion_options) + 1:  # Done option
+                        # Check if we can defeat remaining monsters
+                        if monsters:
+                            if MonsterPhase.can_defeat_monsters(game_state, monsters, hero_card, True):  # Always pass specialty_active as True
+                                print("\nYour remaining party can defeat all monsters!")
+                                print("Automatically using companions to defeat monsters...")
+                                # Use companions to defeat remaining monsters
+                                MonsterPhase.use_companions_for_remaining_monsters(game_state, monsters, hero_card, True)  # Always pass specialty_active as True
+                                return True
+                            else:
+                                print("\nYou must flee the Dungeon! The monsters are too powerful!")
+                                print("The delve is over immediately, and no experience (XP) is gained.")
+                                return False
                         else:
-                            print("\nYou must flee the Dungeon! The monsters are too powerful!")
-                            print("The delve is over immediately, and no experience (XP) is gained.")
-                            return False
+                            print("All monsters have been defeated!")
+                            return True
+                    elif 1 <= choice_num <= len(companion_options):
+                        # Determine which companion type was selected
+                        companion_index = choice_num - 1
+                        companion_option = companion_options[companion_index]
+                        
+                        # Extract companion type from the option text
+                        if "Champion" in companion_option:
+                            MonsterPhase.use_champion(game_state, monsters, hero_card, True)
+                        else:
+                            MonsterPhase.use_companions(game_state, monsters, hero_card, True)
                     else:
-                        print("All monsters have been defeated!")
-                        return True
-                else:
-                    print("Invalid choice. Please choose 1, 2, or 3.")
+                        print(f"Invalid choice. Please choose a number between 1 and {len(companion_options) + 1}.")
+                        continue
+                except ValueError:
+                    print("Invalid input. Please enter a number.")
                     continue
                 
                 # Update monster list
@@ -1384,19 +1426,32 @@ class LootPhase:
                     # Draw a treasure token
                     treasure = game_state.treasure_manager.draw_treasure()
                     if treasure:
-                        game_state.add_treasure(treasure)
-                        print(f"\nYou found: {treasure.name}")
-                        print(f"Effect: {treasure.get_description()}")
+                        game_state.player_treasure.add_treasure(treasure)
+                        game_state.treasure_tokens += 1  # Update display counter
+                        print("\n" + "="*50)
+                        print("💎 TREASURE FOUND! 💎".center(50))
+                        print("="*50)
+                        print(f"\n✨ {treasure.name} ✨")
+                        print(f"📜 Effect: {treasure.get_description()}")
                         
                         # If it's a companion-type treasure, show it in the party section
                         if treasure.can_use_as_companion():
-                            print(f"This treasure can be used as a {treasure.get_companion_type()} in your party!")
+                            print(f"\n🎯 This treasure can be used as a {treasure.get_companion_type()} in your party!")
+                        print("="*50)
                     else:
                         # If no treasure tokens remain, gain experience instead
                         game_state.experience_tokens += 1
-                        print("\nNo Treasure tokens remain! You gain an Experience token instead.")
+                        print("\n" + "="*50)
+                        print("💫 NO TREASURE REMAINS! 💫".center(50))
+                        print("="*50)
+                        print("\nYou gain an Experience token instead.")
+                        print("="*50)
                 
                 print(f"\nTotal Experience tokens: {game_state.experience_tokens}")
+                print(f"Total Treasure tokens: {game_state.treasure_tokens}")
+                print("\n" + "="*50)
+                print("🔄 REGROUP PHASE 🔄".center(50))
+                print("="*50)
                 
                 return available_chests
             else:
