@@ -16,7 +16,7 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
   - Clerics can defeat any number of Skeletons
   - Mages can defeat any number of Oozes
   - Thieves can defeat any single monster
-  - Champions can defeat any single monster
+  - Champions can defeat any number of a given monster type
   - Scrolls allow re-rolling of dice
 
 ### Heroes
