@@ -1450,7 +1450,15 @@ class LootPhase:
             
         print("\nSelect a Party die to use for quaffing Potions:")
         print(f"You can quaff up to {available_potions} Potions.")
-        print("Each Potion allows you to recover one die from the Graveyard.")
+        
+        # Check if Thaumaturge ultimate is available and can recover more dice
+        if (game_state.selected_hero_card.__class__.__name__ == "AlchemistThaumaturgeHero" and 
+            game_state.selected_hero_card.current_rank.value == "Master" and 
+            not game_state.selected_hero_card.is_exhausted):
+            print("Each Potion allows you to recover one die from the Graveyard.")
+            print("💫 Thaumaturge Ultimate Available: Can recover 2 dice with Transformation Potion!")
+        else:
+            print("Each Potion allows you to recover one die from the Graveyard.")
         
         # Show available party dice
         for i, die in enumerate(game_state.party_dice):
