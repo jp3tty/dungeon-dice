@@ -384,17 +384,11 @@ class MonsterPhase:
                 for i, monster_idx in enumerate(goblin_indices):
                     print(f"{i+1}. Goblin at position {monster_idx+1}")
                 
-                # Ask how many Goblins to defeat
-                while True:
-                    num_goblins = input(f"How many Goblins to defeat (1-{len(goblin_indices)})? ").strip()
-                    try:
-                        num_goblins = min(len(goblin_indices), max(1, int(num_goblins)))
-                        # If Bard's specialty is active, add 1 extra monster
-                        if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
-                            num_goblins = min(len(goblin_indices), num_goblins + 1)
-                        break
-                    except ValueError:
-                        print("Invalid input. Please enter a number.")
+                # Automatically defeat all Goblins
+                num_goblins = len(goblin_indices)
+                # If Bard's specialty is active, add 1 extra monster
+                if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
+                    num_goblins = min(len(goblin_indices), num_goblins + 1)
                 
                 # Remove Goblins (from highest index to lowest to avoid shifting issues)
                 goblins_defeated = 0
@@ -424,17 +418,11 @@ class MonsterPhase:
                 for i, monster_idx in enumerate(skeleton_indices):
                     print(f"{i+1}. Skeleton at position {monster_idx+1}")
                 
-                # Ask how many Skeletons to defeat
-                while True:
-                    num_skeletons = input(f"How many Skeletons to defeat (1-{len(skeleton_indices)})? ").strip()
-                    try:
-                        num_skeletons = min(len(skeleton_indices), max(1, int(num_skeletons)))
-                        # If Bard's specialty is active, add 1 extra monster
-                        if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
-                            num_skeletons = min(len(skeleton_indices), num_skeletons + 1)
-                        break
-                    except ValueError:
-                        print("Invalid input. Please enter a number.")
+                # Automatically defeat all Skeletons
+                num_skeletons = len(skeleton_indices)
+                # If Bard's specialty is active, add 1 extra monster
+                if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
+                    num_skeletons = min(len(skeleton_indices), num_skeletons + 1)
                 
                 # Remove Skeletons (from highest index to lowest to avoid shifting issues)
                 skeletons_defeated = 0
@@ -464,17 +452,11 @@ class MonsterPhase:
                 for i, monster_idx in enumerate(ooze_indices):
                     print(f"{i+1}. Ooze at position {monster_idx+1}")
                 
-                # Ask how many Oozes to defeat
-                while True:
-                    num_oozes = input(f"How many Oozes to defeat (1-{len(ooze_indices)})? ").strip()
-                    try:
-                        num_oozes = min(len(ooze_indices), max(1, int(num_oozes)))
-                        # If Bard's specialty is active, add 1 extra monster
-                        if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
-                            num_oozes = min(len(ooze_indices), num_oozes + 1)
-                        break
-                    except ValueError:
-                        print("Invalid input. Please enter a number.")
+                # Automatically defeat all Oozes
+                num_oozes = len(ooze_indices)
+                # If Bard's specialty is active, add 1 extra monster
+                if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
+                    num_oozes = min(len(ooze_indices), num_oozes + 1)
                 
                 # Remove Oozes (from highest index to lowest to avoid shifting issues)
                 oozes_defeated = 0
@@ -656,14 +638,8 @@ class MonsterPhase:
                             for i, monster_idx in enumerate(goblin_indices):
                                 print(f"{i+1}. Goblin at position {monster_idx+1}")
                             
-                            # Ask how many Goblins to defeat
-                            while True:
-                                num_goblins = input(f"How many Goblins to defeat (1-{len(goblin_indices)})? ").strip()
-                                try:
-                                    num_goblins = min(len(goblin_indices), max(1, int(num_goblins)))
-                                    break
-                                except ValueError:
-                                    print("Invalid input. Please enter a number.")
+                            # Automatically defeat all Goblins
+                            num_goblins = len(goblin_indices)
                             
                             # Use the companion
                             if source == "party":
@@ -764,14 +740,8 @@ class MonsterPhase:
                             for i, monster_idx in enumerate(skeleton_indices):
                                 print(f"{i+1}. Skeleton at position {monster_idx+1}")
                             
-                            # Ask how many Skeletons to defeat
-                            while True:
-                                num_skeletons = input(f"How many Skeletons to defeat (1-{len(skeleton_indices)})? ").strip()
-                                try:
-                                    num_skeletons = min(len(skeleton_indices), max(1, int(num_skeletons)))
-                                    break
-                                except ValueError:
-                                    print("Invalid input. Please enter a number.")
+                            # Automatically defeat all Skeletons
+                            num_skeletons = len(skeleton_indices)
                             
                             # Use the companion
                             if source == "party":
@@ -872,14 +842,8 @@ class MonsterPhase:
                             for i, monster_idx in enumerate(ooze_indices):
                                 print(f"{i+1}. Ooze at position {monster_idx+1}")
                             
-                            # Ask how many Oozes to defeat
-                            while True:
-                                num_oozes = input(f"How many Oozes to defeat (1-{len(ooze_indices)})? ").strip()
-                                try:
-                                    num_oozes = min(len(ooze_indices), max(1, int(num_oozes)))
-                                    break
-                                except ValueError:
-                                    print("Invalid input. Please enter a number.")
+                            # Automatically defeat all Oozes
+                            num_oozes = len(ooze_indices)
                             
                             # Use the companion
                             if source == "party":
@@ -1374,16 +1338,8 @@ class LootPhase:
                     max_chests = 1
                     print(f"This {companion} can open 1 Chest.")
                 
-                # Ask how many chests to open
-                if max_chests > 1:
-                    num_chests = input(f"How many Chests to open (1-{max_chests})? ").strip()
-                    try:
-                        num_chests = min(max_chests, max(1, int(num_chests)))
-                    except ValueError:
-                        print("Invalid input. Opening 1 Chest.")
-                        num_chests = 1
-                else:
-                    num_chests = 1
+                # Automatically open all available chests
+                num_chests = max_chests
                 
                 # Move companion to graveyard
                 game_state.use_party_die(idx)
@@ -1471,15 +1427,10 @@ class LootPhase:
             if choice_idx == len(game_state.party_dice):
                 return available_potions
             if 0 <= choice_idx < len(game_state.party_dice):
-                # Ask how many potions to quaff
+                # Automatically quaff all available potions
                 max_potions = min(available_potions, len(game_state.graveyard))
                 print(f"\nYou can recover up to {max_potions} dice from the Graveyard.")
-                num_potions = input(f"How many Potions to quaff (1-{max_potions})? ").strip()
-                try:
-                    num_potions = min(max_potions, max(1, int(num_potions)))
-                except ValueError:
-                    print("Invalid input. Quaffing 1 Potion.")
-                    num_potions = 1
+                num_potions = max_potions
                 
                 # Quaff potions
                 for i in range(num_potions):
