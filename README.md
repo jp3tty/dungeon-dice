@@ -23,9 +23,15 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
 - Start as a Novice hero with a unique specialty
 - Can be upgraded to Master rank by gaining experience
 - Have powerful ultimate abilities that can turn the tide of battle
-- Current Hero: Minstrel/Bard
-  - Specialty: Thieves may be used as Mages and Mages may be used as Thieves
-  - Ultimate: Discard all dice from the Dragon's Lair
+- Available Heroes:
+  - **Minstrel/Bard**
+    - Specialty: Thieves may be used as Mages and Mages may be used as Thieves
+    - Novice Ultimate: Discard all dice from the Dragon's Lair
+    - Master Ultimate: Discard all dice from the Dragon's Lair
+  - **Alchemist/Thaumaturge**
+    - Specialty: All Chests become Potions
+    - Novice Ultimate: Healing Salve - Roll 1 Party die from the Graveyard and add it to your Party
+    - Master Ultimate: Transformation Potion - Roll 2 dice from the Graveyard and add them to your Party
 
 ### Phases
 1. **Setup Phase**: Roll Party Dice and Dungeon Dice
