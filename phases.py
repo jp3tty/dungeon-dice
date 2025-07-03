@@ -1356,30 +1356,20 @@ class LootPhase:
                     if treasure:
                         game_state.player_treasure.add_treasure(treasure)
                         game_state.treasure_tokens += 1  # Update display counter
-                        print("\n" + "="*50)
-                        print("💎 TREASURE FOUND! 💎".center(50))
-                        print("="*50)
-                        print(f"\n✨ {treasure.name} ✨")
+                        print(f"\n💎 TREASURE FOUND: {treasure.name} 💎")
                         print(f"📜 Effect: {treasure.get_description()}")
                         
                         # If it's a companion-type treasure, show it in the party section
                         if treasure.can_use_as_companion():
-                            print(f"\n🎯 This treasure can be used as a {treasure.get_companion_type()} in your party!")
-                        print("="*50)
+                            print(f"🎯 This treasure can be used as a {treasure.get_companion_type()} in your party!")
                     else:
                         # If no treasure tokens remain, gain experience instead
                         game_state.experience_tokens += 1
-                        print("\n" + "="*50)
-                        print("💫 NO TREASURE REMAINS! 💫".center(50))
-                        print("="*50)
-                        print("\nYou gain an Experience token instead.")
-                        print("="*50)
+                        print(f"\n💫 NO TREASURE REMAINS! 💫")
+                        print("You gain an Experience token instead.")
                 
                 print(f"\nTotal Experience tokens: {game_state.experience_tokens}")
                 print(f"Total Treasure tokens: {game_state.treasure_tokens}")
-                print("\n" + "="*50)
-                print("🔄 REGROUP PHASE 🔄".center(50))
-                print("="*50)
                 
                 return available_chests
             else:
