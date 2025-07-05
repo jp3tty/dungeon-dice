@@ -741,7 +741,6 @@ class DungeonDiceGame:
             return self.retire_to_tavern()
         
         # Roll dungeon dice
-        print(f"\nRolling {dice_to_roll} Dungeon dice...")
         new_dice = self.roll_dungeon_dice(dice_to_roll)
         self.state.dungeon_dice.extend(new_dice)
         

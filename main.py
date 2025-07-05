@@ -310,7 +310,6 @@ class RegroupPhase:
             return RegroupPhase.retire_to_tavern(game_state, forced_retirement=False)
         
         # Roll dungeon dice
-        print(f"\nRolling {dice_to_roll} Dungeon dice...")
         game_state.dungeon_dice = []  # Clear previous dice
         
         dice_manager = DiceManager()
@@ -323,14 +322,6 @@ class RegroupPhase:
                 print("A Dragon appears! The die moves to the Dragon's Lair.")
             else:
                 game_state.dungeon_dice.append(die)
-        
-        # Display results
-        print("\nDungeon dice results:")
-        dice_counts = {}
-        for die in game_state.dungeon_dice:
-            dice_counts[die] = dice_counts.get(die, 0) + 1
-        for die_face, count in dice_counts.items():
-            print(f"- {die_face}: {count}")
         
         if game_state.dragons_lair:
             print(f"\nDragon's Lair now contains {len(game_state.dragons_lair)} dice!")
