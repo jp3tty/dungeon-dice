@@ -7,7 +7,7 @@ from dice import PartyDiceFace, DungeonDiceFace, DiceManager
 
 def clear_screen():
     """Clear the terminal screen using ANSI escape codes and newlines."""
-    print("\n" * 50)  # Print fewer newlines for better spacing
+    print("\n" * 3)  # Print just a few newlines for better spacing
     print("\033[2J\033[H", end="")  # ANSI escape sequence to clear screen and move cursor to top
     print("\n")  # Just one newline for padding
 
