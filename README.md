@@ -12,11 +12,11 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
 - You have 3 delves to gather treasure and experience
 - Each delve starts with 7 Party Dice and encounters based on the dungeon level
 - Party members can defeat specific monsters:
-  - Fighters can defeat any number of Goblins
-  - Clerics can defeat any number of Skeletons
-  - Mages can defeat any number of Oozes
+  - Fighters can defeat all of the Goblins
+  - Clerics can defeat all of the Skeletons
+  - Mages can defeat all of the Oozes
   - Thieves can defeat any single monster
-  - Champions can defeat any number of a given monster type
+  - Champions can defeat all of the monsters of a given type
   - Scrolls allow re-rolling of dice
 
 ### Heroes

@@ -363,9 +363,9 @@ class MonsterPhase:
         
         # Show monster type options
         print("\nChampion can defeat:")
-        print("1. Any number of Goblins")
-        print("2. Any number of Skeletons")
-        print("3. Any number of Oozes")
+        print("1. All of the Goblins")
+        print("2. All of the Skeletons")
+        print("3. All of the Oozes")
         
         choice = input("Choose which type of monsters to defeat (1-3): ").strip()
         
@@ -377,7 +377,7 @@ class MonsterPhase:
             # Handle Goblins
             goblin_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.GOBLIN.value]
             if goblin_indices:
-                print(f"\nChampion can defeat any number of Goblins!")
+                print(f"\nChampion can defeat all of the Goblins!")
                 if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
                     print("Bard's specialty: Champion can defeat 1 extra monster!")
                 print("Available Goblins:")
@@ -411,7 +411,7 @@ class MonsterPhase:
             # Handle Skeletons
             skeleton_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.SKELETON.value]
             if skeleton_indices:
-                print(f"\nChampion can defeat any number of Skeletons!")
+                print(f"\nChampion can defeat all of the Skeletons!")
                 if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
                     print("Bard's specialty: Champion can defeat 1 extra monster!")
                 print("Available Skeletons:")
@@ -445,7 +445,7 @@ class MonsterPhase:
             # Handle Oozes
             ooze_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.OOZE.value]
             if ooze_indices:
-                print(f"\nChampion can defeat any number of Oozes!")
+                print(f"\nChampion can defeat all of the Oozes!")
                 if specialty_active and hero_card.name == "Bard" and hero_card.current_rank == HeroRank.MASTER:
                     print("Bard's specialty: Champion can defeat 1 extra monster!")
                 print("Available Oozes:")
@@ -495,13 +495,13 @@ class MonsterPhase:
                 companions.append(("party", i, die))
                 # Add description based on companion type
                 if die == PartyDiceFace.CHAMPION.value:
-                    print(f"{len(companions)}. Party Die: {die} - can defeat any number of a given monster type")
+                    print(f"{len(companions)}. Party Die: {die} - can defeat all of the monsters of a given type")
                 elif die == PartyDiceFace.FIGHTER.value:
-                    print(f"{len(companions)}. Party Die: {die} - can defeat any number of Goblins")
+                    print(f"{len(companions)}. Party Die: {die} - can defeat all of the Goblins")
                 elif die == PartyDiceFace.CLERIC.value:
-                    print(f"{len(companions)}. Party Die: {die} - can defeat any number of Skeletons")
+                    print(f"{len(companions)}. Party Die: {die} - can defeat all of the Skeletons")
                 elif die == PartyDiceFace.MAGE.value:
-                    print(f"{len(companions)}. Party Die: {die} - can defeat any number of Oozes")
+                    print(f"{len(companions)}. Party Die: {die} - can defeat all of the Oozes")
                 elif die == PartyDiceFace.THIEF.value:
                     print(f"{len(companions)}. Party Die: {die} - can defeat any single monster")
                 else:
@@ -514,13 +514,13 @@ class MonsterPhase:
             companion_type = token.get_companion_type()
             # Add description based on companion type
             if companion_type == PartyDiceFace.CHAMPION.value:
-                print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}) - can defeat any number of a given monster type")
+                print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}) - can defeat all of the monsters of a given type")
             elif companion_type == PartyDiceFace.FIGHTER.value:
-                print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}) - can defeat any number of Goblins")
+                print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}) - can defeat all of the Goblins")
             elif companion_type == PartyDiceFace.CLERIC.value:
-                print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}) - can defeat any number of Skeletons")
+                print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}) - can defeat all of the Skeletons")
             elif companion_type == PartyDiceFace.MAGE.value:
-                print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}) - can defeat any number of Oozes")
+                print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}) - can defeat all of the Oozes")
             elif companion_type == PartyDiceFace.THIEF.value:
                 print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}) - can defeat any single monster")
             else:
@@ -573,7 +573,7 @@ class MonsterPhase:
                     print("\nFighter can defeat:")
                     print("1. One Skeleton")
                     print("2. One Ooze")
-                    print("3. Any number of Goblins")
+                    print("3. All of the Goblins")
                     
                     choice = input("Choose what to defeat (1-3): ").strip()
                     
@@ -633,7 +633,7 @@ class MonsterPhase:
                         # Count available Goblins
                         goblin_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.GOBLIN.value]
                         if goblin_indices:
-                            print(f"\nFighter can defeat any number of Goblins!")
+                            print(f"\nFighter can defeat all of the Goblins!")
                             print("Available Goblins:")
                             for i, monster_idx in enumerate(goblin_indices):
                                 print(f"{i+1}. Goblin at position {monster_idx+1}")
@@ -675,7 +675,7 @@ class MonsterPhase:
                     print("\nCleric can defeat:")
                     print("1. One Goblin")
                     print("2. One Ooze")
-                    print("3. Any number of Skeletons")
+                    print("3. All of the Skeletons")
                     
                     choice = input("Choose what to defeat (1-3): ").strip()
                     
@@ -735,7 +735,7 @@ class MonsterPhase:
                         # Count available Skeletons
                         skeleton_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.SKELETON.value]
                         if skeleton_indices:
-                            print(f"\nCleric can defeat any number of Skeletons!")
+                            print(f"\nCleric can defeat all of the Skeletons!")
                             print("Available Skeletons:")
                             for i, monster_idx in enumerate(skeleton_indices):
                                 print(f"{i+1}. Skeleton at position {monster_idx+1}")
@@ -777,7 +777,7 @@ class MonsterPhase:
                     print("\nMage can defeat:")
                     print("1. One Goblin")
                     print("2. One Skeleton")
-                    print("3. Any number of Oozes")
+                    print("3. All of the Oozes")
                     
                     choice = input("Choose what to defeat (1-3): ").strip()
                     
@@ -837,7 +837,7 @@ class MonsterPhase:
                         # Count available Oozes
                         ooze_indices = [i for i, m in enumerate(monsters) if m == DungeonDiceFace.OOZE.value]
                         if ooze_indices:
-                            print(f"\nMage can defeat any number of Oozes!")
+                            print(f"\nMage can defeat all of the Oozes!")
                             print("Available Oozes:")
                             for i, monster_idx in enumerate(ooze_indices):
                                 print(f"{i+1}. Ooze at position {monster_idx+1}")
@@ -1058,7 +1058,7 @@ class MonsterPhase:
         
         for idx in sorted(champion_indices, reverse=True):
             # Calculate how many monsters this champion can defeat
-            monsters_to_defeat = len(remaining_monsters)  # Champions can defeat any number of same-type monsters
+            monsters_to_defeat = len(remaining_monsters)  # Champions can defeat all of the same-type monsters
             
             # Move champion to graveyard
             game_state.use_party_die(idx)
@@ -1311,7 +1311,7 @@ class LootPhase:
             
         print("\nSelect a companion to open Chests:")
         print("Special Abilities:")
-        print("- Thieves and Champions can open any number of Chests")
+        print("- Thieves and Champions can open all of the Chests")
         print("- Other companions can open one Chest each")
         
         # Show available companions

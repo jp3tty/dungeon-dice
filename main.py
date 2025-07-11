@@ -374,11 +374,6 @@ class DungeonDiceGame:
             except ValueError:
                 print("Please enter a valid number")
         
-        print("\n🦸 Your Chosen Hero 🦸".center(50))
-        print("-"*50)
-        print(f"Name: {self.state.selected_hero_card.name}")
-        self.state.selected_hero_card.display_card_info()
-        
         # Initialize game state
         self.state.delve_count = 0
         self.state.level = 1

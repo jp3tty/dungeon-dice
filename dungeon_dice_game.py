@@ -179,11 +179,6 @@ class DungeonDiceGame:
             except ValueError:
                 print("Please enter a valid number")
         
-        print("\n🦸 Your Chosen Hero 🦸".center(50))
-        print("-"*50)
-        print(f"Name: {self.state.selected_hero_card.name}")
-        self.state.selected_hero_card.display_card_info()
-        
         self.state.delve_count = 0
         self.state.treasure_tokens = 0
         self.state.experience_tokens = 0
@@ -687,6 +682,8 @@ class DungeonDiceGame:
         self.state.current_phase = "Regroup Phase"
         self.display_game_state()
         print("\n--- REGROUP PHASE ---")
+        # Show number of dragon dice in the lair
+        print(f"🐉 Dragon Dice in Lair: {len(self.state.dragons_lair)}")
         
         # Check if level 10 was cleared
         if self.state.level == 10:
