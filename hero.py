@@ -122,17 +122,47 @@ class AlchemistThaumaturgeHero(HeroCard):
                 print("The Graveyard is empty!")
                 self.is_exhausted = False
                 return False
-                
+            
+            print(f"\nThe {self.name} can revive {dice_to_roll} companion(s) from the Graveyard.")
+            print("Available companions in the Graveyard:")
+            
+            # Count dice by type in graveyard
+            graveyard_counts = {}
+            for die in game_state.graveyard:
+                graveyard_counts[die] = graveyard_counts.get(die, 0) + 1
+            
+            # Display available companions
+            available_companions = []
+            for die_type, count in graveyard_counts.items():
+                for i in range(count):
+                    available_companions.append(die_type)
+                    print(f"{len(available_companions)}. {die_type}")
+            
             dice_rolled = []
-            for _ in range(min(dice_to_roll, len(game_state.graveyard))):
-                if game_state.graveyard:
-                    die = random.choice(game_state.graveyard)
-                    game_state.graveyard.remove(die)
-                    game_state.party_dice.append(die)
-                    dice_rolled.append(die)
+            for i in range(min(dice_to_roll, len(available_companions))):
+                print(f"\nSelect companion {i+1}/{min(dice_to_roll, len(available_companions))} to revive:")
+                try:
+                    choice = int(input("Choose companion (number): ").strip())
+                    if 1 <= choice <= len(available_companions):
+                        selected_die = available_companions[choice - 1]
+                        # Remove the selected die from graveyard
+                        game_state.graveyard.remove(selected_die)
+                        # Add to party
+                        game_state.party_dice.append(selected_die)
+                        dice_rolled.append(selected_die)
+                        print(f"Revived {selected_die}!")
+                        # Update available companions list
+                        available_companions.pop(choice - 1)
+                    else:
+                        print("Invalid choice. Skipping this revival.")
+                except ValueError:
+                    print("Invalid input. Skipping this revival.")
             
             if dice_rolled:
-                print(f"The {self.name} revives {len(dice_rolled)} die/dice: {', '.join(dice_rolled)}")
+                print(f"\nThe {self.name} successfully revived {len(dice_rolled)} companion(s): {', '.join(dice_rolled)}")
                 return True
-            return False
+            else:
+                print("No companions were revived.")
+                self.is_exhausted = False
+                return False
         return False 

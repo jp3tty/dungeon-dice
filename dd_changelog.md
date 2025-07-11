@@ -14,6 +14,14 @@
   - Changed "Any number of" to "All of the" for companion abilities in monster combat
   - Affects Champions, Fighters, Clerics, and Mages descriptions and combat messages
   - Updated both `phases.py` and `README.md` to reflect new terminology
+- Fixed Dragon Phase trigger condition (2024-12-19 17:30)
+  - Changed Dragon Phase trigger from requiring 3+ dragons to requiring 1+ dragon
+  - Fixed inconsistent behavior where Dragon Phase would skip when dragons were present
+  - Updated message from "Not enough dragons to attract attention" to "No dragons in the lair"
+- Fixed Alchemist/Thaumaturge ultimate ability (2024-12-19 18:00)
+  - Changed from random selection to player choice for revived companions
+  - Now allows player to select which companions to revive from graveyard
+  - Added proper interaction for both Novice (1 die) and Master (2 dice) abilities
 
 ### Technical Details
 - Modified `dungeon_dice_game.py`: Added dragon count display in regroup_phase() (2024-12-19 14:30)
@@ -21,10 +29,13 @@
 - Modified `dungeon_dice_game.py`: Removed hero display after selection (2024-12-19 15:15)
 - Modified `phases.py`: Updated all combat descriptions and messages (2024-12-19 16:45)
 - Modified `README.md`: Updated game rules documentation (2024-12-19 16:45)
+- Modified `main.py`: Fixed Dragon Phase trigger condition in DragonPhase.execute() (2024-12-19 17:30)
+- Modified `hero.py`: Fixed AlchemistThaumaturgeHero.use_ultimate() to allow player choice (2024-12-19 18:00)
 
 ### Files Changed
 - `dungeon_dice_game.py`
 - `main.py`
 - `phases.py`
 - `README.md`
+- `hero.py`
 - `dd_changelog.md` (new file - 2024-12-19 17:00) 

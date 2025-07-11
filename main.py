@@ -11,9 +11,9 @@ class DragonPhase:
     def execute(game_state, hero_card):
         """Execute the Dragon Phase."""
         clear_screen()
-        if len(game_state.dragons_lair) < 3:
+        if len(game_state.dragons_lair) < 1:
             print("\n--- DRAGON PHASE ---")
-            print("Not enough dragons to attract attention. Proceeding to Regroup Phase...")
+            print("No dragons in the lair. Proceeding to Regroup Phase...")
             return True
             
         print("\n--- DRAGON PHASE ---")
