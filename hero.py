@@ -53,6 +53,14 @@ class HeroCard:
             print(f"{self.name}'s ultimate ability is exhausted!")
             return False
     
+    def apply_formation_specialty(self, game_state):
+        """Apply hero's specialty during party formation. Override in subclasses."""
+        return False
+    
+    def apply_end_game_specialty(self, game_state):
+        """Apply hero's specialty at game end. Override in subclasses."""
+        return False
+    
     def refresh(self):
         """Refresh the hero card"""
         if self.is_exhausted:
@@ -166,3 +174,134 @@ class AlchemistThaumaturgeHero(HeroCard):
                 self.is_exhausted = False
                 return False
         return False 
+
+class ArchaeologistTombRaiderHero(HeroCard):
+    def __init__(self):
+        super().__init__(
+            novice_name="Archaeologist",
+            master_name="Tomb Raider",
+            novice_specialty="When Forming the Party, draw 2 Treasure Tokens. Discard 6 Treasure Tokens at game end.",
+            master_specialty="When Forming the Party, draw 2 Treasure Tokens. Discard 6 Treasure Tokens at game end.",
+            novice_ultimate="Treasure Seeker: Draw 2 Treasure Tokens from the Treasure Pool and then discard 2 Treasure Tokens.",
+            master_ultimate="Treasure Seeker: Draw 2 Treasure Tokens from the Treasure Pool and then discard 1 Treasure Token.",
+            xp_to_master=5
+        )
+    
+    def use_ultimate(self, game_state):
+        """Draw treasure tokens and then discard some based on rank"""
+        if super().use_ultimate(game_state):
+            tokens_to_discard = 2 if self.current_rank == HeroRank.NOVICE else 1
+            
+            print(f"\nThe {self.name} uses Treasure Seeker ability!")
+            print(f"Drawing 2 Treasure Tokens from the Treasure Pool...")
+            
+            # Draw 2 treasure tokens from the pool
+            drawn_tokens = []
+            for i in range(2):
+                token = game_state.treasure_manager.draw_treasure()
+                if token:
+                    game_state.player_treasure.add_treasure(token)
+                    game_state.treasure_tokens += 1
+                    drawn_tokens.append(token)
+                    print(f"Drew: {token.name}")
+                else:
+                    print("No more treasure tokens in the pool!")
+                    break
+            
+            if drawn_tokens:
+                print(f"\nNow discarding {tokens_to_discard} Treasure Token(s)...")
+                
+                # Let player choose which tokens to discard
+                available_treasures = game_state.get_available_treasures()
+                if len(available_treasures) >= tokens_to_discard:
+                    print("\nChoose which treasures to discard:")
+                    for i, treasure in enumerate(available_treasures):
+                        print(f"{i+1}. {treasure.name}")
+                    
+                    discarded_count = 0
+                    while discarded_count < tokens_to_discard:
+                        try:
+                            choice = int(input(f"Choose treasure {discarded_count + 1} to discard (number): ").strip())
+                            if 1 <= choice <= len(available_treasures):
+                                # Use the treasure (which returns it to the pool)
+                                game_state.use_treasure(choice - 1)
+                                discarded_count += 1
+                                print(f"Discarded: {available_treasures[choice - 1].name}")
+                            else:
+                                print("Invalid choice. Please try again.")
+                        except ValueError:
+                            print("Invalid input. Please enter a number.")
+                    
+                    print(f"\nSuccessfully drew {len(drawn_tokens)} treasure(s) and discarded {tokens_to_discard} treasure(s)!")
+                    return True
+                else:
+                    print(f"Not enough treasures to discard {tokens_to_discard} tokens!")
+                    self.is_exhausted = False  # Don't exhaust if we can't complete the action
+                    return False
+            else:
+                print("No treasures were drawn!")
+                self.is_exhausted = False  # Don't exhaust if no treasures were drawn
+                return False
+        return False
+    
+    def apply_formation_specialty(self, game_state):
+        """Apply Archaeologist/Tomb Raider specialty: Draw 2 Treasure Tokens during party formation."""
+        print(f"\n✨ {self.name}'s Specialty: Drawing 2 Treasure Tokens during party formation! ✨")
+        
+        drawn_tokens = []
+        for i in range(2):
+            token = game_state.treasure_manager.draw_treasure()
+            if token:
+                game_state.player_treasure.add_treasure(token)
+                game_state.treasure_tokens += 1
+                drawn_tokens.append(token)
+                print(f"Drew: {token.name}")
+            else:
+                print("No more treasure tokens in the pool!")
+                break
+        
+        if drawn_tokens:
+            print(f"Successfully drew {len(drawn_tokens)} treasure token(s) during party formation!")
+            return True
+        else:
+            print("No treasures were drawn during party formation.")
+            return False
+    
+    def apply_end_game_specialty(self, game_state):
+        """Apply Archaeologist/Tomb Raider specialty: Discard 6 Treasure Tokens at game end."""
+        print(f"\n✨ {self.name}'s End-Game Specialty: Discarding 6 Treasure Tokens! ✨")
+        
+        available_treasures = game_state.get_available_treasures()
+        if len(available_treasures) < 6:
+            print(f"Not enough treasures to discard! You have {len(available_treasures)} treasures but need to discard 6.")
+            print("All remaining treasures will be discarded.")
+            tokens_to_discard = len(available_treasures)
+        else:
+            tokens_to_discard = 6
+        
+        if tokens_to_discard > 0:
+            print(f"\nChoose which {tokens_to_discard} treasure(s) to discard:")
+            for i, treasure in enumerate(available_treasures):
+                print(f"{i+1}. {treasure.name}")
+            
+            discarded_count = 0
+            while discarded_count < tokens_to_discard and available_treasures:
+                try:
+                    choice = int(input(f"Choose treasure {discarded_count + 1} to discard (number): ").strip())
+                    if 1 <= choice <= len(available_treasures):
+                        # Use the treasure (which returns it to the pool)
+                        game_state.use_treasure(choice - 1)
+                        discarded_count += 1
+                        print(f"Discarded: {available_treasures[choice - 1].name}")
+                        # Update available treasures list
+                        available_treasures = game_state.get_available_treasures()
+                    else:
+                        print("Invalid choice. Please try again.")
+                except ValueError:
+                    print("Invalid input. Please enter a number.")
+            
+            print(f"\nSuccessfully discarded {discarded_count} treasure token(s) at game end!")
+            return True
+        else:
+            print("No treasures to discard.")
+            return False 

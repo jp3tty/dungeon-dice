@@ -3,7 +3,7 @@ from dice import PartyDiceFace, DungeonDiceFace, DiceManager
 from game_state import GameState
 from phases import MonsterPhase, LootPhase
 from treasure import TreasureActions, TreasureType
-from hero import HeroRank, MinstrelBardHero, AlchemistThaumaturgeHero
+from hero import HeroRank, MinstrelBardHero, AlchemistThaumaturgeHero, ArchaeologistTombRaiderHero
 from dungeon_dice_game import clear_screen
 
 class DragonPhase:
@@ -353,8 +353,9 @@ class DungeonDiceGame:
         print("and become a legendary hero!\n")
         
         # Choose a hero card
+        available_heroes = [MinstrelBardHero(), AlchemistThaumaturgeHero(), ArchaeologistTombRaiderHero()]
         print("Available Heroes:")
-        for i, hero in enumerate([MinstrelBardHero(), AlchemistThaumaturgeHero()], 1):
+        for i, hero in enumerate(available_heroes, 1):
             print(f"\n{i}) {hero.novice_name}/{hero.master_name}")
             print(f"   Specialty: {hero.novice_specialty}")
             print(f"   Novice Ability: {hero.novice_ultimate}")
@@ -363,14 +364,11 @@ class DungeonDiceGame:
         while True:
             try:
                 choice = int(input("\nChoose your hero (number): ").strip())
-                if choice == 1:
-                    self.state.selected_hero_card = MinstrelBardHero()
-                    break
-                elif choice == 2:
-                    self.state.selected_hero_card = AlchemistThaumaturgeHero()
+                if 1 <= choice <= len(available_heroes):
+                    self.state.selected_hero_card = available_heroes[choice - 1]
                     break
                 else:
-                    print("Please enter either 1 or 2")
+                    print(f"Please enter a number between 1 and {len(available_heroes)}")
             except ValueError:
                 print("Please enter a valid number")
         
@@ -411,6 +409,10 @@ class DungeonDiceGame:
         print("\n" + "="*40)
         print("GAME OVER - FINAL SCORING")
         print("="*40)
+        
+        # Apply hero's end-game specialty
+        if self.state.selected_hero_card:
+            self.state.selected_hero_card.apply_end_game_specialty(self.state)
         
         # Display hero final state
         print(f"\nFinal Hero State:")
@@ -502,15 +504,19 @@ class DungeonDiceGame:
         # Reset graveyard
         self.state.graveyard = []
         
-        # Step 2: Refresh Hero Card if exhausted
+        # Step 2: Apply hero's formation specialty
+        if self.state.selected_hero_card:
+            self.state.selected_hero_card.apply_formation_specialty(self.state)
+        
+        # Step 3: Refresh Hero Card if exhausted
         if self.state.selected_hero_card and self.state.selected_hero_card.is_exhausted:
             self.state.selected_hero_card.refresh()
         
-        # Step 3: Set Level Die to 1
+        # Step 4: Set Level Die to 1
         self.state.level = 1
         print("Dungeon Level set to 1")
         
-        # Step 4: Roll 1 Dungeon Die to populate the dungeon
+        # Step 5: Roll 1 Dungeon Die to populate the dungeon
         print("Rolling 1 Dungeon Die to populate the dungeon...")
         self.state.dungeon_dice = self.roll_dungeon_dice(1)
         

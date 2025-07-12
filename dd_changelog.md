@@ -3,6 +3,17 @@
 ## [Unreleased] - 2024-12-19
 
 ### Added
+- **New Hero: Archaeologist/Tomb Raider** (2024-12-19 19:00)
+  - Added ArchaeologistTombRaiderHero class with formation and end-game specialties
+  - **Formation Specialty**: Draw 2 Treasure Tokens when forming the party
+  - **End-Game Specialty**: Discard 6 Treasure Tokens at game end
+  - **Novice Ultimate**: Treasure Seeker - Draw 2 Treasure Tokens, then discard 2
+  - **Master Ultimate**: Treasure Seeker - Draw 2 Treasure Tokens, then discard 1
+  - Integrated with existing treasure pool system for seamless gameplay
+- Flexible hero specialty system for future heroes (2024-12-19 19:00)
+  - Added `apply_formation_specialty()` and `apply_end_game_specialty()` methods to base HeroCard class
+  - System supports heroes with party formation and end-game mechanics
+  - Easy to extend for future heroes with similar specialty requirements
 - Dragon die count display in Regroup Phase (2024-12-19 14:30)
   - Added "🐉 Dragon Dice in Lair: X" message to show number of dragon dice present during regroup decisions
 
@@ -24,6 +35,10 @@
   - Added proper interaction for both Novice (1 die) and Master (2 dice) abilities
 
 ### Technical Details
+- Modified `hero.py`: Added ArchaeologistTombRaiderHero class with specialty methods (2024-12-19 19:00)
+- Modified `main.py`: Added hero to available heroes list and integrated specialty system (2024-12-19 19:00)
+- Modified `dungeon_dice_game.py`: Added hero to available heroes list and integrated specialty system (2024-12-19 19:00)
+- Modified `hero.py`: Added flexible specialty system methods to base HeroCard class (2024-12-19 19:00)
 - Modified `dungeon_dice_game.py`: Added dragon count display in regroup_phase() (2024-12-19 14:30)
 - Modified `main.py`: Removed hero display after selection (2024-12-19 15:15)
 - Modified `dungeon_dice_game.py`: Removed hero display after selection (2024-12-19 15:15)
@@ -33,9 +48,9 @@
 - Modified `hero.py`: Fixed AlchemistThaumaturgeHero.use_ultimate() to allow player choice (2024-12-19 18:00)
 
 ### Files Changed
-- `dungeon_dice_game.py`
+- `hero.py`
 - `main.py`
+- `dungeon_dice_game.py`
 - `phases.py`
 - `README.md`
-- `hero.py`
 - `dd_changelog.md` (new file - 2024-12-19 17:00) 

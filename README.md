@@ -32,6 +32,10 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
     - Specialty: All Chests become Potions
     - Novice Ultimate: Healing Salve - Roll 1 Party die from the Graveyard and add it to your Party
     - Master Ultimate: Transformation Potion - Roll 2 dice from the Graveyard and add them to your Party
+  - **Archaeologist/Tomb Raider**
+    - Specialty: When Forming the Party, draw 2 Treasure Tokens. Discard 6 Treasure Tokens at game end.
+    - Novice Ultimate: Treasure Seeker - Draw 2 Treasure Tokens, then discard 2
+    - Master Ultimate: Treasure Seeker - Draw 2 Treasure Tokens, then discard 1
 
 ### Phases
 1. **Setup Phase**: Roll Party Dice and Dungeon Dice

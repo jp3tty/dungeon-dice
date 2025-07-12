@@ -2,7 +2,7 @@ import random
 import os
 import time
 from enum import Enum
-from hero import HeroRank, MinstrelBardHero, AlchemistThaumaturgeHero
+from hero import HeroRank, MinstrelBardHero, AlchemistThaumaturgeHero, ArchaeologistTombRaiderHero
 from dice import PartyDiceFace, DungeonDiceFace, DiceManager
 
 def clear_screen():
@@ -147,7 +147,7 @@ class DungeonDiceGame:
         
     def initialize_hero_cards(self):
         """Initialize available hero cards"""
-        return [MinstrelBardHero(), AlchemistThaumaturgeHero()]
+        return [MinstrelBardHero(), AlchemistThaumaturgeHero(), ArchaeologistTombRaiderHero()]
         
     def start_game(self):
         """Start a new game with 3 delves."""
@@ -248,7 +248,11 @@ class DungeonDiceGame:
         # Reset graveyard
         self.state.graveyard = []
         
-        # Step 2: Refresh Hero Card if exhausted
+        # Step 2: Apply hero's formation specialty
+        if self.state.selected_hero_card:
+            self.state.selected_hero_card.apply_formation_specialty(self.state)
+        
+        # Step 3: Refresh Hero Card if exhausted
         if self.state.selected_hero_card and self.state.selected_hero_card.is_exhausted:
             self.state.selected_hero_card.refresh()
         
@@ -771,6 +775,10 @@ class DungeonDiceGame:
         print("\n" + "="*40)
         print("GAME OVER - FINAL SCORING")
         print("="*40)
+        
+        # Apply hero's end-game specialty
+        if self.state.selected_hero_card:
+            self.state.selected_hero_card.apply_end_game_specialty(self.state)
         
         # Display hero final state
         print("\n" + "="*50)
