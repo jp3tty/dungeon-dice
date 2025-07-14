@@ -47,8 +47,9 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
 ### Dragon Phase Mechanics
 - **Triggers when 3+ dragon dice** are in the Dragon's Lair
 - **Requires exactly 3 different companion types** to battle the dragon
-- **Manual companion selection** - choose which companions to use
+- **Manual companion selection** - choose which companions to use (Scrolls are not companions)
 - **Treasure integration** - treasure tokens can be used as companions
+- **Scroll usage** - can use Scrolls to re-roll dice before dragon battle
 - **Deterministic success** when 3 different types are selected
 - **Strategic gameplay** - must carefully choose companion combination
 - **Rewards**: 1 treasure token + 1 experience token + 1 drawn treasure

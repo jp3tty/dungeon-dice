@@ -45,6 +45,11 @@
   - **Proper treasure integration** - treasure tokens can be used as companions
   - **Consistent reward structure** (1 treasure + 1 experience + 1 drawn treasure)
   - Removed random chance-based system in favor of strategic companion selection
+- **Fixed Scroll mechanics in Dragon Phase** (2024-12-19 21:00)
+  - **Scrolls are no longer considered companions** for dragon battles
+  - **Added Scroll usage during dragon battle** - can re-roll dice before combat
+  - **Strategic depth** - players can improve party composition before dragon battle
+  - **Clear messaging** - players understand Scrolls are utility items, not combat companions
 - **Fixed treasure token display** (2024-12-19 20:00)
   - Treasure tokens now properly displayed in "Active Party Dice" section during Monster Phase
   - Treasure companions integrated into party dice counts
