@@ -45,6 +45,7 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
 5. **Regroup Phase**: Choose to continue delving or retire to safety
 
 ### Dragon Phase Mechanics
+- **Triggers when 3+ dragon dice** are in the Dragon's Lair
 - **Requires exactly 3 different companion types** to battle the dragon
 - **Manual companion selection** - choose which companions to use
 - **Treasure integration** - treasure tokens can be used as companions

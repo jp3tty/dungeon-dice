@@ -33,6 +33,10 @@
   - Changed Dragon Phase trigger from requiring 3+ dragons to requiring 1+ dragon
   - Fixed inconsistent behavior where Dragon Phase would skip when dragons were present
   - Updated message from "Not enough dragons to attract attention" to "No dragons in the lair"
+- **Updated Dragon Phase trigger condition** (2024-12-19 20:30)
+  - Changed Dragon Phase trigger back to requiring 3+ dragons for more strategic gameplay
+  - Updated message to "Not enough dragons in the lair to attract attention"
+  - Creates more tension and strategic decision-making before Dragon Phase begins
 - **Fixed Dragon Phase mechanics** (2024-12-19 20:00)
   - Consolidated to single Dragon Phase implementation with proper mechanics
   - **Requires exactly 3 different companion types** to battle the dragon
