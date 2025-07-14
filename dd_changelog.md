@@ -16,6 +16,11 @@
   - Easy to extend for future heroes with similar specialty requirements
 - Dragon die count display in Regroup Phase (2024-12-19 14:30)
   - Added "🐉 Dragon Dice in Lair: X" message to show number of dragon dice present during regroup decisions
+- **Enhanced Regroup Phase display** (2024-12-19 21:30)
+  - Added dragon dice count display in Regroup Phase for better threat assessment
+  - Added collected treasure items list with descriptions for strategic planning
+  - Improved organization with grouped resource sections
+  - Enhanced readability with consistent formatting and bullet points
 - **Modular Dragon Phase** (2024-12-19 20:00)
   - Separated Dragon Phase mechanics into dedicated `dragon_phase.py` module
   - Improved code organization and maintainability

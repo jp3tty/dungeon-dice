@@ -43,6 +43,9 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
 3. **Loot Phase**: Open chests and use potions
 4. **Dragon Phase**: Deal with any dragons in the Dragon's Lair
 5. **Regroup Phase**: Choose to continue delving or retire to safety
+   - Displays dragon dice count for threat assessment
+   - Shows collected treasure items with descriptions
+   - Provides complete resource overview for strategic decisions
 
 ### Dragon Phase Mechanics
 - **Triggers when 3+ dragon dice** are in the Dragon's Lair

@@ -67,8 +67,19 @@ class RegroupPhase:
         print(f"Total Chests: {dungeon_counts.get('Chest', 0)}")
         print(f"Total Potions: {dungeon_counts.get('Potion', 0)}")
         
-        print(f"\nTreasure Tokens: {game_state.treasure_tokens}")
-        print(f"Experience Tokens: {game_state.experience_tokens}")
+        print(f"\n🐉 Dragon's Lair: {len(game_state.dragons_lair)} dragon dice")
+        
+        print(f"\n💎 Collected Treasures:")
+        treasures = game_state.get_available_treasures()
+        if treasures:
+            for treasure in treasures:
+                print(f"  ▫️ {treasure.name} - {treasure.get_description()}")
+        else:
+            print("  ▫️ None")
+        
+        print(f"\n📊 Resources:")
+        print(f"  ▫️ Treasure Tokens: {game_state.treasure_tokens}")
+        print(f"  ▫️ Experience Tokens: {game_state.experience_tokens}")
         
         print(f"\nCurrent Level: {game_state.level}\n")
         
