@@ -16,6 +16,10 @@
   - Easy to extend for future heroes with similar specialty requirements
 - Dragon die count display in Regroup Phase (2024-12-19 14:30)
   - Added "🐉 Dragon Dice in Lair: X" message to show number of dragon dice present during regroup decisions
+- **Modular Dragon Phase** (2024-12-19 20:00)
+  - Separated Dragon Phase mechanics into dedicated `dragon_phase.py` module
+  - Improved code organization and maintainability
+  - Eliminated duplicate Dragon Phase implementations
 
 ### Changed
 - Removed redundant hero display after selection (2024-12-19 15:15)
@@ -29,6 +33,18 @@
   - Changed Dragon Phase trigger from requiring 3+ dragons to requiring 1+ dragon
   - Fixed inconsistent behavior where Dragon Phase would skip when dragons were present
   - Updated message from "Not enough dragons to attract attention" to "No dragons in the lair"
+- **Fixed Dragon Phase mechanics** (2024-12-19 20:00)
+  - Consolidated to single Dragon Phase implementation with proper mechanics
+  - **Requires exactly 3 different companion types** to battle the dragon
+  - **Manual companion selection** including treasure companions
+  - **Deterministic success** when 3 different types are selected
+  - **Proper treasure integration** - treasure tokens can be used as companions
+  - **Consistent reward structure** (1 treasure + 1 experience + 1 drawn treasure)
+  - Removed random chance-based system in favor of strategic companion selection
+- **Fixed treasure token display** (2024-12-19 20:00)
+  - Treasure tokens now properly displayed in "Active Party Dice" section during Monster Phase
+  - Treasure companions integrated into party dice counts
+  - Eliminated separate "Treasure Companions" section for cleaner display
 - Fixed Alchemist/Thaumaturge ultimate ability (2024-12-19 18:00)
   - Changed from random selection to player choice for revived companions
   - Now allows player to select which companions to revive from graveyard

@@ -612,73 +612,14 @@ class DungeonDiceGame:
     
     def dragon_phase(self):
         """Dragon Phase: Occurs if Dragon is attracted to the dungeon."""
+        # This method is now a placeholder - Dragon Phase is handled in main.py
+        # The actual Dragon Phase mechanics are implemented in main.py DragonPhase class
         if not self.state.dragons_lair:
             return True
             
-        clear_screen()
-        self.state.current_phase = "Dragon Phase"
-        self.display_game_state()
-        print("\n--- DRAGON PHASE ---")
-        
-        dragon_count = len(self.state.dragons_lair)
-        print(f"There {'is' if dragon_count == 1 else 'are'} {dragon_count} dragon{'s' if dragon_count > 1 else ''} in the Dragon's Lair!")
-        
-        # Option to use Minstrel/Bard ultimate ability
-        if not self.state.selected_hero_card.is_exhausted:
-            use_ultimate = input(f"Use {self.state.selected_hero_card.name}'s ultimate ability to clear dragons? (y/n): ").lower().strip()
-            if use_ultimate == 'y':
-                self.state.selected_hero_card.use_ultimate(self.state)
-                # If dragons are cleared, no need to continue with this phase
-                if not self.state.dragons_lair:
-                    return True
-        
-        # Need at least 3 different hero types to challenge a dragon
-        unique_heroes = set(self.state.party_dice)
-        unique_hero_count = len(unique_heroes)
-        
-        print(f"Your party has {unique_hero_count} different hero types.")
-        
-        if unique_hero_count >= 3:
-            print("Your diverse party can challenge the dragon!")
-            
-            fight_dragon = input("Do you wish to fight the dragon? (y/n): ").lower().strip()
-            if fight_dragon == 'y':
-                # Success chance depends on party composition
-                success_chance = min(0.8, 0.5 + (unique_hero_count - 3) * 0.1)
-                
-                if random.random() < success_chance:
-                    print("Victory! Your party defeats the dragon!")
-                    
-                    # Rewards based on dragon count
-                    treasure_reward = dragon_count * 3
-                    exp_reward = dragon_count * 2
-                    
-                    self.state.treasure_tokens += treasure_reward
-                    self.state.experience_tokens += exp_reward
-                    
-                    print(f"You gain {treasure_reward} treasure tokens and {exp_reward} experience tokens!")
-                    
-                    # Check for hero level-up
-                    if (self.state.selected_hero_card.current_rank == HeroRank.NOVICE and 
-                        self.state.experience_tokens >= self.state.selected_hero_card.xp_to_master):
-                        self.state.selected_hero_card.check_level_up(self.state.experience_tokens)
-                    
-                    # Clear dragon's lair
-                    self.state.dragons_lair = []
-                    
-                    return True
-                else:
-                    print("The dragon is too powerful! Your party fails.")
-                    # Option to end delve or continue without beating dragon
-                    continue_delve = input("Continue delving without defeating the dragon? (y/n): ").lower().strip()
-                    return continue_delve == 'y'
-            else:
-                print("You choose not to face the dragon for now.")
-                return True
-        else:
-            print("Your party lacks the diversity needed to challenge the dragon.")
-            print("You need at least 3 different hero types.")
-            return True
+        # Import and use the DragonPhase from dragon_phase.py
+        from dragon_phase import DragonPhase
+        return DragonPhase.execute(self.state, self.state.selected_hero_card)
     
     def regroup_phase(self):
         """Regroup Phase: Make decisions after the delve."""

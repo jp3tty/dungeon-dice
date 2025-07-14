@@ -44,6 +44,14 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
 4. **Dragon Phase**: Deal with any dragons in the Dragon's Lair
 5. **Regroup Phase**: Choose to continue delving or retire to safety
 
+### Dragon Phase Mechanics
+- **Requires exactly 3 different companion types** to battle the dragon
+- **Manual companion selection** - choose which companions to use
+- **Treasure integration** - treasure tokens can be used as companions
+- **Deterministic success** when 3 different types are selected
+- **Strategic gameplay** - must carefully choose companion combination
+- **Rewards**: 1 treasure token + 1 experience token + 1 drawn treasure
+
 ### Progression
 - Gain experience by defeating monsters
 - Collect treasure from chests
@@ -57,6 +65,7 @@ dungeon-dice/
 ├── main.py                 # Main game entry point
 ├── dungeon_dice_game.py    # Core game logic and flow
 ├── phases.py              # Implementation of game phases
+├── dragon_phase.py        # Dragon Phase mechanics
 ├── game_state.py         # Game state management
 ├── hero.py               # Hero classes and abilities
 ├── dice.py               # Dice mechanics and faces
@@ -66,11 +75,12 @@ dungeon-dice/
 ### File Descriptions
 - `main.py`: Entry point for the game, handles game initialization and main loop
 - `dungeon_dice_game.py`: Core game mechanics and overall game flow
-- `phases.py`: Implements the different game phases (Monster, Loot, Dragon, etc.)
-- `game_state.py`: Manages the game state, including party dice, dungeon dice, and resources
-- `hero.py`: Defines hero classes, their abilities, and progression system
-- `dice.py`: Implements dice mechanics, including different die faces and rolling logic
-- `treasure.py`: Handles treasure system, including different types of treasure and their effects
+- `phases.py`: Implementation of game phases (Monster, Loot, Regroup)
+- `dragon_phase.py`: Dragon Phase mechanics and companion selection
+- `game_state.py`: Game state management and data structures
+- `hero.py`: Hero classes and abilities
+- `dice.py`: Dice mechanics and faces
+- `treasure.py`: Treasure system implementation
 
 ## Installation
 
