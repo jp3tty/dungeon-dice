@@ -189,6 +189,14 @@ class MonsterPhase:
             dice_counts[die] = dice_counts.get(die, 0) + 1
             if die != PartyDiceFace.SCROLL.value:  # Don't count scrolls as companions
                 total_companions += 1
+        
+        # Add treasure companions to the display
+        treasure_companions = game_state.get_usable_companions()
+        for idx, token in treasure_companions:
+            companion_type = token.get_companion_type()
+            dice_counts[companion_type] = dice_counts.get(companion_type, 0) + 1
+            total_companions += 1
+        
         for die_face, count in dice_counts.items():
             print(f"  ▫️ {die_face}: {count} dice")
         print(f"  Total Companions: {total_companions}")
