@@ -59,6 +59,11 @@
   - Treasure tokens now properly displayed in "Active Party Dice" section during Monster Phase
   - Treasure companions integrated into party dice counts
   - Eliminated separate "Treasure Companions" section for cleaner display
+- **Added Carried Treasure display to Monster Phase** (2024-12-19 22:00)
+  - Added "💎 Carried Treasure" section between Active Party Dice and Graveyard
+  - Shows all collected treasure items with descriptions during Monster Phase
+  - Improves strategic decision-making by making treasure availability visible
+  - Particularly helpful for heroes like Archaeologist who start with treasure tokens
 - Fixed Alchemist/Thaumaturge ultimate ability (2024-12-19 18:00)
   - Changed from random selection to player choice for revived companions
   - Now allows player to select which companions to revive from graveyard

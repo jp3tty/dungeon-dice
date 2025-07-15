@@ -40,6 +40,8 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
 ### Phases
 1. **Setup Phase**: Roll Party Dice and Dungeon Dice
 2. **Monster Phase**: Defeat monsters using party members
+   - Shows carried treasure items with descriptions for strategic planning
+   - Displays active party dice including treasure companions
 3. **Loot Phase**: Open chests and use potions
 4. **Dragon Phase**: Deal with any dragons in the Dragon's Lair
 5. **Regroup Phase**: Choose to continue delving or retire to safety

@@ -202,6 +202,14 @@ class MonsterPhase:
         print(f"  Total Companions: {total_companions}")
         print(f"  Total Scrolls: {dice_counts.get(PartyDiceFace.SCROLL.value, 0)}")
         
+        print("\n💎 Carried Treasure:")
+        treasures = game_state.get_available_treasures()
+        if treasures:
+            for treasure in treasures:
+                print(f"  ▫️ {treasure.name} - {treasure.get_description()}")
+        else:
+            print("  ▫️ None")
+        
         print("\n⚰️  Graveyard (Used Dice):")
         graveyard_counts = {}
         for die in game_state.graveyard:
