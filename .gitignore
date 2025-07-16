@@ -33,3 +33,6 @@ wheels/
 env/
 venv/
 ENV/
+
+# Article drafts
+medium_article_draft.txt
