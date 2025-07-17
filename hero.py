@@ -223,10 +223,12 @@ class ArchaeologistTombRaiderHero(HeroCard):
                         try:
                             choice = int(input(f"Choose treasure {discarded_count + 1} to discard (number): ").strip())
                             if 1 <= choice <= len(available_treasures):
+                                # Store the treasure name before using it
+                                treasure_name = available_treasures[choice - 1].name
                                 # Use the treasure (which returns it to the pool)
                                 game_state.use_treasure(choice - 1)
                                 discarded_count += 1
-                                print(f"Discarded: {available_treasures[choice - 1].name}")
+                                print(f"Discarded: {treasure_name}")
                             else:
                                 print("Invalid choice. Please try again.")
                         except ValueError:

@@ -27,11 +27,11 @@
   - Eliminated duplicate Dragon Phase implementations
 
 ### Changed
-- **Fixed Tomb Raider end-game specialty crash** (2024-12-19 22:30)
-  - Fixed IndexError when Tomb Raider discards treasures during end-game scoring
+- **Fixed Tomb Raider treasure discard crashes** (2024-12-19 22:30)
+  - Fixed IndexError when Tomb Raider discards treasures during both ultimate ability and end-game scoring
   - Issue occurred when trying to access treasure name after treasure was removed from list
   - Solution: Store treasure name before using treasure to avoid index out of range error
-  - Game now properly completes final scoring phase for Tomb Raider hero
+  - Game now properly handles treasure discarding for both ultimate ability and final scoring phase
 - Removed redundant hero display after selection (2024-12-19 15:15)
   - Eliminated the "Your Chosen Hero" section that appeared after hero selection in both `main.py` and `dungeon_dice_game.py`
   - Hero information is still available during gameplay through game state displays
@@ -75,7 +75,7 @@
   - Added proper interaction for both Novice (1 die) and Master (2 dice) abilities
 
 ### Technical Details
-- Modified `hero.py`: Fixed Tomb Raider end-game specialty to prevent IndexError (2024-12-19 22:30)
+- Modified `hero.py`: Fixed Tomb Raider ultimate ability and end-game specialty to prevent IndexError (2024-12-19 22:30)
 - Modified `hero.py`: Added ArchaeologistTombRaiderHero class with specialty methods (2024-12-19 19:00)
 - Modified `main.py`: Added hero to available heroes list and integrated specialty system (2024-12-19 19:00)
 - Modified `dungeon_dice_game.py`: Added hero to available heroes list and integrated specialty system (2024-12-19 19:00)
