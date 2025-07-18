@@ -1,8 +1,18 @@
 # Dungeon Dice Changelog
 
-## [Unreleased] - 2024-12-19
+## [Unreleased] - 2025-07-18
 
 ### Added
+- **Modular Phase Architecture** (2025-07-18 23:00)
+  - **Separated phases into individual modules** for improved code organization
+  - **monster_phase.py**: Contains MonsterPhase class with all monster combat mechanics
+  - **loot_phase.py**: Contains LootPhase class with treasure and potion mechanics
+  - **regroup_phase.py**: Contains RegroupPhase class with delve continuation logic
+  - **dragon_phase.py**: Already existed as separate module (unchanged)
+  - **phases.py**: Now serves as central import hub for all phase modules
+  - **Enhanced maintainability** - each phase is now in its own dedicated file
+  - **Improved code organization** - easier to locate and modify specific phase logic
+  - **Preserved gameplay** - all game mechanics and player experience remain identical
 - **New Hero: Archaeologist/Tomb Raider** (2024-12-19 19:00)
   - Added ArchaeologistTombRaiderHero class with formation and end-game specialties
   - **Formation Specialty**: Draw 2 Treasure Tokens when forming the party
@@ -75,6 +85,11 @@
   - Added proper interaction for both Novice (1 die) and Master (2 dice) abilities
 
 ### Technical Details
+- **Modified `phases.py`**: Converted to import hub, removed all phase class implementations (2025-07-18 23:00)
+- **Created `monster_phase.py`**: Extracted MonsterPhase class with all monster combat logic (2025-07-18 23:00)
+- **Created `loot_phase.py`**: Extracted LootPhase class with treasure and potion mechanics (2025-07-18 23:00)
+- **Created `regroup_phase.py`**: Extracted RegroupPhase class with delve continuation logic (2025-07-18 23:00)
+- **Modified `main.py`**: Updated imports to use new modular phase structure (2025-07-18 23:00)
 - Modified `hero.py`: Fixed Tomb Raider ultimate ability and end-game specialty to prevent IndexError (2024-12-19 22:30)
 - Modified `hero.py`: Added ArchaeologistTombRaiderHero class with specialty methods (2024-12-19 19:00)
 - Modified `main.py`: Added hero to available heroes list and integrated specialty system (2024-12-19 19:00)
@@ -89,9 +104,12 @@
 - Modified `hero.py`: Fixed AlchemistThaumaturgeHero.use_ultimate() to allow player choice (2024-12-19 18:00)
 
 ### Files Changed
+- `phases.py` (converted to import hub)
+- `monster_phase.py` (new file)
+- `loot_phase.py` (new file)
+- `regroup_phase.py` (new file)
+- `main.py` (updated imports)
 - `hero.py`
-- `main.py`
 - `dungeon_dice_game.py`
-- `phases.py`
 - `README.md`
 - `dd_changelog.md` (new file - 2024-12-19 17:00) 

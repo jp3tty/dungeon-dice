@@ -71,8 +71,11 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
 dungeon-dice/
 ├── main.py                 # Main game entry point
 ├── dungeon_dice_game.py    # Core game logic and flow
-├── phases.py              # Implementation of game phases
+├── phases.py              # Central import hub for all phase modules
+├── monster_phase.py       # Monster Phase mechanics and combat
+├── loot_phase.py          # Loot Phase mechanics (treasure and potions)
 ├── dragon_phase.py        # Dragon Phase mechanics
+├── regroup_phase.py       # Regroup Phase mechanics (continue or retire)
 ├── game_state.py         # Game state management
 ├── hero.py               # Hero classes and abilities
 ├── dice.py               # Dice mechanics and faces
@@ -82,12 +85,22 @@ dungeon-dice/
 ### File Descriptions
 - `main.py`: Entry point for the game, handles game initialization and main loop
 - `dungeon_dice_game.py`: Core game mechanics and overall game flow
-- `phases.py`: Implementation of game phases (Monster, Loot, Regroup)
-- `dragon_phase.py`: Dragon Phase mechanics and companion selection
+- `phases.py`: Central import hub that provides access to all phase modules
+- `monster_phase.py`: Monster Phase implementation with combat mechanics and companion selection
+- `loot_phase.py`: Loot Phase implementation for opening chests and using potions
+- `dragon_phase.py`: Dragon Phase mechanics and companion selection for dragon battles
+- `regroup_phase.py`: Regroup Phase implementation for deciding to continue or end delves
 - `game_state.py`: Game state management and data structures
 - `hero.py`: Hero classes and abilities
 - `dice.py`: Dice mechanics and faces
 - `treasure.py`: Treasure system implementation
+
+### Modular Architecture
+The game uses a modular phase architecture where each game phase is implemented in its own dedicated file:
+- **Improved maintainability**: Each phase can be modified independently
+- **Better code organization**: Easy to locate specific phase logic
+- **Enhanced readability**: Clear separation of concerns
+- **Preserved gameplay**: All game mechanics remain identical to the player
 
 ## Installation
 
