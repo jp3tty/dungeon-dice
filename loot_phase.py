@@ -148,18 +148,28 @@ class LootPhase:
         
         # Show available companions
         companions = []
+        
+        # Add party dice companions
         for i, die in enumerate(game_state.party_dice):
-            companions.append((i, die))
-            # Apply Minstrel/Bard specialty for chest opening
-            if specialty_active and die == PartyDiceFace.MAGE.value:
-                max_chests = "any number of"  # Mages can open any number of chests like thieves
-                print(f"{i+1}. {die} (can open {max_chests} Chests) ✨")
+            companions.append(("party", i, die))
+            # Show Minstrel/Bard specialty options
+            if specialty_active and die in [PartyDiceFace.THIEF.value, PartyDiceFace.MAGE.value]:
+                print(f"{len(companions)}. Party: {die} (can open any number of Chests with Minstrel/Bard specialty) ✨")
             elif die in [PartyDiceFace.THIEF.value, PartyDiceFace.CHAMPION.value]:
-                max_chests = "any number of"
-                print(f"{i+1}. {die} (can open {max_chests} Chests)")
+                print(f"{len(companions)}. Party: {die} (can open any number of Chests)")
             else:
-                max_chests = "1"
-                print(f"{i+1}. {die} (can open {max_chests} Chests)")
+                print(f"{len(companions)}. Party: {die} (can open 1 Chest)")
+        
+        # Add treasure companions
+        treasure_companions = game_state.get_usable_companions()
+        for idx, token in treasure_companions:
+            companions.append(("treasure", idx, token))
+            companion_type = token.get_companion_type()
+            if companion_type in [PartyDiceFace.THIEF.value, PartyDiceFace.CHAMPION.value]:
+                print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}, can open any number of Chests)")
+            else:
+                print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}, can open 1 Chest)")
+        
         print(f"{len(companions)+1}. Cancel")
         
         choice = input("Choose companion (number): ").strip()
@@ -168,26 +178,38 @@ class LootPhase:
             if choice_idx == len(companions):
                 return available_chests
             if 0 <= choice_idx < len(companions):
-                idx, companion = companions[choice_idx]
+                source, idx, companion = companions[choice_idx]
+                
+                # Determine companion type
+                if source == "treasure":
+                    companion_type = companion.get_companion_type()
+                    companion_name = companion.name
+                else:
+                    companion_type = companion
+                    companion_name = companion
                 
                 # Determine how many chests can be opened
-                # Apply Minstrel/Bard specialty for chest opening
-                if specialty_active and companion == PartyDiceFace.MAGE.value:
+                if companion_type in [PartyDiceFace.THIEF.value, PartyDiceFace.CHAMPION.value]:
                     max_chests = available_chests
-                    print(f"This {companion} can open up to {max_chests} Chests! ✨")
-                elif companion in [PartyDiceFace.THIEF.value, PartyDiceFace.CHAMPION.value]:
+                    print(f"This {companion_name} can open up to {max_chests} Chests!")
+                elif specialty_active and companion_type == PartyDiceFace.MAGE.value:
+                    # Minstrel/Bard specialty: Mage can open any number of chests
                     max_chests = available_chests
-                    print(f"This {companion} can open up to {max_chests} Chests!")
+                    print(f"This {companion_name} can open up to {max_chests} Chests with Minstrel/Bard specialty! ✨")
                 else:
                     max_chests = 1
-                    print(f"This {companion} can open 1 Chest.")
+                    print(f"This {companion_name} can open 1 Chest.")
                 
                 # Automatically open all available chests
                 num_chests = max_chests
                 
-                # Move companion to graveyard
-                game_state.use_party_die(idx)
-                print(f"{companion} moved to Graveyard.")
+                # Use companion
+                if source == "party":
+                    game_state.use_party_die(idx)
+                    print(f"{companion_name} moved to Graveyard.")
+                else:  # treasure
+                    game_state.use_treasure(idx)
+                    print(f"{companion_name} used and returned to treasure pool.")
                 
                 # Open chests and gain treasure
                 for _ in range(num_chests):

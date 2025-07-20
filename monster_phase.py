@@ -233,8 +233,6 @@ class MonsterPhase:
         print(f"  Total Chests: {dungeon_counts.get(DungeonDiceFace.CHEST.value, 0)}")
         print(f"  Total Potions: {dungeon_counts.get(DungeonDiceFace.POTION.value, 0)}")
         
-        # Debug: Always show dragon's lair status
-        print(f"\n🐉 Dragon's Lair Debug: {game_state.dragons_lair} (length: {len(game_state.dragons_lair)})")
         if game_state.dragons_lair:
             print("\n🐉 Dragon's Lair:")
             print(f"  ▫️ Dragon: {len(game_state.dragons_lair)} dice")
@@ -459,14 +457,38 @@ class MonsterPhase:
                 else:
                     companion_type = companion
                 
-                # Apply specialty transformations
-                if specialty_active:
+                # Store original companion type for specialty choice
+                original_companion_type = companion_type
+                
+                # Apply specialty transformations if Minstrel/Bard specialty is active
+                if specialty_active and companion_type in [PartyDiceFace.THIEF.value, PartyDiceFace.MAGE.value]:
+                    print(f"\n✨ Minstrel/Bard specialty allows {companion_type} to be used as either {companion_type} or the other type!")
+                    print(f"1. Use as {companion_type} (original abilities)")
                     if companion_type == PartyDiceFace.THIEF.value:
-                        companion_type = PartyDiceFace.MAGE.value
-                        print(f"✨ Specialty: {PartyDiceFace.THIEF.value} acts as {PartyDiceFace.MAGE.value}")
-                    elif companion_type == PartyDiceFace.MAGE.value:
-                        companion_type = PartyDiceFace.THIEF.value
-                        print(f"✨ Specialty: {PartyDiceFace.MAGE.value} acts as {PartyDiceFace.THIEF.value}")
+                        print(f"2. Use as {PartyDiceFace.MAGE.value} (defeat all Oozes, open all chests)")
+                    else:  # MAGE
+                        print(f"2. Use as {PartyDiceFace.THIEF.value} (defeat all Oozes, open all chests)")
+                    
+                    choice = input("Choose how to use this companion (1 or 2): ").strip()
+                    try:
+                        choice_idx = int(choice)
+                        if choice_idx == 1:
+                            # Use original abilities
+                            companion_type = original_companion_type
+                        elif choice_idx == 2:
+                            # Use other type's abilities
+                            if companion_type == PartyDiceFace.THIEF.value:
+                                companion_type = PartyDiceFace.MAGE.value
+                                print(f"✨ {original_companion_type} acts as {companion_type}")
+                            else:  # MAGE
+                                companion_type = PartyDiceFace.THIEF.value
+                                print(f"✨ {original_companion_type} acts as {companion_type}")
+                        else:
+                            print("Invalid choice. Using original abilities.")
+                            companion_type = original_companion_type
+                    except ValueError:
+                        print("Invalid input. Using original abilities.")
+                        companion_type = original_companion_type
                 
                 # Special handling for Champions
                 if companion_type == PartyDiceFace.CHAMPION.value:

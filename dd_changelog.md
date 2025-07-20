@@ -16,15 +16,21 @@
   - **Strategic review time** - Players can analyze current game state and plan next moves
 
 ### Fixed
+- **Minstrel/Bard Hero Specialty Logic** (2025-07-20 23:58)
+  - **Fixed automatic transformation bug** - Thieves and Mages are no longer automatically transformed to the other type
+  - **Added player choice** - When using Thieves or Mages with Minstrel/Bard specialty, players can choose to use original abilities or the other type's abilities
+  - **Enhanced user experience** - Clear messaging shows both options: "Use as [original type] (original abilities)" or "Use as [other type] (defeat all Oozes, open all chests)"
+  - **Preserved specialty benefits** - Thieves can still defeat all Oozes and open all chests, Mages can still defeat all Oozes and open all chests
+  - **Updated loot phase** - Chest opening now properly handles Minstrel/Bard specialty without automatic transformation
+  - **Fixed simulation methods** - Automatic monster defeat now intelligently chooses the best option for Thieves/Mages with specialty
+
+- **Treasure Companions in Loot Phase** (2025-07-20 23:59)
+  - **Added treasure companions to chest opening** - Treasure items that act as companions (like Thieves' Tools) are now available options for opening chests
+  - **Enhanced companion selection** - Both party dice and treasure companions are shown with clear labels ("Party:" vs "Treasure:")
+  - **Proper treasure handling** - Treasure companions are used and returned to the treasure pool, while party dice are moved to the graveyard
+  - **Consistent behavior** - Treasure companions follow the same rules as their corresponding companion types for chest opening abilities
+
 - **Monster Defeat Rules** (2025-07-18 23:55)
-  - **Corrected Fighter rules** - Fighter defeats one Skeleton, one Ooze, or any number of Goblins (was incorrectly limited to Goblins only)
-  - **Corrected Cleric rules** - Cleric defeats one Goblin, one Ooze, or any number of Skeletons (was incorrectly limited to Skeletons only)
-  - **Corrected Mage rules** - Mage defeats one Goblin, one Skeleton, or any number of Oozes (was incorrectly limited to Oozes only)
-  - **Corrected Thief rules** - Thief defeats one Goblin, one Skeleton, or one Ooze (was incorrectly limited to Skeletons and Oozes only)
-  - **Corrected Champion rules** - Champion may be used to defeat any number of Goblins, any number of Skeletons, or any number of Oozes
-  - **Updated all companion abilities** - All companions can now defeat any monster type they're capable of handling according to the correct rules
-  - **Updated simulation methods** - `can_defeat_monsters` and `use_companions_for_remaining_monsters` now properly simulate the correct monster defeat behavior
-  - **Enhanced user experience** - Clear messaging and options for each companion's specific abilities
 
 - **Chest Opening and Potion Rules** (2025-07-18 23:55)
   - **Corrected chest opening rules** - One Thief or Champion may be used to open any number of Chests in the level. Any other Companion may be used to open one Chest
