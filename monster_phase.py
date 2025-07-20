@@ -537,36 +537,77 @@ class MonsterPhase:
                             monster_types[monster] = []
                         monster_types[monster].append(monster)
                     
-                    # For these companions, they can defeat all of their specific monster type
-                    # So we'll automatically defeat all monsters of the type they're best against
+                    # Determine their primary monster type
                     if companion_type == PartyDiceFace.FIGHTER.value:
-                        target_type = DungeonDiceFace.GOBLIN.value
+                        primary_type = DungeonDiceFace.GOBLIN.value
                     elif companion_type == PartyDiceFace.CLERIC.value:
-                        target_type = DungeonDiceFace.SKELETON.value
+                        primary_type = DungeonDiceFace.SKELETON.value
                     elif companion_type == PartyDiceFace.MAGE.value:
-                        target_type = DungeonDiceFace.OOZE.value
+                        primary_type = DungeonDiceFace.OOZE.value
                     
-                    # Find all monsters of the target type
-                    target_monsters = [m for m in defeatable_monsters if m == target_type]
+                    # Check if they have monsters of their primary type
+                    primary_monsters = [m for m in defeatable_monsters if m == primary_type]
                     
-                    if target_monsters:
-                        # Defeat all monsters of the target type
-                        for monster in target_monsters:
-                            game_state.dungeon_dice.remove(monster)
-                            monsters.remove(monster)
+                    if primary_monsters:
+                        # Give player choice: defeat all of primary type OR choose individual monster
+                        print(f"\n{companion_type} can:")
+                        print(f"1. Defeat ALL {primary_type}s ({len(primary_monsters)} monster(s))")
+                        print(f"2. Choose individual monster to defeat")
                         
-                        # Use companion
-                        if source == "party":
-                            game_state.use_party_die(idx)
-                            print(f"{companion} moved to Graveyard after defeating {len(target_monsters)} {target_type}(s).")
-                        else:  # treasure
-                            game_state.use_treasure(idx)
-                            print(f"{companion.name} used and returned to treasure pool after defeating {len(target_monsters)} {target_type}(s).")
+                        choice = input("Choose option (1 or 2): ").strip()
                         
-                        print(f"Defeated {len(target_monsters)} {target_type}(s)!")
-                        return True
+                        if choice == "1":
+                            # Defeat all monsters of the primary type
+                            for monster in primary_monsters:
+                                game_state.dungeon_dice.remove(monster)
+                                monsters.remove(monster)
+                            
+                            # Use companion
+                            if source == "party":
+                                game_state.use_party_die(idx)
+                                print(f"{companion} moved to Graveyard after defeating {len(primary_monsters)} {primary_type}(s).")
+                            else:  # treasure
+                                game_state.use_treasure(idx)
+                                print(f"{companion.name} used and returned to treasure pool after defeating {len(primary_monsters)} {primary_type}(s).")
+                            
+                            print(f"Defeated {len(primary_monsters)} {primary_type}(s)!")
+                            return True
+                        elif choice == "2":
+                            # Let player choose individual monster
+                            print(f"\n{companion_type} can defeat:")
+                            for i, monster in enumerate(defeatable_monsters):
+                                print(f"{i+1}. {monster}")
+                            
+                            monster_choice = input("Choose monster to defeat (number): ").strip()
+                            try:
+                                monster_idx = int(monster_choice) - 1
+                                if 0 <= monster_idx < len(defeatable_monsters):
+                                    defeated_monster = defeatable_monsters[monster_idx]
+                                    
+                                    # Remove monster from dungeon dice
+                                    game_state.dungeon_dice.remove(defeated_monster)
+                                    
+                                    # Use companion
+                                    if source == "party":
+                                        game_state.use_party_die(idx)
+                                        print(f"{companion} moved to Graveyard.")
+                                    else:  # treasure
+                                        game_state.use_treasure(idx)
+                                        print(f"{companion.name} used and returned to treasure pool.")
+                                    
+                                    print(f"Defeated {defeated_monster}!")
+                                    return True
+                                else:
+                                    print("Invalid choice.")
+                                    return False
+                            except ValueError:
+                                print("Invalid input.")
+                                return False
+                        else:
+                            print("Invalid choice.")
+                            return False
                     else:
-                        # If no monsters of their primary type, they can still defeat one of any type they can handle
+                        # No monsters of primary type, so they can only choose individual monsters
                         print(f"\n{companion_type} can defeat:")
                         for i, monster in enumerate(defeatable_monsters):
                             print(f"{i+1}. {monster}")
@@ -703,16 +744,21 @@ class MonsterPhase:
                 elif companion_type in [PartyDiceFace.FIGHTER.value, PartyDiceFace.CLERIC.value, PartyDiceFace.MAGE.value]:
                     # These companions can defeat all of their specific monster type
                     if companion_type == PartyDiceFace.FIGHTER.value:
-                        target_type = DungeonDiceFace.GOBLIN.value
+                        primary_type = DungeonDiceFace.GOBLIN.value
                     elif companion_type == PartyDiceFace.CLERIC.value:
-                        target_type = DungeonDiceFace.SKELETON.value
+                        primary_type = DungeonDiceFace.SKELETON.value
                     elif companion_type == PartyDiceFace.MAGE.value:
-                        target_type = DungeonDiceFace.OOZE.value
+                        primary_type = DungeonDiceFace.OOZE.value
                     
-                    # Remove all monsters of the target type
-                    target_monsters = [m for m in defeatable_monsters if m == target_type]
-                    for monster in target_monsters:
-                        remaining_monsters.remove(monster)
+                    # For simulation, prioritize defeating all monsters of their primary type
+                    primary_monsters = [m for m in defeatable_monsters if m == primary_type]
+                    if primary_monsters:
+                        # Remove all monsters of the primary type
+                        for monster in primary_monsters:
+                            remaining_monsters.remove(monster)
+                    else:
+                        # If no primary type monsters, defeat one of any type they can handle
+                        remaining_monsters.remove(defeatable_monsters[0])
                 else:
                     # Other companions (like Thieves) can only defeat one monster
                     remaining_monsters.remove(defeatable_monsters[0])
@@ -783,25 +829,40 @@ class MonsterPhase:
                 elif companion_type in [PartyDiceFace.FIGHTER.value, PartyDiceFace.CLERIC.value, PartyDiceFace.MAGE.value]:
                     # These companions can defeat all of their specific monster type
                     if companion_type == PartyDiceFace.FIGHTER.value:
-                        target_type = DungeonDiceFace.GOBLIN.value
+                        primary_type = DungeonDiceFace.GOBLIN.value
                     elif companion_type == PartyDiceFace.CLERIC.value:
-                        target_type = DungeonDiceFace.SKELETON.value
+                        primary_type = DungeonDiceFace.SKELETON.value
                     elif companion_type == PartyDiceFace.MAGE.value:
-                        target_type = DungeonDiceFace.OOZE.value
+                        primary_type = DungeonDiceFace.OOZE.value
                     
-                    # Defeat all monsters of the target type
-                    target_monsters = [m for m in defeatable_monsters if m == target_type]
-                    for monster in target_monsters:
-                        game_state.dungeon_dice.remove(monster)
-                        monsters.remove(monster)
-                    
-                    # Use companion
-                    if source == "party":
-                        game_state.use_party_die(idx)
-                        print(f"{companion} moved to Graveyard after defeating {len(target_monsters)} {target_type}(s).")
-                    else:  # treasure
-                        game_state.use_treasure(idx)
-                        print(f"{companion.name} used and returned to treasure pool after defeating {len(target_monsters)} {target_type}(s).")
+                    # For automatic defeat, prioritize defeating all monsters of their primary type
+                    primary_monsters = [m for m in defeatable_monsters if m == primary_type]
+                    if primary_monsters:
+                        # Defeat all monsters of the primary type
+                        for monster in primary_monsters:
+                            game_state.dungeon_dice.remove(monster)
+                            monsters.remove(monster)
+                        
+                        # Use companion
+                        if source == "party":
+                            game_state.use_party_die(idx)
+                            print(f"{companion} moved to Graveyard after defeating {len(primary_monsters)} {primary_type}(s).")
+                        else:  # treasure
+                            game_state.use_treasure(idx)
+                            print(f"{companion.name} used and returned to treasure pool after defeating {len(primary_monsters)} {primary_type}(s).")
+                    else:
+                        # If no primary type monsters, defeat one of any type they can handle
+                        defeated_monster = defeatable_monsters[0]
+                        game_state.dungeon_dice.remove(defeated_monster)
+                        monsters.remove(defeated_monster)
+                        
+                        # Use companion
+                        if source == "party":
+                            game_state.use_party_die(idx)
+                            print(f"{companion} moved to Graveyard after defeating {defeated_monster}.")
+                        else:  # treasure
+                            game_state.use_treasure(idx)
+                            print(f"{companion.name} used and returned to treasure pool after defeating {defeated_monster}.")
                     
                 else:
                     # Other companions (like Thieves) can only defeat one monster

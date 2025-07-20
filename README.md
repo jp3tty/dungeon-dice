@@ -12,9 +12,9 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
 - You have 3 delves to gather treasure and experience
 - Each delve starts with 7 Party Dice and encounters based on the dungeon level
 - Party members can defeat specific monsters:
-  - **Fighters** can defeat **ALL of the Goblins** (automatically targets all Goblins present)
-  - **Clerics** can defeat **ALL of the Skeletons** (automatically targets all Skeletons present)
-  - **Mages** can defeat **ALL of the Oozes** (automatically targets all Oozes present)
+  - **Fighters** can defeat **ALL of the Goblins** OR choose individual monsters they can handle
+  - **Clerics** can defeat **ALL of the Skeletons** OR choose individual monsters they can handle
+  - **Mages** can defeat **ALL of the Oozes** OR choose individual monsters they can handle
   - **Thieves** can defeat **any single monster** (player chooses which one)
   - **Champions** can defeat **all of the monsters of a given type** (player chooses which type to defeat)
   - **Scrolls** allow re-rolling of dice
@@ -106,7 +106,8 @@ The game uses a modular phase architecture where each game phase is implemented 
 
 ### Monster Defeat Mechanics (Latest)
 - **Fixed all companion monster defeat abilities** to match game rules exactly
-- **Fighters, Clerics, and Mages** now properly defeat ALL monsters of their specific types
+- **Fighters, Clerics, and Mages** can now choose between defeating ALL of their primary monster type OR individual monsters of other types they can handle
+- **Enhanced player choice** - When companions have monsters of their primary type, players can choose their preferred strategy
 - **Champions** can defeat all monsters of a chosen type (player selects which type)
 - **Thieves** correctly defeat any single monster (unchanged)
 - **Enhanced user experience** with clear messaging for multiple monster defeats

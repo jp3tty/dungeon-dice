@@ -3,6 +3,13 @@
 ## [Unreleased] - 2025-07-18
 
 ### Fixed
+- **Monster Defeat Mechanics** (2025-07-18 23:45)
+  - **Fixed companion flexibility** - Fighters, Clerics, and Mages can now choose between defeating ALL of their primary monster type OR individual monsters of other types they can handle
+  - **Enhanced player choice** - When companions have monsters of their primary type, players can choose to defeat all of that type or select individual monsters
+  - **Fixed restrictive logic** - Previously companions were limited to only their primary monster type, now they can defeat any monster they're capable of handling
+  - **Updated simulation methods** - `can_defeat_monsters` and `use_companions_for_remaining_monsters` now properly simulate the flexible monster defeat behavior
+  - **Preserved specialty mechanics** - Minstrel/Bard specialty and Master Bard Champion bonus still work correctly
+
 - **Monster Defeat Mechanics** (2025-07-18 23:30)
   - **Fixed Champion mechanics** - Champions now properly defeat all monsters of a chosen type instead of just one
   - **Fixed Fighter mechanics** - Fighters now automatically defeat ALL Goblins instead of just one
