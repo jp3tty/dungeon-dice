@@ -139,12 +139,27 @@ class LootPhase:
         print("- Thieves and Champions can open all of the Chests")
         print("- Other companions can open one Chest each")
         
+        # Check if Minstrel/Bard specialty is active
+        specialty_active = (game_state.selected_hero_card.__class__.__name__ == "MinstrelBardHero")
+        if specialty_active:
+            print(f"\n✨ {game_state.selected_hero_card.name}'s specialty active:")
+            print("• Thieves may be used as Mages and Mages may be used as Thieves")
+            print("• Mages can now open any number of Chests (like Thieves)")
+        
         # Show available companions
         companions = []
         for i, die in enumerate(game_state.party_dice):
             companions.append((i, die))
-            max_chests = "any number of" if die in [PartyDiceFace.THIEF.value, PartyDiceFace.CHAMPION.value] else "1"
-            print(f"{i+1}. {die} (can open {max_chests} Chests)")
+            # Apply Minstrel/Bard specialty for chest opening
+            if specialty_active and die == PartyDiceFace.MAGE.value:
+                max_chests = "any number of"  # Mages can open any number of chests like thieves
+                print(f"{i+1}. {die} (can open {max_chests} Chests) ✨")
+            elif die in [PartyDiceFace.THIEF.value, PartyDiceFace.CHAMPION.value]:
+                max_chests = "any number of"
+                print(f"{i+1}. {die} (can open {max_chests} Chests)")
+            else:
+                max_chests = "1"
+                print(f"{i+1}. {die} (can open {max_chests} Chests)")
         print(f"{len(companions)+1}. Cancel")
         
         choice = input("Choose companion (number): ").strip()
@@ -156,7 +171,11 @@ class LootPhase:
                 idx, companion = companions[choice_idx]
                 
                 # Determine how many chests can be opened
-                if companion in [PartyDiceFace.THIEF.value, PartyDiceFace.CHAMPION.value]:
+                # Apply Minstrel/Bard specialty for chest opening
+                if specialty_active and companion == PartyDiceFace.MAGE.value:
+                    max_chests = available_chests
+                    print(f"This {companion} can open up to {max_chests} Chests! ✨")
+                elif companion in [PartyDiceFace.THIEF.value, PartyDiceFace.CHAMPION.value]:
                     max_chests = available_chests
                     print(f"This {companion} can open up to {max_chests} Chests!")
                 else:

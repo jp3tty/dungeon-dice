@@ -12,12 +12,12 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
 - You have 3 delves to gather treasure and experience
 - Each delve starts with 7 Party Dice and encounters based on the dungeon level
 - Party members can defeat specific monsters:
-  - Fighters can defeat all of the Goblins
-  - Clerics can defeat all of the Skeletons
-  - Mages can defeat all of the Oozes
-  - Thieves can defeat any single monster
-  - Champions can defeat all of the monsters of a given type
-  - Scrolls allow re-rolling of dice
+  - **Fighters** can defeat **ALL of the Goblins** (automatically targets all Goblins present)
+  - **Clerics** can defeat **ALL of the Skeletons** (automatically targets all Skeletons present)
+  - **Mages** can defeat **ALL of the Oozes** (automatically targets all Oozes present)
+  - **Thieves** can defeat **any single monster** (player chooses which one)
+  - **Champions** can defeat **all of the monsters of a given type** (player chooses which type to defeat)
+  - **Scrolls** allow re-rolling of dice
 
 ### Heroes
 - Start as a Novice hero with a unique specialty
@@ -25,7 +25,7 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
 - Have powerful ultimate abilities that can turn the tide of battle
 - Available Heroes:
   - **Minstrel/Bard**
-    - Specialty: Thieves may be used as Mages and Mages may be used as Thieves
+    - Specialty: Thieves may be used as Mages and Mages may be used as Thieves (Mages can open any number of chests like Thieves)
     - Novice Ultimate: Discard all dice from the Dragon's Lair
     - Master Ultimate: Discard all dice from the Dragon's Lair
   - **Alchemist/Thaumaturge**
@@ -101,6 +101,21 @@ The game uses a modular phase architecture where each game phase is implemented 
 - **Better code organization**: Easy to locate specific phase logic
 - **Enhanced readability**: Clear separation of concerns
 - **Preserved gameplay**: All game mechanics remain identical to the player
+
+## Recent Updates
+
+### Monster Defeat Mechanics (Latest)
+- **Fixed all companion monster defeat abilities** to match game rules exactly
+- **Fighters, Clerics, and Mages** now properly defeat ALL monsters of their specific types
+- **Champions** can defeat all monsters of a chosen type (player selects which type)
+- **Thieves** correctly defeat any single monster (unchanged)
+- **Enhanced user experience** with clear messaging for multiple monster defeats
+
+### Hero Specialties (Latest)
+- **Minstrel/Bard specialty** now works correctly in both monster combat and chest opening
+- **Mages can open any number of chests** when playing Minstrel/Bard (like Thieves)
+- **Thieves and Mages are interchangeable** for monster defeat when playing Minstrel/Bard
+- **Passive specialty activation** - no manual activation required
 
 ## Installation
 

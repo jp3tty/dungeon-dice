@@ -2,6 +2,23 @@
 
 ## [Unreleased] - 2025-07-18
 
+### Fixed
+- **Monster Defeat Mechanics** (2025-07-18 23:30)
+  - **Fixed Champion mechanics** - Champions now properly defeat all monsters of a chosen type instead of just one
+  - **Fixed Fighter mechanics** - Fighters now automatically defeat ALL Goblins instead of just one
+  - **Fixed Cleric mechanics** - Clerics now automatically defeat ALL Skeletons instead of just one  
+  - **Fixed Mage mechanics** - Mages now automatically defeat ALL Oozes instead of just one
+  - **Thief mechanics unchanged** - Thieves correctly defeat any single monster (was already working)
+  - **Updated all simulation methods** - `can_defeat_monsters` and `use_companions_for_remaining_monsters` now properly simulate the correct monster defeat behavior
+  - **Enhanced user experience** - Clear messaging when companions defeat multiple monsters
+  - **Preserved specialty mechanics** - Minstrel/Bard specialty and Master Bard Champion bonus still work correctly
+
+- **Minstrel/Bard Hero Specialty** (2025-07-18 23:15)
+  - **Fixed chest opening mechanics** - Mages can now open any number of chests (like Thieves) when playing Minstrel/Bard
+  - **Monster phase already working** - Thieves and Mages are properly interchangeable for monster defeat
+  - **Passive specialty** - No manual activation required, specialty is always active when Minstrel/Bard is selected
+  - **Clear visual indicators** - Shows when specialty is active with ✨ symbols and descriptive text
+
 ### Added
 - **Modular Phase Architecture** (2025-07-18 23:00)
   - **Separated phases into individual modules** for improved code organization
