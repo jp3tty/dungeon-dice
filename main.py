@@ -6,6 +6,21 @@ from treasure import TreasureActions, TreasureType
 from hero import HeroRank, MinstrelBardHero, AlchemistThaumaturgeHero, ArchaeologistTombRaiderHero
 from dungeon_dice_game import clear_screen
 
+def pause_for_continue(phase_name=""):
+    """Pause and wait for player to continue to the next phase."""
+    if phase_name:
+        print(f"\n{'='*50}")
+        print(f"🎯 {phase_name.upper()} PHASE COMPLETE 🎯".center(50))
+        print(f"{'='*50}")
+    else:
+        print(f"\n{'='*50}")
+        print(f"⏸️  PAUSE ⏸️".center(50))
+        print(f"{'='*50}")
+    
+    print("Review the current game state above.")
+    input("Press Enter when ready to continue...")
+    clear_screen()
+
 class DungeonDiceGame:
     def __init__(self):
         self.state = GameState()
@@ -78,6 +93,10 @@ class DungeonDiceGame:
             print(f"🌟 Experience: {self.state.experience_tokens} tokens")
             print(f"💎 Treasure: {self.state.treasure_tokens} tokens")
             self.state.display_treasure_info()
+            
+            # Pause between delves (except after the last one)
+            if self.state.delve_count < self.MAX_DELVES:
+                pause_for_continue("Delve")
         
         self.end_game()
     
@@ -146,6 +165,9 @@ class DungeonDiceGame:
         # Setup phase
         self.setup_delve()
         
+        # Pause after Setup Phase
+        pause_for_continue("Setup")
+        
         # Continue until the delve is over (player chooses to end or fails)
         delve_active = True
         while delve_active:
@@ -154,9 +176,15 @@ class DungeonDiceGame:
             if not monster_result:
                 print("The monsters were too powerful! Delve ends.")
                 break
+            
+            # Pause after Monster Phase
+            pause_for_continue("Monster")
                 
             # Loot Phase
             LootPhase.execute(self.state)
+            
+            # Pause after Loot Phase
+            pause_for_continue("Loot")
             
             # Dragon Phase if dragons are present
             if self.state.dragons_lair:
@@ -164,6 +192,9 @@ class DungeonDiceGame:
                 if not dragon_result:
                     # Dragon phase might end the delve based on the result
                     break
+                
+                # Pause after Dragon Phase (only if it occurred)
+                pause_for_continue("Dragon")
             
             # Regroup Phase - player decides whether to continue or end delve
             regroup_result = RegroupPhase.execute(self.state, self.state.selected_hero_card)
@@ -174,6 +205,7 @@ class DungeonDiceGame:
     def setup_delve(self):
         """Set up for a new delve (one game round) with proper setup."""
         print("\n--- SETUP PHASE ---")
+        print(f"🗡️  DELVE {self.state.delve_count} OF {self.MAX_DELVES}  🗡️")
         
         # Step 1: Roll all 7 Party Dice
         print("Rolling 7 Party Dice to form your starting party...")

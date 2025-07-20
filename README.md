@@ -6,17 +6,19 @@ A text-based dungeon crawling dice game where you lead a party of adventurers th
 
 In Dungeon Dice, you have three delves to prove your worth and gather as much treasure as possible. Each delve presents increasingly difficult challenges as you progress through dungeon levels. You'll need to manage your party of adventurers wisely, using their unique abilities to overcome monsters, collect treasure, and survive encounters with fearsome dragons.
 
+The game features a **pause system** between phases that allows you to review the current game state and plan your next moves at your own pace. You control when to proceed to the next phase, giving you time to analyze the situation and make strategic decisions.
+
 ## Game Rules
 
 ### Basic Mechanics
 - You have 3 delves to gather treasure and experience
 - Each delve starts with 7 Party Dice and encounters based on the dungeon level
 - Party members can defeat specific monsters:
-  - **Fighters** can defeat **ALL of the Goblins** OR choose individual monsters they can handle
-  - **Clerics** can defeat **ALL of the Skeletons** OR choose individual monsters they can handle
-  - **Mages** can defeat **ALL of the Oozes** OR choose individual monsters they can handle
-  - **Thieves** can defeat **any single monster** (player chooses which one)
-  - **Champions** can defeat **all of the monsters of a given type** (player chooses which type to defeat)
+  - **Fighter** defeats one Skeleton, one Ooze, or any number of Goblins
+  - **Cleric** defeats one Goblin, one Ooze, or any number of Skeletons
+  - **Mage** defeats one Goblin, one Skeleton, or any number of Oozes
+  - **Thief** defeats one Goblin, one Skeleton, or one Ooze
+  - **Champion** may be used to defeat any number of Goblins, any number of Skeletons, or any number of Oozes
   - **Scrolls** allow re-rolling of dice
 
 ### Heroes
@@ -43,6 +45,8 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
    - Shows carried treasure items with descriptions for strategic planning
    - Displays active party dice including treasure companions
 3. **Loot Phase**: Open chests and use potions
+   - **Opening Chests**: One Thief or Champion may be used to open any number of Chests in the level. Any other Companion may be used to open one Chest. For each Chest opened the Adventurer draws one Treasure Token. In the rare case that no Treasure tokens remain in the pool, the Adventure receives one Experience token instead.
+   - **Quaffing Potions**: Any Party die (including Scrolls) can be used to Quaff any number of Potions. For each Potion quaffed the Adventurer takes 1 Party die from the Graveyard and adds it to the active party, choosing its face.
 4. **Dragon Phase**: Deal with any dragons in the Dragon's Lair
 5. **Regroup Phase**: Choose to continue delving or retire to safety
    - Displays dragon dice count for threat assessment
@@ -64,6 +68,17 @@ In Dungeon Dice, you have three delves to prove your worth and gather as much tr
 - Collect treasure from chests
 - Higher dungeon levels offer more rewards but greater danger
 - Dragons offer the greatest rewards but pose significant risk
+
+### Game Flow and Pauses
+The game includes strategic pauses between phases to enhance your experience:
+
+- **Setup Phase Pause**: Review your starting party and dungeon state before the first monster encounter
+- **Monster Phase Pause**: Analyze combat results and remaining monsters before collecting loot
+- **Loot Phase Pause**: Review treasure gained and remaining items before the next phase
+- **Dragon Phase Pause**: Assess dragon battle results before regrouping (only when dragons are present)
+- **Between Delve Pause**: Review your progress and prepare for the next delve (except after the final delve)
+
+Each pause shows a clear phase completion message and allows you to review the current game state. Simply press **Enter** when you're ready to continue to the next phase. The screen automatically clears between phases for a clean presentation.
 
 ## Project Structure
 
@@ -117,6 +132,13 @@ The game uses a modular phase architecture where each game phase is implemented 
 - **Mages can open any number of chests** when playing Minstrel/Bard (like Thieves)
 - **Thieves and Mages are interchangeable** for monster defeat when playing Minstrel/Bard
 - **Passive specialty activation** - no manual activation required
+
+### User Experience Enhancements (Latest)
+- **Added strategic pause system** between all major game phases
+- **Player-controlled pacing** - you decide when to proceed to the next phase
+- **Enhanced strategic review** - time to analyze current game state and plan next moves
+- **Clear phase boundaries** with visual completion indicators
+- **Automatic screen clearing** between phases for cleaner presentation
 
 ## Installation
 

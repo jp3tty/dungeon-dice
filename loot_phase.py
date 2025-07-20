@@ -136,7 +136,7 @@ class LootPhase:
             
         print("\nSelect a companion to open Chests:")
         print("Special Abilities:")
-        print("- Thieves and Champions can open all of the Chests")
+        print("- Thieves and Champions can open any number of Chests")
         print("- Other companions can open one Chest each")
         
         # Check if Minstrel/Bard specialty is active
@@ -240,15 +240,14 @@ class LootPhase:
             
         print("\nSelect a Party die to use for quaffing Potions:")
         print(f"You can quaff up to {available_potions} Potions.")
+        print("Any Party die (including Scrolls) can be used to quaff any number of Potions.")
+        print("For each Potion quaffed, you take 1 Party die from the Graveyard and add it to the active party, choosing its face.")
         
         # Check if Thaumaturge ultimate is available and can recover more dice
         if (game_state.selected_hero_card.__class__.__name__ == "AlchemistThaumaturgeHero" and 
             game_state.selected_hero_card.current_rank.value == "Master" and 
             not game_state.selected_hero_card.is_exhausted):
-            print("Each Potion allows you to recover one die from the Graveyard.")
             print("💫 Thaumaturge Ultimate Available: Can recover 2 dice with Transformation Potion!")
-        else:
-            print("Each Potion allows you to recover one die from the Graveyard.")
         
         # Show available party dice
         for i, die in enumerate(game_state.party_dice):

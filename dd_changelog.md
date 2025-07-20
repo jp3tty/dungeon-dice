@@ -2,13 +2,37 @@
 
 ## [Unreleased] - 2025-07-18
 
+### Added
+- **Phase Pause System** (2025-07-18 23:50)
+  - **Added pauses between all major phases** to improve game pacing and player experience
+  - **Setup Phase pause** - Players can review starting party and dungeon state before first monster phase
+  - **Monster Phase pause** - Players can review combat results and remaining monsters before loot phase
+  - **Loot Phase pause** - Players can review treasure gained and remaining items before next phase
+  - **Dragon Phase pause** - Players can review dragon battle results before regroup phase (only when dragons present)
+  - **Between Delve pause** - Players can review delve summary and prepare for next delve (except after final delve)
+  - **Enhanced user control** - Players control when to proceed to next phase with "Press Enter to continue"
+  - **Clear phase boundaries** - Visual indicators show when each phase completes
+  - **Screen clearing** - Automatic screen clear between phases for cleaner presentation
+  - **Strategic review time** - Players can analyze current game state and plan next moves
+
 ### Fixed
+- **Monster Defeat Rules** (2025-07-18 23:55)
+  - **Corrected Fighter rules** - Fighter defeats one Skeleton, one Ooze, or any number of Goblins (was incorrectly limited to Goblins only)
+  - **Corrected Cleric rules** - Cleric defeats one Goblin, one Ooze, or any number of Skeletons (was incorrectly limited to Skeletons only)
+  - **Corrected Mage rules** - Mage defeats one Goblin, one Skeleton, or any number of Oozes (was incorrectly limited to Oozes only)
+  - **Corrected Thief rules** - Thief defeats one Goblin, one Skeleton, or one Ooze (was incorrectly limited to Skeletons and Oozes only)
+  - **Corrected Champion rules** - Champion may be used to defeat any number of Goblins, any number of Skeletons, or any number of Oozes
+  - **Updated all companion abilities** - All companions can now defeat any monster type they're capable of handling according to the correct rules
+  - **Updated simulation methods** - `can_defeat_monsters` and `use_companions_for_remaining_monsters` now properly simulate the correct monster defeat behavior
+  - **Enhanced user experience** - Clear messaging and options for each companion's specific abilities
+
+- **Chest Opening and Potion Rules** (2025-07-18 23:55)
+  - **Corrected chest opening rules** - One Thief or Champion may be used to open any number of Chests in the level. Any other Companion may be used to open one Chest
+  - **Corrected potion rules** - Any Party die (including Scrolls) can be used to Quaff any number of Potions. For each Potion quaffed the Adventurer takes 1 Party die from the Graveyard and adds it to the active party, choosing its face
+  - **Updated loot phase messaging** - Clear descriptions of chest opening and potion quaffing abilities
+  - **Preserved treasure token mechanics** - For each Chest opened the Adventurer draws one Treasure Token. In the rare case that no Treasure tokens remain in the pool, the Adventure receives one Experience token instead
+
 - **Monster Defeat Mechanics** (2025-07-18 23:45)
-  - **Fixed companion flexibility** - Fighters, Clerics, and Mages can now choose between defeating ALL of their primary monster type OR individual monsters of other types they can handle
-  - **Enhanced player choice** - When companions have monsters of their primary type, players can choose to defeat all of that type or select individual monsters
-  - **Fixed restrictive logic** - Previously companions were limited to only their primary monster type, now they can defeat any monster they're capable of handling
-  - **Updated simulation methods** - `can_defeat_monsters` and `use_companions_for_remaining_monsters` now properly simulate the flexible monster defeat behavior
-  - **Preserved specialty mechanics** - Minstrel/Bard specialty and Master Bard Champion bonus still work correctly
 
 - **Monster Defeat Mechanics** (2025-07-18 23:30)
   - **Fixed Champion mechanics** - Champions now properly defeat all monsters of a chosen type instead of just one
