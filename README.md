@@ -19,7 +19,7 @@ The game features a **pause system** between phases that allows you to review th
   - **Mage** defeats one Goblin, one Skeleton, or any number of Oozes
   - **Thief** defeats one Goblin, one Skeleton, or one Ooze
   - **Champion** may be used to defeat any number of Goblins, any number of Skeletons, or any number of Oozes
-  - **Scrolls** allow re-rolling of dice
+  - **Scrolls** allow re-rolling of dice in any phase
 
 ### Heroes
 - Start as a Novice hero with a unique specialty
@@ -29,7 +29,7 @@ The game features a **pause system** between phases that allows you to review th
   - **Minstrel/Bard**
     - Specialty: Thieves may be used as Mages and Mages may be used as Thieves (Mages can open any number of chests like Thieves)
     - Novice Ultimate: Discard all dice from the Dragon's Lair
-    - Master Ultimate: Discard all dice from the Dragon's Lair
+    - Master Ultimate: Discard all dice from the Dragon's Lair + Champions can defeat monsters of TWO different types
   - **Alchemist/Thaumaturge**
     - Specialty: All Chests become Potions
     - Novice Ultimate: Healing Salve - Roll 1 Party die from the Graveyard and add it to your Party
@@ -44,19 +44,22 @@ The game features a **pause system** between phases that allows you to review th
 2. **Monster Phase**: Defeat monsters using party members
    - Shows carried treasure items with descriptions for strategic planning
    - Displays active party dice including treasure companions
+   - Always shows Dragon's Lair count for threat assessment
 3. **Loot Phase**: Open chests and use potions
    - **Opening Chests**: One Thief or Champion may be used to open any number of Chests in the level. Any other Companion may be used to open one Chest. For each Chest opened the Adventurer draws one Treasure Token. In the rare case that no Treasure tokens remain in the pool, the Adventure receives one Experience token instead.
    - **Quaffing Potions**: Any Party die (including Scrolls) can be used to Quaff any number of Potions. For each Potion quaffed the Adventurer takes 1 Party die from the Graveyard and adds it to the active party, choosing its face.
+   - **Scroll Usage**: Can use Scrolls to re-roll dice for better loot results
 4. **Dragon Phase**: Deal with any dragons in the Dragon's Lair
 5. **Regroup Phase**: Choose to continue delving or retire to safety
    - Displays dragon dice count for threat assessment
    - Shows collected treasure items with descriptions
    - Provides complete resource overview for strategic decisions
+   - Can use Scrolls to re-roll party dice before deciding to continue or retire
 
 ### Dragon Phase Mechanics
 - **Triggers when 3+ dragon dice** are in the Dragon's Lair
 - **Requires exactly 3 different companion types** to battle the dragon
-- **Manual companion selection** - choose which companions to use (Scrolls are not companions)
+- **Manual companion selection** - choose which companions to use (Scrolls and Champions are not companions)
 - **Treasure integration** - treasure tokens can be used as companions
 - **Scroll usage** - can use Scrolls to re-roll dice before dragon battle
 - **Deterministic success** when 3 different types are selected

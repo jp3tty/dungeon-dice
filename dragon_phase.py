@@ -52,9 +52,9 @@ class DragonPhase:
         print("\nYour Active Party and Treasures:")
         companions = []
         
-        # Add party dice (excluding scrolls)
+        # Add party dice (excluding scrolls and champions)
         for i, die in enumerate(game_state.party_dice):
-            if die != PartyDiceFace.SCROLL.value:  # Scrolls are not companions
+            if die != PartyDiceFace.SCROLL.value and die != PartyDiceFace.CHAMPION.value:  # Scrolls and Champions are not companions for dragon battles
                 companions.append(("party", i, die))
                 print(f"{len(companions)}. Party Die: {die}")
         
@@ -69,7 +69,7 @@ class DragonPhase:
             return False
         
         print("\nYou must use exactly 3 different types of Companions to battle the Dragon.")
-        print("(Scrolls are not companions and cannot be used to defeat the dragon)")
+        print("(Scrolls and Champions are not companions and cannot be used to defeat the dragon)")
         print("Select your companions one at a time:")
         
         selected_companions = []

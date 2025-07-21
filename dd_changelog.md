@@ -1,6 +1,34 @@
 # Dungeon Dice Changelog
 
-## [Unreleased] - 2025-07-18
+## [Unreleased] - 2025-07-20
+
+### Added
+- **Scroll Usage in All Phases** (2025-07-20 15:30)
+  - **Added scroll usage to Loot Phase** - Players can now use scrolls to re-roll dice during loot collection
+  - **Added scroll usage to Regroup Phase** - Players can now use scrolls to re-roll party dice before deciding to continue or retire
+  - **Enhanced strategic flexibility** - Scrolls are now available in all four phases (Monster, Loot, Dragon, Regroup)
+  - **Consistent interface** - Both new phases use the same scroll selection and re-roll mechanics as existing phases
+  - **Smart availability** - Scroll options only appear when scrolls are actually available in the player's party
+  - **Dynamic state updates** - Loot Phase updates chest and potion counts after scroll re-rolls
+  - **Recursive phase restart** - Regroup Phase restarts after scroll usage to show updated game state
+
+- **Dragon's Lair Display in Monster Phase** (2025-07-20 15:00)
+  - **Added permanent Dragon's Lair section** - Always shows dragon count in Monster Phase display
+  - **Enhanced visibility** - Dragon count is now prominently displayed whether dragons are present or not
+  - **Clear status indication** - Shows "Empty" when no dragons are in the lair, shows count when dragons are present
+  - **Improved strategic planning** - Players can always see dragon threat level during monster encounters
+
+- **Bard Master Ability Implementation** (2025-07-20 14:30)
+  - **Implemented "Champions defeat 1 extra monster"** - Bard's master ability now has meaningful gameplay impact
+  - **Enhanced Champion power** - Champions can now defeat monsters of TWO different types when Bard is Master rank
+  - **Two-stage selection process** - Players choose first monster type, then optionally choose a second type
+  - **Flexible usage** - Players can choose to defeat only one type or both types with a single Champion
+  - **Clear visual feedback** - Shows remaining monster types after first defeat with option to skip second choice
+  - **Comprehensive implementation** - Updated both `use_champion()` and `use_companions()` methods
+  - **Updated descriptions** - Monster defeat guide now shows "Champions can defeat monsters of TWO different types"
+
+### Fixed
+- **Minstrel/Bard Hero Specialty Logic** (2025-07-20 23:58)
 
 ### Added
 - **Phase Pause System** (2025-07-18 23:50)
@@ -139,6 +167,9 @@
   - Added proper interaction for both Novice (1 die) and Master (2 dice) abilities
 
 ### Technical Details
+- **Modified `monster_phase.py`**: Added permanent Dragon's Lair display section and implemented Bard master ability for Champions (2025-07-20 15:00)
+- **Modified `loot_phase.py`**: Added scroll usage functionality with `use_scroll()` method and updated action menu (2025-07-20 15:30)
+- **Modified `regroup_phase.py`**: Added scroll usage functionality with `use_scroll()` method and updated action menu (2025-07-20 15:30)
 - **Modified `phases.py`**: Converted to import hub, removed all phase class implementations (2025-07-18 23:00)
 - **Created `monster_phase.py`**: Extracted MonsterPhase class with all monster combat logic (2025-07-18 23:00)
 - **Created `loot_phase.py`**: Extracted LootPhase class with treasure and potion mechanics (2025-07-18 23:00)

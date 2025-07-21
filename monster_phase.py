@@ -233,9 +233,11 @@ class MonsterPhase:
         print(f"  Total Chests: {dungeon_counts.get(DungeonDiceFace.CHEST.value, 0)}")
         print(f"  Total Potions: {dungeon_counts.get(DungeonDiceFace.POTION.value, 0)}")
         
+        print("\n🐉 Dragon's Lair:")
         if game_state.dragons_lair:
-            print("\n🐉 Dragon's Lair:")
             print(f"  ▫️ Dragon: {len(game_state.dragons_lair)} dice")
+        else:
+            print("  ▫️ Empty")
     
     @staticmethod
     def use_scroll(game_state):
@@ -356,38 +358,96 @@ class MonsterPhase:
                 monster_types[monster] = []
             monster_types[monster].append(monster)
         
-        print(f"\nChampion can defeat all monsters of a given type:")
+        # Check if Master Bard specialty is active
+        bard_master_active = specialty_active and hero_card.current_rank == HeroRank.MASTER
+        
+        if bard_master_active:
+            print(f"\n✨ Master Bard's specialty active: Champion can defeat monsters of TWO different types! ✨")
+            print(f"Champion can defeat all monsters of a given type:")
+        else:
+            print(f"\nChampion can defeat all monsters of a given type:")
+        
         for i, (monster_type, monster_list) in enumerate(monster_types.items()):
             print(f"{i+1}. All {monster_type}s ({len(monster_list)} monster(s))")
         
-        # Let player choose which monster type to defeat
-        choice = input("Choose monster type to defeat (number): ").strip()
+        # Let player choose first monster type to defeat
+        choice = input("Choose first monster type to defeat (number): ").strip()
         try:
             choice_idx = int(choice) - 1
             if 0 <= choice_idx < len(monster_types):
                 selected_type = list(monster_types.keys())[choice_idx]
                 selected_monsters = monster_types[selected_type]
                 
-                # Apply Master Bard specialty if active
-                if specialty_active and hero_card.current_rank == HeroRank.MASTER:
-                    # Master Bard: Champions defeat 1 extra monster
-                    if len(selected_monsters) > 1:
-                        print(f"✨ Master Bard's specialty active: Champion defeats {len(selected_monsters)} {selected_type}s! ✨")
-                    else:
-                        print(f"✨ Master Bard's specialty active: Champion defeats 1 {selected_type}! ✨")
-                else:
-                    print(f"Champion defeats {len(selected_monsters)} {selected_type}(s).")
+                print(f"Champion defeats {len(selected_monsters)} {selected_type}(s).")
                 
                 # Remove defeated monsters from dungeon dice and monsters list
                 for monster in selected_monsters:
                     game_state.dungeon_dice.remove(monster)
                     monsters.remove(monster)
                 
-                # Move champion to graveyard
-                game_state.use_party_die(champion_idx)
-                print(f"Champion moved to Graveyard after defeating {len(selected_monsters)} {selected_type}(s).")
-                
-                return True
+                # If Master Bard is active, allow selecting a second monster type
+                if bard_master_active and len(monster_types) > 1:
+                    # Update monster types after first defeat
+                    remaining_monster_types = {}
+                    for monster in monsters:
+                        if monster not in remaining_monster_types:
+                            remaining_monster_types[monster] = []
+                        remaining_monster_types[monster].append(monster)
+                    
+                    if remaining_monster_types:
+                        print(f"\n✨ Master Bard's specialty allows defeating a second monster type! ✨")
+                        print(f"Remaining monster types:")
+                        for i, (monster_type, monster_list) in enumerate(remaining_monster_types.items()):
+                            print(f"{i+1}. All {monster_type}s ({len(monster_list)} monster(s))")
+                        
+                        second_choice = input("Choose second monster type to defeat (number, or 0 to skip): ").strip()
+                        try:
+                            second_choice_idx = int(second_choice) - 1
+                            if second_choice_idx == -1:  # Skip second choice
+                                print("Skipping second monster type.")
+                            elif 0 <= second_choice_idx < len(remaining_monster_types):
+                                second_selected_type = list(remaining_monster_types.keys())[second_choice_idx]
+                                second_selected_monsters = remaining_monster_types[second_selected_type]
+                                
+                                print(f"✨ Champion also defeats {len(second_selected_monsters)} {second_selected_type}(s)! ✨")
+                                
+                                # Remove second set of defeated monsters
+                                for monster in second_selected_monsters:
+                                    game_state.dungeon_dice.remove(monster)
+                                    monsters.remove(monster)
+                                
+                                # Move champion to graveyard
+                                game_state.use_party_die(champion_idx)
+                                total_defeated = len(selected_monsters) + len(second_selected_monsters)
+                                print(f"Champion moved to Graveyard after defeating {total_defeated} monsters ({len(selected_monsters)} {selected_type}s + {len(second_selected_monsters)} {second_selected_type}s).")
+                                
+                                return True
+                            else:
+                                print("Invalid choice for second monster type.")
+                                # Move champion to graveyard for first defeat only
+                                game_state.use_party_die(champion_idx)
+                                print(f"Champion moved to Graveyard after defeating {len(selected_monsters)} {selected_type}(s).")
+                                
+                                return True
+                        except ValueError:
+                            print("Invalid input for second monster type.")
+                            # Move champion to graveyard for first defeat only
+                            game_state.use_party_die(champion_idx)
+                            print(f"Champion moved to Graveyard after defeating {len(selected_monsters)} {selected_type}(s).")
+                            
+                            return True
+                    else:
+                        # No remaining monsters after first defeat
+                        game_state.use_party_die(champion_idx)
+                        print(f"Champion moved to Graveyard after defeating {len(selected_monsters)} {selected_type}(s).")
+                        
+                        return True
+                else:
+                    # Normal Champion behavior (no Master Bard or no second monster type available)
+                    game_state.use_party_die(champion_idx)
+                    print(f"Champion moved to Graveyard after defeating {len(selected_monsters)} {selected_type}(s).")
+                    
+                    return True
             else:
                 print("Invalid choice.")
                 return False
@@ -419,7 +479,7 @@ class MonsterPhase:
                 print("• Thieves may be used as Mages and Mages may be used as Thieves")
             else:  # Master
                 print("• Thieves may be used as Mages and Mages may be used as Thieves")
-                print("• Champions defeat 1 extra monster")
+                print("• Champions can defeat monsters of TWO different types")
         
         # Show available companions
         print("\n🤝 Available Companions:")
@@ -500,42 +560,117 @@ class MonsterPhase:
                             monster_types[monster] = []
                         monster_types[monster].append(monster)
                     
-                    print(f"\nChampion can defeat all monsters of a given type:")
+                    # Check if Master Bard specialty is active
+                    bard_master_active = specialty_active and hero_card.current_rank == HeroRank.MASTER
+                    
+                    if bard_master_active:
+                        print(f"\n✨ Master Bard's specialty active: Champion can defeat monsters of TWO different types! ✨")
+                        print(f"Champion can defeat all monsters of a given type:")
+                    else:
+                        print(f"\nChampion can defeat all monsters of a given type:")
+                    
                     for i, (monster_type, monster_list) in enumerate(monster_types.items()):
                         print(f"{i+1}. All {monster_type}s ({len(monster_list)} monster(s))")
                     
-                    # Let player choose which monster type to defeat
-                    choice = input("Choose monster type to defeat (number): ").strip()
+                    # Let player choose first monster type to defeat
+                    choice = input("Choose first monster type to defeat (number): ").strip()
                     try:
                         choice_idx = int(choice) - 1
                         if 0 <= choice_idx < len(monster_types):
                             selected_type = list(monster_types.keys())[choice_idx]
                             selected_monsters = monster_types[selected_type]
                             
-                            # Apply Master Bard specialty if active
-                            if specialty_active and hero_card.current_rank == HeroRank.MASTER:
-                                # Master Bard: Champions defeat 1 extra monster
-                                if len(selected_monsters) > 1:
-                                    print(f"✨ Master Bard's specialty active: Champion defeats {len(selected_monsters)} {selected_type}s! ✨")
-                                else:
-                                    print(f"✨ Master Bard's specialty active: Champion defeats 1 {selected_type}! ✨")
-                            else:
-                                print(f"Champion defeats {len(selected_monsters)} {selected_type}(s).")
+                            print(f"Champion defeats {len(selected_monsters)} {selected_type}(s).")
                             
                             # Remove defeated monsters from dungeon dice and monsters list
                             for monster in selected_monsters:
                                 game_state.dungeon_dice.remove(monster)
                                 monsters.remove(monster)
                             
-                            # Use companion
-                            if source == "party":
-                                game_state.use_party_die(idx)
-                                print(f"{companion} moved to Graveyard after defeating {len(selected_monsters)} {selected_type}(s).")
-                            else:  # treasure
-                                game_state.use_treasure(idx)
-                                print(f"{companion.name} used and returned to treasure pool after defeating {len(selected_monsters)} {selected_type}(s).")
-                            
-                            return True
+                            # If Master Bard is active, allow selecting a second monster type
+                            if bard_master_active and len(monster_types) > 1:
+                                # Update monster types after first defeat
+                                remaining_monster_types = {}
+                                for monster in monsters:
+                                    if monster not in remaining_monster_types:
+                                        remaining_monster_types[monster] = []
+                                    remaining_monster_types[monster].append(monster)
+                                
+                                if remaining_monster_types:
+                                    print(f"\n✨ Master Bard's specialty allows defeating a second monster type! ✨")
+                                    print(f"Remaining monster types:")
+                                    for i, (monster_type, monster_list) in enumerate(remaining_monster_types.items()):
+                                        print(f"{i+1}. All {monster_type}s ({len(monster_list)} monster(s))")
+                                    
+                                    second_choice = input("Choose second monster type to defeat (number, or 0 to skip): ").strip()
+                                    try:
+                                        second_choice_idx = int(second_choice) - 1
+                                        if second_choice_idx == -1:  # Skip second choice
+                                            print("Skipping second monster type.")
+                                        elif 0 <= second_choice_idx < len(remaining_monster_types):
+                                            second_selected_type = list(remaining_monster_types.keys())[second_choice_idx]
+                                            second_selected_monsters = remaining_monster_types[second_selected_type]
+                                            
+                                            print(f"✨ Champion also defeats {len(second_selected_monsters)} {second_selected_type}(s)! ✨")
+                                            
+                                            # Remove second set of defeated monsters
+                                            for monster in second_selected_monsters:
+                                                game_state.dungeon_dice.remove(monster)
+                                                monsters.remove(monster)
+                                            
+                                            # Use companion
+                                            if source == "party":
+                                                game_state.use_party_die(idx)
+                                                total_defeated = len(selected_monsters) + len(second_selected_monsters)
+                                                print(f"{companion} moved to Graveyard after defeating {total_defeated} monsters ({len(selected_monsters)} {selected_type}s + {len(second_selected_monsters)} {second_selected_type}s).")
+                                            else:  # treasure
+                                                game_state.use_treasure(idx)
+                                                total_defeated = len(selected_monsters) + len(second_selected_monsters)
+                                                print(f"{companion.name} used and returned to treasure pool after defeating {total_defeated} monsters ({len(selected_monsters)} {selected_type}s + {len(second_selected_monsters)} {second_selected_type}s).")
+                                            
+                                            return True
+                                        else:
+                                            print("Invalid choice for second monster type.")
+                                            # Use companion for first defeat only
+                                            if source == "party":
+                                                game_state.use_party_die(idx)
+                                                print(f"{companion} moved to Graveyard after defeating {len(selected_monsters)} {selected_type}(s).")
+                                            else:  # treasure
+                                                game_state.use_treasure(idx)
+                                                print(f"{companion.name} used and returned to treasure pool after defeating {len(selected_monsters)} {selected_type}(s).")
+                                            
+                                            return True
+                                    except ValueError:
+                                        print("Invalid input for second monster type.")
+                                        # Use companion for first defeat only
+                                        if source == "party":
+                                            game_state.use_party_die(idx)
+                                            print(f"{companion} moved to Graveyard after defeating {len(selected_monsters)} {selected_type}(s).")
+                                        else:  # treasure
+                                            game_state.use_treasure(idx)
+                                            print(f"{companion.name} used and returned to treasure pool after defeating {len(selected_monsters)} {selected_type}(s).")
+                                        
+                                        return True
+                                else:
+                                    # No remaining monsters after first defeat
+                                    if source == "party":
+                                        game_state.use_party_die(idx)
+                                        print(f"{companion} moved to Graveyard after defeating {len(selected_monsters)} {selected_type}(s).")
+                                    else:  # treasure
+                                        game_state.use_treasure(idx)
+                                        print(f"{companion.name} used and returned to treasure pool after defeating {len(selected_monsters)} {selected_type}(s).")
+                                    
+                                    return True
+                            else:
+                                # Normal Champion behavior (no Master Bard or no second monster type available)
+                                if source == "party":
+                                    game_state.use_party_die(idx)
+                                    print(f"{companion} moved to Graveyard after defeating {len(selected_monsters)} {selected_type}(s).")
+                                else:  # treasure
+                                    game_state.use_treasure(idx)
+                                    print(f"{companion.name} used and returned to treasure pool after defeating {len(selected_monsters)} {selected_type}(s).")
+                                
+                                return True
                         else:
                             print("Invalid choice.")
                             return False

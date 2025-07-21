@@ -37,6 +37,12 @@ class LootPhase:
                 actions.append("Open Treasure Chests")
             if potions > 0:
                 actions.append("Drink Healing Potions")
+            
+            # Check if scrolls are available
+            scrolls_available = [i for i, die in enumerate(game_state.party_dice) if die == PartyDiceFace.SCROLL.value]
+            if scrolls_available:
+                actions.append("Use Scroll to Re-roll Dice")
+            
             actions.append("End Loot Phase")
             
             for i, action in enumerate(actions, 1):
@@ -44,6 +50,8 @@ class LootPhase:
                     print(f"{i}. 📦 {action}")
                 elif "Potion" in action:
                     print(f"{i}. 🧪 {action}")
+                elif "Scroll" in action:
+                    print(f"{i}. 🎲 {action}")
                 else:
                     print(f"{i}. 🚪 {action}")
             
@@ -57,6 +65,11 @@ class LootPhase:
                         chests = LootPhase.open_chests(game_state, chests)
                     elif selected_action == "Drink Healing Potions":
                         potions = LootPhase.quaff_potions(game_state, potions)
+                    elif selected_action == "Use Scroll to Re-roll Dice":
+                        LootPhase.use_scroll(game_state)
+                        # Update chest and potion counts after potential re-rolls
+                        chests = game_state.dungeon_dice.count(DungeonDiceFace.CHEST.value)
+                        potions = game_state.dungeon_dice.count(DungeonDiceFace.POTION.value)
                     else:  # End Loot Phase
                         break
                 else:
@@ -324,4 +337,87 @@ class LootPhase:
                 return available_potions
         except ValueError:
             print("Invalid input.")
-            return available_potions 
+            return available_potions
+    
+    @staticmethod
+    def use_scroll(game_state):
+        """Use a Scroll to re-roll dice during the Loot Phase."""
+        # Check if there are scrolls available
+        scroll_indices = [i for i, die in enumerate(game_state.party_dice) if die == PartyDiceFace.SCROLL.value]
+        
+        if not scroll_indices:
+            print("No Scrolls available in your active party!")
+            return False
+        
+        # Select a scroll to use
+        if len(scroll_indices) == 1:
+            scroll_idx = scroll_indices[0]
+        else:
+            print("Select which Scroll to use:")
+            for i, idx in enumerate(scroll_indices):
+                print(f"{i+1}. Scroll at position {idx+1}")
+            choice = input("Choose a Scroll (number): ").strip()
+            try:
+                choice_idx = int(choice) - 1
+                if 0 <= choice_idx < len(scroll_indices):
+                    scroll_idx = scroll_indices[choice_idx]
+                else:
+                    print("Invalid choice.")
+                    return False
+            except ValueError:
+                print("Invalid input.")
+                return False
+        
+        # Move scroll to graveyard
+        game_state.use_party_die(scroll_idx)
+        print("Used a Scroll! Select dice to re-roll (results will be random).")
+        
+        # Create a list of all available dice to re-roll
+        print("\nAvailable Dice to Re-roll:")
+        print("=== Dungeon Dice ===")
+        reroll_options = []
+        # Add dungeon dice
+        for i, die in enumerate(game_state.dungeon_dice):
+            reroll_options.append(("dungeon", i, die))
+            print(f"{len(reroll_options)}. Dungeon Die: {die}")
+        
+        print("\n=== Party Dice ===")
+        # Add party dice (excluding the scroll we just used)
+        for i, die in enumerate(game_state.party_dice):
+            if i != scroll_idx:  # Don't show the scroll we just used
+                reroll_options.append(("party", i, die))
+                print(f"{len(reroll_options)}. Party Die: {die}")
+        
+        if not reroll_options:
+            print("No dice available to re-roll!")
+            return False
+        
+        print(f"{len(reroll_options)+1}. Cancel")
+        
+        choice = input("Choose dice to re-roll (number): ").strip()
+        try:
+            choice_idx = int(choice) - 1
+            if choice_idx == len(reroll_options):
+                print("Re-roll cancelled.")
+                return False
+            if 0 <= choice_idx < len(reroll_options):
+                source, idx, old_die = reroll_options[choice_idx]
+                
+                # Re-roll the selected die
+                dice_manager = DiceManager()
+                if source == "dungeon":
+                    new_die = dice_manager.roll_dungeon_dice(1)[0]
+                    game_state.dungeon_dice[idx] = new_die
+                    print(f"Dungeon die re-rolled: {old_die} → {new_die}")
+                else:  # party
+                    new_die = dice_manager.roll_party_dice(1)[0]
+                    game_state.party_dice[idx] = new_die
+                    print(f"Party die re-rolled: {old_die} → {new_die}")
+                
+                return True
+            else:
+                print("Invalid choice.")
+                return False
+        except ValueError:
+            print("Invalid input.")
+            return False 

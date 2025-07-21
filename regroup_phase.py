@@ -79,9 +79,14 @@ class RegroupPhase:
         
         print(f"\nCurrent Level: {game_state.level}\n")
         
+        # Check if scrolls are available
+        scrolls_available = [i for i, die in enumerate(game_state.party_dice) if die == PartyDiceFace.SCROLL.value]
+        
         print("Choose your Regroup action:")
         print("1) Retire to the Tavern (End delve and gain Experience)")
         print("2) Seek Glory (Challenge the next dungeon level)")
+        if scrolls_available:
+            print("3) Use Scroll to Re-roll Dice")
         
         while True:
             try:
@@ -90,8 +95,14 @@ class RegroupPhase:
                     return RegroupPhase.retire_to_tavern(game_state, forced_retirement=False)
                 elif choice == "2":
                     return RegroupPhase.seek_glory(game_state)
+                elif choice == "3" and scrolls_available:
+                    RegroupPhase.use_scroll(game_state)
+                    # Re-display the game state after scroll usage
+                    RegroupPhase.execute(game_state, hero_card)
+                    return True
                 else:
-                    print("Invalid choice. Please enter 1 or 2.")
+                    max_choice = "3" if scrolls_available else "2"
+                    print(f"Invalid choice. Please enter 1-{max_choice}.")
             except ValueError:
                 print("Invalid input. Please enter a number.")
     
@@ -197,4 +208,76 @@ class RegroupPhase:
             print(f"\nDragon's Lair now contains {len(game_state.dragons_lair)} dice!")
         
         # Continue delving
-        return True 
+        return True
+    
+    @staticmethod
+    def use_scroll(game_state):
+        """Use a Scroll to re-roll dice during the Regroup Phase."""
+        # Check if there are scrolls available
+        scroll_indices = [i for i, die in enumerate(game_state.party_dice) if die == PartyDiceFace.SCROLL.value]
+        
+        if not scroll_indices:
+            print("No Scrolls available in your active party!")
+            return False
+        
+        # Select a scroll to use
+        if len(scroll_indices) == 1:
+            scroll_idx = scroll_indices[0]
+        else:
+            print("Select which Scroll to use:")
+            for i, idx in enumerate(scroll_indices):
+                print(f"{i+1}. Scroll at position {idx+1}")
+            choice = input("Choose a Scroll (number): ").strip()
+            try:
+                choice_idx = int(choice) - 1
+                if 0 <= choice_idx < len(scroll_indices):
+                    scroll_idx = scroll_indices[choice_idx]
+                else:
+                    print("Invalid choice.")
+                    return False
+            except ValueError:
+                print("Invalid input.")
+                return False
+        
+        # Move scroll to graveyard
+        game_state.use_party_die(scroll_idx)
+        print("Used a Scroll! Select dice to re-roll (results will be random).")
+        
+        # Create a list of all available dice to re-roll
+        print("\nAvailable Dice to Re-roll:")
+        print("=== Party Dice ===")
+        reroll_options = []
+        # Add party dice (excluding the scroll we just used)
+        for i, die in enumerate(game_state.party_dice):
+            if i != scroll_idx:  # Don't show the scroll we just used
+                reroll_options.append(("party", i, die))
+                print(f"{len(reroll_options)}. Party Die: {die}")
+        
+        if not reroll_options:
+            print("No party dice available to re-roll!")
+            return False
+        
+        print(f"{len(reroll_options)+1}. Cancel")
+        
+        choice = input("Choose dice to re-roll (number): ").strip()
+        try:
+            choice_idx = int(choice) - 1
+            if choice_idx == len(reroll_options):
+                print("Re-roll cancelled.")
+                return False
+            if 0 <= choice_idx < len(reroll_options):
+                source, idx, old_die = reroll_options[choice_idx]
+                
+                # Re-roll the selected die
+                dice_manager = DiceManager()
+                new_die = dice_manager.roll_party_dice(1)[0]
+                game_state.party_dice[idx] = new_die
+                print(f"Party die re-rolled: {old_die} → {new_die}")
+                
+                return True
+            else:
+                print("Invalid choice.")
+                return False
+        except ValueError:
+            print("Invalid input.")
+            return False 
