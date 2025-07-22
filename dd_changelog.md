@@ -1,5 +1,14 @@
 # Dungeon Dice Changelog
 
+## [Unreleased] - 2025-07-27
+
+### Changed
+- **Removed color references from dice documentation** (2025-07-27)
+  - **Cleaned up dice.py docstrings** - Removed "white party dice" and "black dungeon dice" color references
+  - **Improved code clarity** - Dice documentation now focuses on functionality rather than physical appearance
+  - **Consistent terminology** - All dice references now use generic "party dice" and "dungeon dice" terminology
+  - **No functional impact** - Color removal is purely cosmetic and doesn't affect game mechanics
+
 ## [Unreleased] - 2025-07-20
 
 ### Added

@@ -20,13 +20,13 @@ class DungeonDiceFace(Enum):
 class DiceManager:
     @staticmethod
     def roll_party_dice(num_dice=7):
-        """Roll the white party dice."""
+        """Roll the party dice."""
         party_faces = [face.value for face in PartyDiceFace]
         return [random.choice(party_faces) for _ in range(num_dice)]
     
     @staticmethod
     def roll_dungeon_dice(num_dice=1):
-        """Roll the black dungeon dice."""
+        """Roll the dungeon dice."""
         dungeon_faces = [face.value for face in DungeonDiceFace]
         result = [random.choice(dungeon_faces) for _ in range(num_dice)]
         return result 

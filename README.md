@@ -122,6 +122,12 @@ The game uses a modular phase architecture where each game phase is implemented 
 
 ## Recent Updates
 
+### Code Documentation Cleanup (Latest)
+- **Removed color references from dice documentation** - Cleaned up docstrings in `dice.py` to remove "white party dice" and "black dungeon dice" references
+- **Improved code clarity** - Documentation now focuses on functionality rather than physical appearance
+- **Consistent terminology** - All dice references use generic "party dice" and "dungeon dice" terminology
+- **No functional impact** - Changes are purely cosmetic and don't affect game mechanics
+
 ### Monster Defeat Mechanics (Latest)
 - **Fixed all companion monster defeat abilities** to match game rules exactly
 - **Fighters, Clerics, and Mages** can now choose between defeating ALL of their primary monster type OR individual monsters of other types they can handle
