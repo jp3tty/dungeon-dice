@@ -38,7 +38,10 @@ class HeroCard:
         if self.current_rank == HeroRank.NOVICE and xp >= self.xp_to_expert:
             self.current_rank = HeroRank.MASTER
             print(f"Your hero has ascended from {self.novice_name} to {self.master_name}!")
-            print(f"New Specialty: {self.master_specialty}")
+            print(f"New Ultimate: {self.master_ultimate}")
+            # Only show specialty change if it actually changed
+            if self.master_specialty != self.novice_specialty:
+                print(f"New Specialty: {self.master_specialty}")
             return True
         return False
     

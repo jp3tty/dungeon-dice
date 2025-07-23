@@ -228,9 +228,6 @@ class DungeonDiceGame:
         # Step 5: Roll 1 Dungeon Die to populate the dungeon
         print("Rolling 1 Dungeon Die to populate the dungeon...")
         self.state.dungeon_dice = self.roll_dungeon_dice(1)
-        
-        # Reset dragon's lair
-        self.state.dragons_lair = []
     
     def roll_dungeon_dice(self, num_dice=1):
         """Roll the black dungeon dice, handling dragons specially."""

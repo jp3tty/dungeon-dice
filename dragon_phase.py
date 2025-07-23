@@ -125,8 +125,13 @@ class DragonPhase:
         print("\nYour party confronts the Dragon!")
         for source, idx, companion in selected_companions:
             if source == "party":
-                game_state.use_party_die(idx)
-                print(f"{companion} moved to Graveyard.")
+                # Find the actual die in the current party dice list and remove it
+                if companion in game_state.party_dice:
+                    die_idx = game_state.party_dice.index(companion)
+                    game_state.use_party_die(die_idx)
+                    print(f"{companion} moved to Graveyard.")
+                else:
+                    print(f"Warning: {companion} not found in party dice!")
             else:  # treasure
                 game_state.use_treasure(idx)
                 print(f"{companion.name} used and returned to treasure pool.")

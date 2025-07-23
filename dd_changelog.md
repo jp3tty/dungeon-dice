@@ -3,6 +3,19 @@
 ## [Unreleased] - 2025-07-23
 
 ### Changed
+- **Improved hero level-up messages** (2025-07-23)
+  - **Added new ultimate ability display** - Hero level-up now always shows the new ultimate ability when ascending to Expert rank
+  - **Smart specialty display** - Only shows specialty changes when they actually change (most heroes keep same specialty)
+  - **Enhanced user experience** - Players now see the most important upgrade (ultimate ability) prominently displayed
+  - **Accurate information** - Eliminates confusion about specialty changes that don't actually occur
+
+- **Fixed dragon phase companion tracking** (2025-07-23)
+  - **Fixed missing companions in graveyard** - Companions used in dragon battles now properly appear in graveyard during regroup phase
+  - **Improved indexing reliability** - Dragon phase now finds actual dice in party list instead of relying on potentially invalid stored indices
+  - **Enhanced scroll compatibility** - Fixed issue where scroll re-rolls during dragon battle could cause wrong companions to be moved to graveyard
+  - **Added safety checks** - Warning message if selected companion is not found in party dice list
+  - **Preserved treasure handling** - Treasure companions continue to work correctly and return to treasure pool
+
 - **Renamed hero levels from "Master" to "Expert"** (2025-07-23)
   - **Updated all hero level references** - Changed "Master" rank to "Expert" rank throughout the codebase
   - **Updated hero names and abilities** - All hero progression now uses "Expert" terminology

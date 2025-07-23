@@ -239,17 +239,14 @@ class RegroupPhase:
                 print("Invalid input.")
                 return False
         
-        # Move scroll to graveyard
-        game_state.use_party_die(scroll_idx)
+        # Create a list of all available dice to re-roll BEFORE removing the scroll
         print("Used a Scroll! Select dice to re-roll (results will be random).")
-        
-        # Create a list of all available dice to re-roll
         print("\nAvailable Dice to Re-roll:")
         print("=== Party Dice ===")
         reroll_options = []
-        # Add party dice (excluding the scroll we just used)
+        # Add party dice (excluding the scroll we just selected)
         for i, die in enumerate(game_state.party_dice):
-            if i != scroll_idx:  # Don't show the scroll we just used
+            if i != scroll_idx:  # Don't show the scroll we just selected
                 reroll_options.append(("party", i, die))
                 print(f"{len(reroll_options)}. Party Die: {die}")
         
@@ -267,6 +264,9 @@ class RegroupPhase:
                 return False
             if 0 <= choice_idx < len(reroll_options):
                 source, idx, old_die = reroll_options[choice_idx]
+                
+                # Move scroll to graveyard AFTER user makes their choice
+                game_state.use_party_die(scroll_idx)
                 
                 # Re-roll the selected die
                 dice_manager = DiceManager()
