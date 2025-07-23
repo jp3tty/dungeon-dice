@@ -1,9 +1,16 @@
 # Dungeon Dice Changelog
 
-## [Unreleased] - 2025-07-27
+## [Unreleased] - 2025-07-23
 
 ### Changed
-- **Removed color references from dice documentation** (2025-07-27)
+- **Renamed hero levels from "Master" to "Expert"** (2025-07-23)
+  - **Updated all hero level references** - Changed "Master" rank to "Expert" rank throughout the codebase
+  - **Updated hero names and abilities** - All hero progression now uses "Expert" terminology
+  - **Updated documentation** - README and changelog now reflect "Expert" level terminology
+  - **Updated user interface** - All displays now show "Expert" instead of "Master" for advanced heroes
+  - **No functional impact** - This is purely a terminology change, all game mechanics remain the same
+
+- **Removed color references from dice documentation** (2025-07-22)
   - **Cleaned up dice.py docstrings** - Removed "white party dice" and "black dungeon dice" color references
   - **Improved code clarity** - Dice documentation now focuses on functionality rather than physical appearance
   - **Consistent terminology** - All dice references now use generic "party dice" and "dungeon dice" terminology
@@ -109,7 +116,7 @@
   - **Formation Specialty**: Draw 2 Treasure Tokens when forming the party
   - **End-Game Specialty**: Discard 6 Treasure Tokens at game end
   - **Novice Ultimate**: Treasure Seeker - Draw 2 Treasure Tokens, then discard 2
-  - **Master Ultimate**: Treasure Seeker - Draw 2 Treasure Tokens, then discard 1
+  - **Expert Ultimate**: Treasure Seeker - Draw 2 Treasure Tokens, then discard 1
   - Integrated with existing treasure pool system for seamless gameplay
 - Flexible hero specialty system for future heroes (2024-12-19 19:00)
   - Added `apply_formation_specialty()` and `apply_end_game_specialty()` methods to base HeroCard class

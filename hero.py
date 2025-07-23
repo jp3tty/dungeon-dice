@@ -4,18 +4,18 @@ from dice import DungeonDiceFace
 
 class HeroRank(Enum):
     NOVICE = "Novice"
-    MASTER = "Master"
+    MASTER = "Expert"
 
 class HeroCard:
     def __init__(self, novice_name, master_name, novice_specialty, master_specialty, 
-                 novice_ultimate, master_ultimate, xp_to_master=5):
+                 novice_ultimate, master_ultimate, xp_to_expert=5):
         self.novice_name = novice_name
         self.master_name = master_name
         self.novice_specialty = novice_specialty
         self.master_specialty = master_specialty
         self.novice_ultimate = novice_ultimate
         self.master_ultimate = master_ultimate
-        self.xp_to_master = xp_to_master
+        self.xp_to_expert = xp_to_expert
         
         # Current state
         self.current_rank = HeroRank.NOVICE
@@ -35,7 +35,7 @@ class HeroCard:
     
     def check_level_up(self, xp):
         """Check if hero can level up based on XP"""
-        if self.current_rank == HeroRank.NOVICE and xp >= self.xp_to_master:
+        if self.current_rank == HeroRank.NOVICE and xp >= self.xp_to_expert:
             self.current_rank = HeroRank.MASTER
             print(f"Your hero has ascended from {self.novice_name} to {self.master_name}!")
             print(f"New Specialty: {self.master_specialty}")
@@ -71,7 +71,7 @@ class HeroCard:
     
     def display_card_info(self):
         """Display detailed hero card information"""
-        rank_text = "✨ MASTER ✨" if self.current_rank == HeroRank.MASTER else "NOVICE"
+        rank_text = "✨ EXPERT ✨" if self.current_rank == HeroRank.MASTER else "NOVICE"
         print(f"\n{'='*50}")
         print(f"📜 {self.name} ({rank_text}) 📜".center(50))
         print(f"{'='*50}")
@@ -80,7 +80,7 @@ class HeroCard:
         status = "❌ EXHAUSTED" if self.is_exhausted else "✅ READY"
         print(f"📋 Status: {status}")
         if self.current_rank == HeroRank.NOVICE:
-            print(f"📈 XP needed to master: {self.xp_to_master}")
+            print(f"📈 XP needed to expert: {self.xp_to_expert}")
         print("-"*50)
 
 class MinstrelBardHero(HeroCard):
@@ -92,7 +92,7 @@ class MinstrelBardHero(HeroCard):
             master_specialty="Thieves may be used as Mages and Mages may be used as Thieves. Champions defeat 1 extra monster.",
             novice_ultimate="Discard all dice from the Dragon's Lair.",
             master_ultimate="Discard all dice from the Dragon's Lair.",
-            xp_to_master=5
+            xp_to_expert=5
         )
     
     def use_ultimate(self, game_state):
@@ -119,7 +119,7 @@ class AlchemistThaumaturgeHero(HeroCard):
             master_specialty="All Chests become Potions.",
             novice_ultimate="Healing Salve: Roll 1 Party die from the Graveyard and add it to your Party.",
             master_ultimate="Transformation Potion: Roll 2 dice from the Graveyard and add them to your Party.",
-            xp_to_master=5
+            xp_to_expert=5
         )
     
     def use_ultimate(self, game_state):
@@ -184,7 +184,7 @@ class ArchaeologistTombRaiderHero(HeroCard):
             master_specialty="When Forming the Party, draw 2 Treasure Tokens. Discard 6 Treasure Tokens at game end.",
             novice_ultimate="Treasure Seeker: Draw 2 Treasure Tokens from the Treasure Pool and then discard 2 Treasure Tokens.",
             master_ultimate="Treasure Seeker: Draw 2 Treasure Tokens from the Treasure Pool and then discard 1 Treasure Token.",
-            xp_to_master=5
+            xp_to_expert=5
         )
     
     def use_ultimate(self, game_state):

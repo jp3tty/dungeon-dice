@@ -82,7 +82,7 @@ class HeroCard:
     
     def display_card_info(self):
         """Display detailed hero card information"""
-        rank_text = "✨ MASTER ✨" if self.current_rank == HeroRank.MASTER else "NOVICE"
+        rank_text = "✨ EXPERT ✨" if self.current_rank == HeroRank.MASTER else "NOVICE"
         print(f"\n{'='*50}")
         print(f"📜 {self.name} ({rank_text}) 📜".center(50))
         print(f"{'='*50}")

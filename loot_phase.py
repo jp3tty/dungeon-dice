@@ -280,7 +280,7 @@ class LootPhase:
         
         # Check if Thaumaturge ultimate is available and can recover more dice
         if (game_state.selected_hero_card.__class__.__name__ == "AlchemistThaumaturgeHero" and 
-            game_state.selected_hero_card.current_rank.value == "Master" and 
+            game_state.selected_hero_card.current_rank.value == "Expert" and 
             not game_state.selected_hero_card.is_exhausted):
             print("💫 Thaumaturge Ultimate Available: Can recover 2 dice with Transformation Potion!")
         

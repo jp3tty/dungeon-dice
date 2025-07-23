@@ -23,21 +23,21 @@ The game features a **pause system** between phases that allows you to review th
 
 ### Heroes
 - Start as a Novice hero with a unique specialty
-- Can be upgraded to Master rank by gaining experience
+- Can be upgraded to Expert rank by gaining experience
 - Have powerful ultimate abilities that can turn the tide of battle
 - Available Heroes:
   - **Minstrel/Bard**
     - Specialty: Thieves may be used as Mages and Mages may be used as Thieves (Mages can open any number of chests like Thieves)
     - Novice Ultimate: Discard all dice from the Dragon's Lair
-    - Master Ultimate: Discard all dice from the Dragon's Lair + Champions can defeat monsters of TWO different types
+    - Expert Ultimate: Discard all dice from the Dragon's Lair + Champions can defeat monsters of TWO different types
   - **Alchemist/Thaumaturge**
     - Specialty: All Chests become Potions
     - Novice Ultimate: Healing Salve - Roll 1 Party die from the Graveyard and add it to your Party
-    - Master Ultimate: Transformation Potion - Roll 2 dice from the Graveyard and add them to your Party
+    - Expert Ultimate: Transformation Potion - Roll 2 dice from the Graveyard and add them to your Party
   - **Archaeologist/Tomb Raider**
     - Specialty: When Forming the Party, draw 2 Treasure Tokens. Discard 6 Treasure Tokens at game end.
     - Novice Ultimate: Treasure Seeker - Draw 2 Treasure Tokens, then discard 2
-    - Master Ultimate: Treasure Seeker - Draw 2 Treasure Tokens, then discard 1
+    - Expert Ultimate: Treasure Seeker - Draw 2 Treasure Tokens, then discard 1
 
 ### Phases
 1. **Setup Phase**: Roll Party Dice and Dungeon Dice

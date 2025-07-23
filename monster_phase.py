@@ -358,11 +358,11 @@ class MonsterPhase:
                 monster_types[monster] = []
             monster_types[monster].append(monster)
         
-        # Check if Master Bard specialty is active
+        # Check if Expert Bard specialty is active
         bard_master_active = specialty_active and hero_card.current_rank == HeroRank.MASTER
         
         if bard_master_active:
-            print(f"\n✨ Master Bard's specialty active: Champion can defeat monsters of TWO different types! ✨")
+            print(f"\n✨ Expert Bard's specialty active: Champion can defeat monsters of TWO different types! ✨")
             print(f"Champion can defeat all monsters of a given type:")
         else:
             print(f"\nChampion can defeat all monsters of a given type:")
@@ -385,7 +385,7 @@ class MonsterPhase:
                     game_state.dungeon_dice.remove(monster)
                     monsters.remove(monster)
                 
-                # If Master Bard is active, allow selecting a second monster type
+                # If Expert Bard is active, allow selecting a second monster type
                 if bard_master_active and len(monster_types) > 1:
                     # Update monster types after first defeat
                     remaining_monster_types = {}
@@ -395,7 +395,7 @@ class MonsterPhase:
                         remaining_monster_types[monster].append(monster)
                     
                     if remaining_monster_types:
-                        print(f"\n✨ Master Bard's specialty allows defeating a second monster type! ✨")
+                        print(f"\n✨ Expert Bard's specialty allows defeating a second monster type! ✨")
                         print(f"Remaining monster types:")
                         for i, (monster_type, monster_list) in enumerate(remaining_monster_types.items()):
                             print(f"{i+1}. All {monster_type}s ({len(monster_list)} monster(s))")
@@ -443,7 +443,7 @@ class MonsterPhase:
                         
                         return True
                 else:
-                    # Normal Champion behavior (no Master Bard or no second monster type available)
+                    # Normal Champion behavior (no Expert Bard or no second monster type available)
                     game_state.use_party_die(champion_idx)
                     print(f"Champion moved to Graveyard after defeating {len(selected_monsters)} {selected_type}(s).")
                     
@@ -587,7 +587,7 @@ class MonsterPhase:
                                 game_state.dungeon_dice.remove(monster)
                                 monsters.remove(monster)
                             
-                            # If Master Bard is active, allow selecting a second monster type
+                            # If Expert Bard is active, allow selecting a second monster type
                             if bard_master_active and len(monster_types) > 1:
                                 # Update monster types after first defeat
                                 remaining_monster_types = {}
@@ -597,7 +597,7 @@ class MonsterPhase:
                                     remaining_monster_types[monster].append(monster)
                                 
                                 if remaining_monster_types:
-                                    print(f"\n✨ Master Bard's specialty allows defeating a second monster type! ✨")
+                                    print(f"\n✨ Expert Bard's specialty allows defeating a second monster type! ✨")
                                     print(f"Remaining monster types:")
                                     for i, (monster_type, monster_list) in enumerate(remaining_monster_types.items()):
                                         print(f"{i+1}. All {monster_type}s ({len(monster_list)} monster(s))")
@@ -662,7 +662,7 @@ class MonsterPhase:
                                     
                                     return True
                             else:
-                                # Normal Champion behavior (no Master Bard or no second monster type available)
+                                # Normal Champion behavior (no Expert Bard or no second monster type available)
                                 if source == "party":
                                     game_state.use_party_die(idx)
                                     print(f"{companion} moved to Graveyard after defeating {len(selected_monsters)} {selected_type}(s).")
