@@ -1,5 +1,15 @@
 # Dungeon Dice Changelog
 
+## [Unreleased] - 2025-07-24
+
+### Fixed
+- **Fixed hero specialty application bug** (2025-07-24)
+  - **Fixed incorrect specialty activation** - Minstrel/Bard specialty was being applied to all heroes instead of only when Minstrel/Bard was selected
+  - **Added proper hero type checking** - Monster phase now correctly checks if the current hero is Minstrel/Bard before applying specialty
+  - **Isolated hero specialties** - Each hero's specialty now only activates when that specific hero is selected
+  - **Enhanced gameplay integrity** - Players no longer receive specialty options from heroes they haven't selected
+  - **Preserved intended mechanics** - Minstrel/Bard specialty still works correctly when Minstrel/Bard is the selected hero
+
 ## [Unreleased] - 2025-07-23
 
 ### Changed

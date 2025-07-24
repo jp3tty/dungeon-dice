@@ -134,7 +134,9 @@ class MonsterPhase:
                     MonsterPhase.print_state(game_state)
             elif choice == "B":
                 # Go directly to companion selection with descriptions
-                if MonsterPhase.use_companions(game_state, monsters, hero_card, True):
+                # Check if current hero has Minstrel/Bard specialty
+                specialty_active = (hero_card.__class__.__name__ == "MinstrelBardHero")
+                if MonsterPhase.use_companions(game_state, monsters, hero_card, specialty_active):
                     # Update monster list as dice may have changed
                     monsters = [die for die in game_state.dungeon_dice if die in 
                               [DungeonDiceFace.GOBLIN.value, DungeonDiceFace.SKELETON.value, DungeonDiceFace.OOZE.value]]
@@ -168,11 +170,14 @@ class MonsterPhase:
             print("All monsters have been defeated!")
             return True
         else:
-            if MonsterPhase.can_defeat_monsters(game_state, monsters, hero_card, True):  # Always pass specialty_active as True
+            # Check if current hero has Minstrel/Bard specialty
+            specialty_active = (hero_card.__class__.__name__ == "MinstrelBardHero")
+            
+            if MonsterPhase.can_defeat_monsters(game_state, monsters, hero_card, specialty_active):
                 print("\nYour remaining party can defeat all monsters!")
                 print("Automatically using companions to defeat monsters...")
                 # Use companions to defeat remaining monsters
-                MonsterPhase.use_companions_for_remaining_monsters(game_state, monsters, hero_card, True)  # Always pass specialty_active as True
+                MonsterPhase.use_companions_for_remaining_monsters(game_state, monsters, hero_card, specialty_active)
                 return True
             else:
                 print("\nYou must flee the Dungeon! The monsters are too powerful!")
