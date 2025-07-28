@@ -122,6 +122,12 @@ The game uses a modular phase architecture where each game phase is implemented 
 
 ## Recent Updates
 
+### Victory Conditions (Latest)
+- **Added "Stuff of Legend" Level 10 Victory Condition** - Players must retire when they successfully clear level 10, earning 10 experience tokens for this legendary achievement
+- **Required dragon defeat** - Players must defeat any dragons in the lair before achieving "Stuff of Legend" status
+- **Complete victory requirement** - Only defeating both monsters and dragons (if present) qualifies for legendary status
+- **Automatic retirement** - No player choice, automatic delve end with special messaging and rewards
+
 ### Hero System Improvements (Latest)
 - **Renamed hero levels from "Master" to "Expert"** - All hero progression now uses "Expert" terminology for consistency
 - **Improved hero level-up messages** - Level-up now always shows the new ultimate ability and only shows specialty changes when they actually occur

@@ -1,5 +1,17 @@
 # Dungeon Dice Changelog
 
+## [Unreleased] - 2025-07-28
+
+### Added
+- **"Stuff of Legend" Level 10 Victory Condition** (2025-07-28)
+  - **Added automatic retirement at level 10** - Players must retire when they successfully clear level 10
+  - **Implemented legendary achievement** - Special "Stuff of Legend" messaging celebrates the milestone
+  - **Fixed experience reward** - Awards exactly 10 experience tokens (not level-based amount)
+  - **Required dragon defeat** - Players must defeat any dragons in the lair before achieving "Stuff of Legend"
+  - **Complete victory requirement** - Only defeating both monsters and dragons (if present) qualifies for legendary status
+  - **Proper game flow** - Dragon phase occurs before regroup phase, ensuring dragons are dealt with first
+  - **Automatic cleanup** - Returns dragon dice to available pool and ends delve cleanly
+
 ## [Unreleased] - 2025-07-24
 
 ### Fixed

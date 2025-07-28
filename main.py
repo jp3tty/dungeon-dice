@@ -84,7 +84,7 @@ class DungeonDiceGame:
             self.start_delve()
             
             # Check for hero level up between delves
-            if (self.state.selected_hero_card.current_rank == HeroRank.NOVICE and
+            if (self.state.selected_hero_card.current_rank == HeroRank.NOVICE and 
                 self.state.experience_tokens >= self.state.selected_hero_card.xp_to_expert):
                 self.state.selected_hero_card.check_level_up(self.state.experience_tokens)
             

@@ -1,6 +1,6 @@
 from enum import Enum
 import random
-from dice import DungeonDiceFace
+from dice import DungeonDiceFace, DiceManager
 
 class HeroRank(Enum):
     NOVICE = "Novice"
@@ -158,10 +158,13 @@ class AlchemistThaumaturgeHero(HeroCard):
                         selected_die = available_companions[choice - 1]
                         # Remove the selected die from graveyard
                         game_state.graveyard.remove(selected_die)
-                        # Add to party
-                        game_state.party_dice.append(selected_die)
-                        dice_rolled.append(selected_die)
-                        print(f"Revived {selected_die}!")
+                        # Roll the die to get a random new face
+                        dice_manager = DiceManager()
+                        new_die = dice_manager.roll_party_dice(1)[0]
+                        # Add the rolled die to party
+                        game_state.party_dice.append(new_die)
+                        dice_rolled.append(new_die)
+                        print(f"Revived and rolled {selected_die} → {new_die}!")
                         # Update available companions list
                         available_companions.pop(choice - 1)
                     else:

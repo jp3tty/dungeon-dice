@@ -79,6 +79,26 @@ class RegroupPhase:
         
         print(f"\nCurrent Level: {game_state.level}\n")
         
+        # Check for "Stuff of Legend" - if level 10 was just cleared, force retirement
+        if game_state.level == 10:
+            print("\n🏆 STUFF OF LEGEND! 🏆")
+            print("You've cleared the dungeon at Level 10!")
+            print("This is a legendary achievement!")
+            print("The Adventurer must Retire! They collect 10 Experience tokens.")
+            print("The delve is over.")
+            
+            # Award 10 experience tokens
+            game_state.experience_tokens += 10
+            print(f"You gain 10 Experience tokens for this legendary feat!")
+            print(f"Total Experience tokens: {game_state.experience_tokens}")
+            
+            # Return dragons to available pool if any
+            if game_state.dragons_lair:
+                print(f"\nReturning {len(game_state.dragons_lair)} Dragon dice to the available pool.")
+                game_state.dragons_lair = []
+            
+            return False  # End the delve
+        
         # Check if scrolls are available
         scrolls_available = [i for i, die in enumerate(game_state.party_dice) if die == PartyDiceFace.SCROLL.value]
         

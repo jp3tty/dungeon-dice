@@ -129,7 +129,7 @@ class DragonPhase:
                 if companion in game_state.party_dice:
                     die_idx = game_state.party_dice.index(companion)
                     game_state.use_party_die(die_idx)
-                    print(f"{companion} moved to Graveyard.")
+                print(f"{companion} moved to Graveyard.")
                 else:
                     print(f"Warning: {companion} not found in party dice!")
             else:  # treasure
