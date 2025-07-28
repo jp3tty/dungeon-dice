@@ -122,6 +122,20 @@ The game uses a modular phase architecture where each game phase is implemented 
 
 ## Recent Updates
 
+### Hero System Improvements (Latest)
+- **Renamed hero levels from "Master" to "Expert"** - All hero progression now uses "Expert" terminology for consistency
+- **Improved hero level-up messages** - Level-up now always shows the new ultimate ability and only shows specialty changes when they actually occur
+- **Fixed hero specialty application** - Each hero's specialty now only activates when that specific hero is selected (no more Minstrel/Bard specialty appearing for other heroes)
+
+### Dragon Phase Fixes (Latest)
+- **Fixed missing companions in graveyard** - Companions used in dragon battles now properly appear in graveyard during regroup phase
+- **Fixed Dragon's Lair display** - Dragon's Lair now correctly shows dragon count in Monster Phase (was being cleared during setup)
+- **Enhanced scroll compatibility** - Fixed issue where scroll re-rolls during dragon battle could cause wrong companions to be moved to graveyard
+
+### Regroup Phase Fixes (Latest)
+- **Fixed dice re-roll indexing** - Scroll re-rolls now properly show all available dice without indexing issues
+- **Improved re-roll logic** - Re-roll options are created before scroll removal to ensure correct dice display
+
 ### Code Documentation Cleanup (Latest)
 - **Removed color references from dice documentation** - Cleaned up docstrings in `dice.py` to remove "white party dice" and "black dungeon dice" references
 - **Improved code clarity** - Documentation now focuses on functionality rather than physical appearance
