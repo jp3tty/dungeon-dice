@@ -1,5 +1,23 @@
 # Dungeon Dice Changelog
 
+## [Unreleased] - 2025-07-29
+
+### Fixed
+- **Fixed Dragon dice handling in Loot Phase** (2025-07-29)
+  - **Fixed missing Dragon lair movement** - Dragon dice rolled during loot phase re-rolls now properly move to Dragon's Lair
+  - **Added Dragon detection logic** - Loot phase now checks if re-rolled dungeon dice become Dragons
+  - **Consistent Dragon handling** - Matches the same Dragon lair movement logic used in Dragon Phase
+  - **Enhanced user feedback** - Shows "Rolled a Dragon! It goes to the Dragon's Lair." message when Dragon appears
+  - **Proper dice management** - Removes old die from dungeon dice and adds new Dragon die to lair
+  - **Preserved game mechanics** - All other re-roll functionality remains unchanged
+
+### Changed
+- **Improved Dragon Phase scroll timing** (2025-07-29)
+  - **Moved scroll option before companion selection** - Players can now use scrolls to re-roll dice before choosing dragon battle companions
+  - **Enhanced strategic planning** - Allows players to potentially improve party composition before committing to battle companions
+  - **Better user experience** - More logical flow where scroll usage precedes companion selection
+  - **Updated messaging** - Changed prompt from "before the battle" to "before selecting companions" for clarity
+
 ## [Unreleased] - 2025-07-28
 
 ### Added

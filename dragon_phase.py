@@ -68,6 +68,13 @@ class DragonPhase:
             print("No companions available to battle the Dragon!")
             return False
         
+        # Option to use scrolls before selecting companions
+        if scrolls_available:
+            print(f"\nYou have {len(scrolls_available)} Scroll(s) available during the dragon battle.")
+            use_scroll = input("Would you like to use a Scroll to re-roll dice before selecting companions? (y/n): ").strip().lower()
+            if use_scroll == 'y':
+                DragonPhase.use_scroll_during_battle(game_state)
+        
         print("\nYou must use exactly 3 different types of Companions to battle the Dragon.")
         print("(Scrolls and Champions are not companions and cannot be used to defeat the dragon)")
         print("Select your companions one at a time:")
@@ -114,13 +121,6 @@ class DragonPhase:
                 print("Invalid input. You must flee!")
                 return False
         
-        # Option to use scrolls during the battle
-        if scrolls_available:
-            print(f"\nYou have {len(scrolls_available)} Scroll(s) available during the dragon battle.")
-            use_scroll = input("Would you like to use a Scroll to re-roll dice before the battle? (y/n): ").strip().lower()
-            if use_scroll == 'y':
-                DragonPhase.use_scroll_during_battle(game_state)
-        
         # Use all selected companions
         print("\nYour party confronts the Dragon!")
         for source, idx, companion in selected_companions:
@@ -129,7 +129,7 @@ class DragonPhase:
                 if companion in game_state.party_dice:
                     die_idx = game_state.party_dice.index(companion)
                     game_state.use_party_die(die_idx)
-                print(f"{companion} moved to Graveyard.")
+                    print(f"{companion} moved to Graveyard.")
                 else:
                     print(f"Warning: {companion} not found in party dice!")
             else:  # treasure

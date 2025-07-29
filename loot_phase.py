@@ -407,8 +407,16 @@ class LootPhase:
                 dice_manager = DiceManager()
                 if source == "dungeon":
                     new_die = dice_manager.roll_dungeon_dice(1)[0]
-                    game_state.dungeon_dice[idx] = new_die
-                    print(f"Dungeon die re-rolled: {old_die} → {new_die}")
+                    if new_die == DungeonDiceFace.DRAGON.value:
+                        # Remove the old die from dungeon dice
+                        game_state.dungeon_dice.pop(idx)
+                        # Add the new dragon die to the lair
+                        game_state.dragons_lair.append(new_die)
+                        print(f"Dungeon die re-rolled: {old_die} → {new_die}")
+                        print(f"Rolled a Dragon! It goes to the Dragon's Lair.")
+                    else:
+                        game_state.dungeon_dice[idx] = new_die
+                        print(f"Dungeon die re-rolled: {old_die} → {new_die}")
                 else:  # party
                     new_die = dice_manager.roll_party_dice(1)[0]
                     game_state.party_dice[idx] = new_die
