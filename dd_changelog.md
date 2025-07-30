@@ -11,12 +11,30 @@
   - **Proper dice management** - Removes old die from dungeon dice and adds new Dragon die to lair
   - **Preserved game mechanics** - All other re-roll functionality remains unchanged
 
+- **Fixed missing party dice in Loot Phase scroll re-rolls** (2025-07-29)
+  - **Fixed incorrect scroll exclusion logic** - Party dice were being incorrectly excluded from re-roll options after scroll usage
+  - **Resolved index shifting issue** - Scroll removal was changing party dice indices, causing wrong dice to be excluded
+  - **Simplified logic** - Removed unnecessary exclusion check since scroll is already removed from party dice
+  - **Enhanced user experience** - All party dice now properly appear as re-roll options after using a scroll
+
 ### Changed
 - **Improved Dragon Phase scroll timing** (2025-07-29)
   - **Moved scroll option before companion selection** - Players can now use scrolls to re-roll dice before choosing dragon battle companions
   - **Enhanced strategic planning** - Allows players to potentially improve party composition before committing to battle companions
   - **Better user experience** - More logical flow where scroll usage precedes companion selection
   - **Updated messaging** - Changed prompt from "before the battle" to "before selecting companions" for clarity
+
+- **Separated treasure companions from Active Party Dice display** (2025-07-29)
+  - **Removed treasure counting from Active Party Dice** - Treasure tokens that act as companions are no longer counted in the "Active Party Dice" section
+  - **Preserved treasure availability** - Treasure companions still appear in "Available Companions" list during monster combat
+  - **Enhanced clarity** - "Active Party Dice" now only shows actual party dice, while "Carried Treasure" shows treasure items separately
+  - **Improved user experience** - Clearer distinction between actual party dice and treasure items that can act as companions
+
+- **Fixed dragon lair persistence between delves** (2025-07-29)
+  - **Added dragon lair clearing on flee** - Dragon's lair is now cleared when players flee from dragons or monsters
+  - **Enhanced game balance** - Dragons no longer persist between delves when fleeing, preventing unfair dragon encounters
+  - **Improved user feedback** - Clear messaging shows when dragon dice are returned to the available pool
+  - **Consistent behavior** - Dragon lair is cleared whether fleeing from monsters or dragons, maintaining game balance
 
 ## [Unreleased] - 2025-07-28
 

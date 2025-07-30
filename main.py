@@ -175,6 +175,11 @@ class DungeonDiceGame:
             monster_result = MonsterPhase.execute(self.state, self.state.selected_hero_card)
             if not monster_result:
                 print("The monsters were too powerful! Delve ends.")
+                # Clear dragon's lair when fleeing from monsters
+                if self.state.dragons_lair:
+                    dragon_count = len(self.state.dragons_lair)
+                    self.state.dragons_lair = []
+                    print(f"{dragon_count} Dragon dice returned to the available pool.")
                 break
             
             # Pause after Monster Phase
@@ -191,6 +196,11 @@ class DungeonDiceGame:
                 dragon_result = DragonPhase.execute(self.state, self.state.selected_hero_card)
                 if not dragon_result:
                     # Dragon phase might end the delve based on the result
+                    # Clear dragon's lair when fleeing or ending delve
+                    dragon_count = len(self.state.dragons_lair)
+                    self.state.dragons_lair = []
+                    print(f"\nThe dragons return to the available pool as you flee the dungeon!")
+                    print(f"{dragon_count} Dragon dice returned to the available pool.")
                     break
                 
                 # Pause after Dragon Phase (only if it occurred)

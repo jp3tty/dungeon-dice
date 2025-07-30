@@ -382,11 +382,10 @@ class LootPhase:
             print(f"{len(reroll_options)}. Dungeon Die: {die}")
         
         print("\n=== Party Dice ===")
-        # Add party dice (excluding the scroll we just used)
+        # Add all party dice (scroll has already been removed)
         for i, die in enumerate(game_state.party_dice):
-            if i != scroll_idx:  # Don't show the scroll we just used
-                reroll_options.append(("party", i, die))
-                print(f"{len(reroll_options)}. Party Die: {die}")
+            reroll_options.append(("party", i, die))
+            print(f"{len(reroll_options)}. Party Die: {die}")
         
         if not reroll_options:
             print("No dice available to re-roll!")
