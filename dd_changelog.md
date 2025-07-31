@@ -1,5 +1,15 @@
 # Dungeon Dice Changelog
 
+## [Unreleased] - 2025-07-31
+
+### Fixed
+- **Fixed Thaumaturge hero companion revival issue** (2025-07-31)
+  - **Fixed invalid choice handling** - Thaumaturge hero's ultimate ability no longer skips companion revival when invalid choices are made
+  - **Added dynamic companion display** - Shows available companions in graveyard for each selection, not just initially
+  - **Implemented retry mechanism** - Players can retry invalid selections instead of losing revival opportunities
+  - **Enhanced user experience** - Clear error messages guide players to make valid selections
+  - **Preserved game mechanics** - All companion revivals are completed as intended, no revivals are skipped
+
 ## [Unreleased] - 2025-07-29
 
 ### Fixed

@@ -151,26 +151,34 @@ class AlchemistThaumaturgeHero(HeroCard):
             
             dice_rolled = []
             for i in range(min(dice_to_roll, len(available_companions))):
-                print(f"\nSelect companion {i+1}/{min(dice_to_roll, len(available_companions))} to revive:")
-                try:
-                    choice = int(input("Choose companion (number): ").strip())
-                    if 1 <= choice <= len(available_companions):
-                        selected_die = available_companions[choice - 1]
-                        # Remove the selected die from graveyard
-                        game_state.graveyard.remove(selected_die)
-                        # Roll the die to get a random new face
-                        dice_manager = DiceManager()
-                        new_die = dice_manager.roll_party_dice(1)[0]
-                        # Add the rolled die to party
-                        game_state.party_dice.append(new_die)
-                        dice_rolled.append(new_die)
-                        print(f"Revived and rolled {selected_die} → {new_die}!")
-                        # Update available companions list
-                        available_companions.pop(choice - 1)
-                    else:
-                        print("Invalid choice. Skipping this revival.")
-                except ValueError:
-                    print("Invalid input. Skipping this revival.")
+                while True:
+                    print(f"\nSelect companion {i+1}/{min(dice_to_roll, len(available_companions))} to revive:")
+                    print("Available companions in the Graveyard:")
+                    
+                    # Display current available companions
+                    for idx, companion in enumerate(available_companions, 1):
+                        print(f"{idx}. {companion}")
+                    
+                    try:
+                        choice = int(input("Choose companion (number): ").strip())
+                        if 1 <= choice <= len(available_companions):
+                            selected_die = available_companions[choice - 1]
+                            # Remove the selected die from graveyard
+                            game_state.graveyard.remove(selected_die)
+                            # Roll the die to get a random new face
+                            dice_manager = DiceManager()
+                            new_die = dice_manager.roll_party_dice(1)[0]
+                            # Add the rolled die to party
+                            game_state.party_dice.append(new_die)
+                            dice_rolled.append(new_die)
+                            print(f"Revived and rolled {selected_die} → {new_die}!")
+                            # Update available companions list
+                            available_companions.pop(choice - 1)
+                            break
+                        else:
+                            print("Invalid choice. Please select a valid number from the list above.")
+                    except ValueError:
+                        print("Invalid input. Please enter a valid number.")
             
             if dice_rolled:
                 print(f"\nThe {self.name} successfully revived {len(dice_rolled)} companion(s): {', '.join(dice_rolled)}")
