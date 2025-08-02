@@ -285,13 +285,19 @@ class RegroupPhase:
             if 0 <= choice_idx < len(reroll_options):
                 source, idx, old_die = reroll_options[choice_idx]
                 
-                # Move scroll to graveyard AFTER user makes their choice
-                game_state.use_party_die(scroll_idx)
-                
                 # Re-roll the selected die
                 dice_manager = DiceManager()
                 new_die = dice_manager.roll_party_dice(1)[0]
-                game_state.party_dice[idx] = new_die
+                
+                # Move scroll to graveyard AFTER user makes their choice
+                game_state.use_party_die(scroll_idx)
+                
+                # Adjust the index if the scroll was before the selected die
+                adjusted_idx = idx
+                if scroll_idx < idx:
+                    adjusted_idx = idx - 1
+                
+                game_state.party_dice[adjusted_idx] = new_die
                 print(f"Party die re-rolled: {old_die} → {new_die}")
                 
                 return True

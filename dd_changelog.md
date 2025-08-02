@@ -1,5 +1,15 @@
 # Dungeon Dice Changelog
 
+## [Unreleased] - 2025-08-02
+
+### Fixed
+- **Fixed Scroll re-roll IndexError in Regroup Phase** (2025-08-02)
+  - **Fixed list index out of range error** - Scroll usage during regroup phase no longer causes IndexError when re-rolling dice
+  - **Resolved index shifting issue** - Fixed bug where removing scroll from party dice shifted subsequent indices incorrectly
+  - **Added proper index adjustment** - Re-roll logic now accounts for scroll removal by adjusting target die index when needed
+  - **Enhanced user experience** - Players can now successfully use scrolls to re-roll any party die without crashes
+  - **Preserved game mechanics** - All scroll functionality remains intact, only the index calculation was corrected
+
 ## [Unreleased] - 2025-07-31
 
 ### Fixed
