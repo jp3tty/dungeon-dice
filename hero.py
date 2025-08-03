@@ -313,6 +313,12 @@ class ArchaeologistTombRaiderHero(HeroCard):
                         print(f"Discarded: {treasure_name}")
                         # Update available treasures list
                         available_treasures = game_state.get_available_treasures()
+                        
+                        # Show updated treasure list if there are more to discard
+                        if discarded_count < tokens_to_discard and available_treasures:
+                            print(f"\nRemaining treasures to discard ({tokens_to_discard - discarded_count} more):")
+                            for i, treasure in enumerate(available_treasures):
+                                print(f"{i+1}. {treasure.name}")
                     else:
                         print("Invalid choice. Please try again.")
                 except ValueError:

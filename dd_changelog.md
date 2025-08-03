@@ -1,5 +1,15 @@
 # Dungeon Dice Changelog
 
+## [Unreleased] - 2025-08-03
+
+### Changed
+- **Improved Tomb Raider hero treasure selection interface** (2025-08-03)
+  - **Added dynamic treasure list updates** - After each treasure is discarded during end-game specialty, the remaining treasures are displayed
+  - **Enhanced user experience** - Players can see exactly which treasures are still available after each selection
+  - **Added progress tracking** - Shows how many more treasures need to be discarded during the process
+  - **Improved clarity** - Eliminates confusion about which treasures have already been discarded
+  - **Preserved game mechanics** - All treasure discarding functionality remains the same, only the display is enhanced
+
 ## [Unreleased] - 2025-08-02
 
 ### Fixed
