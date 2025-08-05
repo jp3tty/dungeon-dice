@@ -51,18 +51,21 @@ class DragonPhase:
         # Display current party state
         print("\nYour Active Party and Treasures:")
         companions = []
+        option_number = 1
         
         # Add party dice (excluding scrolls and champions)
         for i, die in enumerate(game_state.party_dice):
             if die != PartyDiceFace.SCROLL.value and die != PartyDiceFace.CHAMPION.value:  # Scrolls and Champions are not companions for dragon battles
                 companions.append(("party", i, die))
-                print(f"{len(companions)}. Party Die: {die}")
+                print(f"{option_number}. Party Die: {die}")
+                option_number += 1
         
         # Add usable treasure companions
         treasure_companions = game_state.get_usable_companions()
         for i, (idx, token) in enumerate(treasure_companions):
             companions.append(("treasure", idx, token))
-            print(f"{len(companions)}. Treasure: {token.name} (acts as {token.get_companion_type()})")
+            print(f"{option_number}. Treasure: {token.name} (acts as {token.get_companion_type()})")
+            option_number += 1
         
         if not companions:
             print("No companions available to battle the Dragon!")

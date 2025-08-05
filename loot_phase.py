@@ -161,17 +161,19 @@ class LootPhase:
         
         # Show available companions
         companions = []
+        option_number = 1
         
         # Add party dice companions
         for i, die in enumerate(game_state.party_dice):
             companions.append(("party", i, die))
             # Show Minstrel/Bard specialty options
             if specialty_active and die in [PartyDiceFace.THIEF.value, PartyDiceFace.MAGE.value]:
-                print(f"{len(companions)}. Party: {die} (can open any number of Chests with Minstrel/Bard specialty) ✨")
+                print(f"{option_number}. Party: {die} (can open any number of Chests with Minstrel/Bard specialty) ✨")
             elif die in [PartyDiceFace.THIEF.value, PartyDiceFace.CHAMPION.value]:
-                print(f"{len(companions)}. Party: {die} (can open any number of Chests)")
+                print(f"{option_number}. Party: {die} (can open any number of Chests)")
             else:
-                print(f"{len(companions)}. Party: {die} (can open 1 Chest)")
+                print(f"{option_number}. Party: {die} (can open 1 Chest)")
+            option_number += 1
         
         # Add treasure companions
         treasure_companions = game_state.get_usable_companions()
@@ -179,11 +181,12 @@ class LootPhase:
             companions.append(("treasure", idx, token))
             companion_type = token.get_companion_type()
             if companion_type in [PartyDiceFace.THIEF.value, PartyDiceFace.CHAMPION.value]:
-                print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}, can open any number of Chests)")
+                print(f"{option_number}. Treasure: {token.name} (acts as {companion_type}, can open any number of Chests)")
             else:
-                print(f"{len(companions)}. Treasure: {token.name} (acts as {companion_type}, can open 1 Chest)")
+                print(f"{option_number}. Treasure: {token.name} (acts as {companion_type}, can open 1 Chest)")
+            option_number += 1
         
-        print(f"{len(companions)+1}. Cancel")
+        print(f"{option_number}. Cancel")
         
         choice = input("Choose companion (number): ").strip()
         try:

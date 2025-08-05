@@ -482,24 +482,27 @@ class MonsterPhase:
         # Show available companions
         print("\n🤝 Available Companions:")
         companions = []
+        option_number = 1
         
         # Add party dice companions
         for i, die in enumerate(game_state.party_dice):
             if die != PartyDiceFace.SCROLL.value:  # Scrolls are not companions
                 companions.append(("party", i, die))
-                print(f"{len(companions)}. Party: {die}")
+                print(f"{option_number}. Party: {die}")
+                option_number += 1
         
         # Add treasure companions
         treasure_companions = game_state.get_usable_companions()
         for idx, token in treasure_companions:
             companions.append(("treasure", idx, token))
-            print(f"{len(companions)}. Treasure: {token.name} (acts as {token.get_companion_type()})")
+            print(f"{option_number}. Treasure: {token.name} (acts as {token.get_companion_type()})")
+            option_number += 1
         
         if not companions:
             print("No companions available!")
             return False
         
-        print(f"{len(companions)+1}. Cancel")
+        print(f"{option_number}. Cancel")
         
         choice = input("\nChoose companion to use (number): ").strip()
         try:
@@ -695,67 +698,82 @@ class MonsterPhase:
                     
                     print(f"\nFighter can:")
                     options = []
+                    option_number = 1
                     if goblins:
-                        options.append(f"1. Defeat ALL Goblins ({len(goblins)} monster(s))")
+                        options.append((option_number, f"Defeat ALL Goblins ({len(goblins)} monster(s))"))
+                        option_number += 1
                     if skeletons:
-                        options.append(f"2. Defeat 1 Skeleton")
+                        options.append((option_number, f"Defeat 1 Skeleton"))
+                        option_number += 1
                     if oozes:
-                        options.append(f"3. Defeat 1 Ooze")
+                        options.append((option_number, f"Defeat 1 Ooze"))
+                        option_number += 1
                     
-                    for option in options:
-                        print(f"  {option}")
+                    for num, option in options:
+                        print(f"  {num}. {option}")
                     
                     choice = input("Choose option (number): ").strip()
                     try:
                         choice_idx = int(choice)
-                        if choice_idx == 1 and goblins:
-                            # Defeat all Goblins
-                            for monster in goblins:
-                                game_state.dungeon_dice.remove(monster)
-                                monsters.remove(monster)
-                            
-                            # Use companion
-                            if source == "party":
-                                game_state.use_party_die(idx)
-                                print(f"{companion} moved to Graveyard after defeating {len(goblins)} Goblin(s).")
-                            else:  # treasure
-                                game_state.use_treasure(idx)
-                                print(f"{companion.name} used and returned to treasure pool after defeating {len(goblins)} Goblin(s).")
-                            
-                            print(f"Defeated {len(goblins)} Goblin(s)!")
-                            return True
-                        elif choice_idx == 2 and skeletons:
-                            # Defeat 1 Skeleton
-                            defeated_monster = skeletons[0]
-                            game_state.dungeon_dice.remove(defeated_monster)
-                            monsters.remove(defeated_monster)
-                            
-                            # Use companion
-                            if source == "party":
-                                game_state.use_party_die(idx)
-                                print(f"{companion} moved to Graveyard.")
-                            else:  # treasure
-                                game_state.use_treasure(idx)
-                                print(f"{companion.name} used and returned to treasure pool.")
-                            
-                            print(f"Defeated {defeated_monster}!")
-                            return True
-                        elif choice_idx == 3 and oozes:
-                            # Defeat 1 Ooze
-                            defeated_monster = oozes[0]
-                            game_state.dungeon_dice.remove(defeated_monster)
-                            monsters.remove(defeated_monster)
-                            
-                            # Use companion
-                            if source == "party":
-                                game_state.use_party_die(idx)
-                                print(f"{companion} moved to Graveyard.")
-                            else:  # treasure
-                                game_state.use_treasure(idx)
-                                print(f"{companion.name} used and returned to treasure pool.")
-                            
-                            print(f"Defeated {defeated_monster}!")
-                            return True
+                        # Find the selected option
+                        selected_option = None
+                        for num, option in options:
+                            if num == choice_idx:
+                                selected_option = option
+                                break
+                        
+                        if selected_option:
+                            if "Defeat ALL Goblins" in selected_option and goblins:
+                                # Defeat all Goblins
+                                for monster in goblins:
+                                    game_state.dungeon_dice.remove(monster)
+                                    monsters.remove(monster)
+                                
+                                # Use companion
+                                if source == "party":
+                                    game_state.use_party_die(idx)
+                                    print(f"{companion} moved to Graveyard after defeating {len(goblins)} Goblin(s).")
+                                else:  # treasure
+                                    game_state.use_treasure(idx)
+                                    print(f"{companion.name} used and returned to treasure pool after defeating {len(goblins)} Goblin(s).")
+                                
+                                print(f"Defeated {len(goblins)} Goblin(s)!")
+                                return True
+                            elif "Defeat 1 Skeleton" in selected_option and skeletons:
+                                # Defeat 1 Skeleton
+                                defeated_monster = skeletons[0]
+                                game_state.dungeon_dice.remove(defeated_monster)
+                                monsters.remove(defeated_monster)
+                                
+                                # Use companion
+                                if source == "party":
+                                    game_state.use_party_die(idx)
+                                    print(f"{companion} moved to Graveyard.")
+                                else:  # treasure
+                                    game_state.use_treasure(idx)
+                                    print(f"{companion.name} used and returned to treasure pool.")
+                                
+                                print(f"Defeated {defeated_monster}!")
+                                return True
+                            elif "Defeat 1 Ooze" in selected_option and oozes:
+                                # Defeat 1 Ooze
+                                defeated_monster = oozes[0]
+                                game_state.dungeon_dice.remove(defeated_monster)
+                                monsters.remove(defeated_monster)
+                                
+                                # Use companion
+                                if source == "party":
+                                    game_state.use_party_die(idx)
+                                    print(f"{companion} moved to Graveyard.")
+                                else:  # treasure
+                                    game_state.use_treasure(idx)
+                                    print(f"{companion.name} used and returned to treasure pool.")
+                                
+                                print(f"Defeated {defeated_monster}!")
+                                return True
+                            else:
+                                print("Invalid choice.")
+                                return False
                         else:
                             print("Invalid choice.")
                             return False
@@ -771,67 +789,82 @@ class MonsterPhase:
                     
                     print(f"\nCleric can:")
                     options = []
+                    option_number = 1
                     if skeletons:
-                        options.append(f"1. Defeat ALL Skeletons ({len(skeletons)} monster(s))")
+                        options.append((option_number, f"Defeat ALL Skeletons ({len(skeletons)} monster(s))"))
+                        option_number += 1
                     if goblins:
-                        options.append(f"2. Defeat 1 Goblin")
+                        options.append((option_number, f"Defeat 1 Goblin"))
+                        option_number += 1
                     if oozes:
-                        options.append(f"3. Defeat 1 Ooze")
+                        options.append((option_number, f"Defeat 1 Ooze"))
+                        option_number += 1
                     
-                    for option in options:
-                        print(f"  {option}")
+                    for num, option in options:
+                        print(f"  {num}. {option}")
                     
                     choice = input("Choose option (number): ").strip()
                     try:
                         choice_idx = int(choice)
-                        if choice_idx == 1 and skeletons:
-                            # Defeat all Skeletons
-                            for monster in skeletons:
-                                game_state.dungeon_dice.remove(monster)
-                                monsters.remove(monster)
-                            
-                            # Use companion
-                            if source == "party":
-                                game_state.use_party_die(idx)
-                                print(f"{companion} moved to Graveyard after defeating {len(skeletons)} Skeleton(s).")
-                            else:  # treasure
-                                game_state.use_treasure(idx)
-                                print(f"{companion.name} used and returned to treasure pool after defeating {len(skeletons)} Skeleton(s).")
-                            
-                            print(f"Defeated {len(skeletons)} Skeleton(s)!")
-                            return True
-                        elif choice_idx == 2 and goblins:
-                            # Defeat 1 Goblin
-                            defeated_monster = goblins[0]
-                            game_state.dungeon_dice.remove(defeated_monster)
-                            monsters.remove(defeated_monster)
-                            
-                            # Use companion
-                            if source == "party":
-                                game_state.use_party_die(idx)
-                                print(f"{companion} moved to Graveyard.")
-                            else:  # treasure
-                                game_state.use_treasure(idx)
-                                print(f"{companion.name} used and returned to treasure pool.")
-                            
-                            print(f"Defeated {defeated_monster}!")
-                            return True
-                        elif choice_idx == 3 and oozes:
-                            # Defeat 1 Ooze
-                            defeated_monster = oozes[0]
-                            game_state.dungeon_dice.remove(defeated_monster)
-                            monsters.remove(defeated_monster)
-                            
-                            # Use companion
-                            if source == "party":
-                                game_state.use_party_die(idx)
-                                print(f"{companion} moved to Graveyard.")
-                            else:  # treasure
-                                game_state.use_treasure(idx)
-                                print(f"{companion.name} used and returned to treasure pool.")
-                            
-                            print(f"Defeated {defeated_monster}!")
-                            return True
+                        # Find the selected option
+                        selected_option = None
+                        for num, option in options:
+                            if num == choice_idx:
+                                selected_option = option
+                                break
+                        
+                        if selected_option:
+                            if "Defeat ALL Skeletons" in selected_option and skeletons:
+                                # Defeat all Skeletons
+                                for monster in skeletons:
+                                    game_state.dungeon_dice.remove(monster)
+                                    monsters.remove(monster)
+                                
+                                # Use companion
+                                if source == "party":
+                                    game_state.use_party_die(idx)
+                                    print(f"{companion} moved to Graveyard after defeating {len(skeletons)} Skeleton(s).")
+                                else:  # treasure
+                                    game_state.use_treasure(idx)
+                                    print(f"{companion.name} used and returned to treasure pool after defeating {len(skeletons)} Skeleton(s).")
+                                
+                                print(f"Defeated {len(skeletons)} Skeleton(s)!")
+                                return True
+                            elif "Defeat 1 Goblin" in selected_option and goblins:
+                                # Defeat 1 Goblin
+                                defeated_monster = goblins[0]
+                                game_state.dungeon_dice.remove(defeated_monster)
+                                monsters.remove(defeated_monster)
+                                
+                                # Use companion
+                                if source == "party":
+                                    game_state.use_party_die(idx)
+                                    print(f"{companion} moved to Graveyard.")
+                                else:  # treasure
+                                    game_state.use_treasure(idx)
+                                    print(f"{companion.name} used and returned to treasure pool.")
+                                
+                                print(f"Defeated {defeated_monster}!")
+                                return True
+                            elif "Defeat 1 Ooze" in selected_option and oozes:
+                                # Defeat 1 Ooze
+                                defeated_monster = oozes[0]
+                                game_state.dungeon_dice.remove(defeated_monster)
+                                monsters.remove(defeated_monster)
+                                
+                                # Use companion
+                                if source == "party":
+                                    game_state.use_party_die(idx)
+                                    print(f"{companion} moved to Graveyard.")
+                                else:  # treasure
+                                    game_state.use_treasure(idx)
+                                    print(f"{companion.name} used and returned to treasure pool.")
+                                
+                                print(f"Defeated {defeated_monster}!")
+                                return True
+                            else:
+                                print("Invalid choice.")
+                                return False
                         else:
                             print("Invalid choice.")
                             return False
@@ -847,67 +880,82 @@ class MonsterPhase:
                     
                     print(f"\nMage can:")
                     options = []
+                    option_number = 1
                     if oozes:
-                        options.append(f"1. Defeat ALL Oozes ({len(oozes)} monster(s))")
+                        options.append((option_number, f"Defeat ALL Oozes ({len(oozes)} monster(s))"))
+                        option_number += 1
                     if goblins:
-                        options.append(f"2. Defeat 1 Goblin")
+                        options.append((option_number, f"Defeat 1 Goblin"))
+                        option_number += 1
                     if skeletons:
-                        options.append(f"3. Defeat 1 Skeleton")
+                        options.append((option_number, f"Defeat 1 Skeleton"))
+                        option_number += 1
                     
-                    for option in options:
-                        print(f"  {option}")
+                    for num, option in options:
+                        print(f"  {num}. {option}")
                     
                     choice = input("Choose option (number): ").strip()
                     try:
                         choice_idx = int(choice)
-                        if choice_idx == 1 and oozes:
-                            # Defeat all Oozes
-                            for monster in oozes:
-                                game_state.dungeon_dice.remove(monster)
-                                monsters.remove(monster)
-                            
-                            # Use companion
-                            if source == "party":
-                                game_state.use_party_die(idx)
-                                print(f"{companion} moved to Graveyard after defeating {len(oozes)} Ooze(s).")
-                            else:  # treasure
-                                game_state.use_treasure(idx)
-                                print(f"{companion.name} used and returned to treasure pool after defeating {len(oozes)} Ooze(s).")
-                            
-                            print(f"Defeated {len(oozes)} Ooze(s)!")
-                            return True
-                        elif choice_idx == 2 and goblins:
-                            # Defeat 1 Goblin
-                            defeated_monster = goblins[0]
-                            game_state.dungeon_dice.remove(defeated_monster)
-                            monsters.remove(defeated_monster)
-                            
-                            # Use companion
-                            if source == "party":
-                                game_state.use_party_die(idx)
-                                print(f"{companion} moved to Graveyard.")
-                            else:  # treasure
-                                game_state.use_treasure(idx)
-                                print(f"{companion.name} used and returned to treasure pool.")
-                            
-                            print(f"Defeated {defeated_monster}!")
-                            return True
-                        elif choice_idx == 3 and skeletons:
-                            # Defeat 1 Skeleton
-                            defeated_monster = skeletons[0]
-                            game_state.dungeon_dice.remove(defeated_monster)
-                            monsters.remove(defeated_monster)
-                            
-                            # Use companion
-                            if source == "party":
-                                game_state.use_party_die(idx)
-                                print(f"{companion} moved to Graveyard.")
-                            else:  # treasure
-                                game_state.use_treasure(idx)
-                                print(f"{companion.name} used and returned to treasure pool.")
-                            
-                            print(f"Defeated {defeated_monster}!")
-                            return True
+                        # Find the selected option
+                        selected_option = None
+                        for num, option in options:
+                            if num == choice_idx:
+                                selected_option = option
+                                break
+                        
+                        if selected_option:
+                            if "Defeat ALL Oozes" in selected_option and oozes:
+                                # Defeat all Oozes
+                                for monster in oozes:
+                                    game_state.dungeon_dice.remove(monster)
+                                    monsters.remove(monster)
+                                
+                                # Use companion
+                                if source == "party":
+                                    game_state.use_party_die(idx)
+                                    print(f"{companion} moved to Graveyard after defeating {len(oozes)} Ooze(s).")
+                                else:  # treasure
+                                    game_state.use_treasure(idx)
+                                    print(f"{companion.name} used and returned to treasure pool after defeating {len(oozes)} Ooze(s).")
+                                
+                                print(f"Defeated {len(oozes)} Ooze(s)!")
+                                return True
+                            elif "Defeat 1 Goblin" in selected_option and goblins:
+                                # Defeat 1 Goblin
+                                defeated_monster = goblins[0]
+                                game_state.dungeon_dice.remove(defeated_monster)
+                                monsters.remove(defeated_monster)
+                                
+                                # Use companion
+                                if source == "party":
+                                    game_state.use_party_die(idx)
+                                    print(f"{companion} moved to Graveyard.")
+                                else:  # treasure
+                                    game_state.use_treasure(idx)
+                                    print(f"{companion.name} used and returned to treasure pool.")
+                                
+                                print(f"Defeated {defeated_monster}!")
+                                return True
+                            elif "Defeat 1 Skeleton" in selected_option and skeletons:
+                                # Defeat 1 Skeleton
+                                defeated_monster = skeletons[0]
+                                game_state.dungeon_dice.remove(defeated_monster)
+                                monsters.remove(defeated_monster)
+                                
+                                # Use companion
+                                if source == "party":
+                                    game_state.use_party_die(idx)
+                                    print(f"{companion} moved to Graveyard.")
+                                else:  # treasure
+                                    game_state.use_treasure(idx)
+                                    print(f"{companion.name} used and returned to treasure pool.")
+                                
+                                print(f"Defeated {defeated_monster}!")
+                                return True
+                            else:
+                                print("Invalid choice.")
+                                return False
                         else:
                             print("Invalid choice.")
                             return False
