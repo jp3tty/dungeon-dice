@@ -1,5 +1,16 @@
 # Dungeon Dice Changelog
 
+## [Unreleased] - 2025-08-05
+
+### Fixed
+- **Fixed treasure companions display in Regroup Phase** (2025-08-05)
+  - **Fixed misleading companion counts** - Treasure items like Thieves' Tools are no longer counted as available party members in "Total Companions"
+  - **Separated party dice from treasure companions** - Party dice display now only shows actual party dice, not treasure companions
+  - **Enhanced clarity** - Treasure companions are still displayed in a separate "Treasure Companions" section for reference
+  - **Eliminated confusion** - Players no longer think they have available party members for actions like drinking potions when they only have treasure items
+  - **Preserved functionality** - Treasure companions remain available for appropriate actions (defeating monsters, opening chests)
+  - **Improved user experience** - Clear distinction between actual party dice and treasure items that can act as companions
+
 ## [Unreleased] - 2025-08-03
 
 ### Changed

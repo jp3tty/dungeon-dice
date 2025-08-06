@@ -14,26 +14,21 @@ class RegroupPhase:
         # Display current game state
         print("\nGame State:")
         print("Party Dice:")
-        # Count dice types in the party
+        # Count dice types in the party (only actual party dice, not treasure companions)
         dice_counts = {}
         for die in game_state.party_dice:
             dice_counts[die] = dice_counts.get(die, 0) + 1
         
-        # Add treasure companions to the party dice display
-        treasure_companions = game_state.get_usable_companions()
-        for idx, token in treasure_companions:
-            companion_type = token.get_companion_type()
-            dice_counts[companion_type] = dice_counts.get(companion_type, 0) + 1
-        
         for die_type, count in dice_counts.items():
             print(f"- {die_type}: {count} dice")
         
-        # Calculate total companions including treasure companions
-        total_companions = len(game_state.party_dice) + len(treasure_companions)
+        # Calculate total companions (only actual party dice)
+        total_companions = len(game_state.party_dice)
         print(f"Total Companions: {total_companions}")
         print(f"Total Scrolls: {dice_counts.get('Scroll', 0)}")
         
         # Show treasure companions separately for clarity
+        treasure_companions = game_state.get_usable_companions()
         if treasure_companions:
             print("\nTreasure Companions:")
             for idx, token in treasure_companions:
