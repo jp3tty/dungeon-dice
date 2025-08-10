@@ -1,5 +1,16 @@
 # Dungeon Dice Changelog
 
+## [Unreleased] - 2025-08-10
+
+### Fixed
+- **Fixed Scroll treasure usage during Monster Phase** (2025-08-10)
+  - **Fixed treasure usage restriction** - Scroll treasures can now be used during the Monster Phase to reroll dice
+  - **Added reroll functionality** - Scroll treasures provide the same reroll capabilities as party dice scrolls
+  - **Implemented proper treasure consumption** - Scroll treasures are correctly consumed when used for rerolling
+  - **Enhanced strategic options** - Players can now use Scroll treasures to reroll both dungeon and party dice during monster encounters
+  - **Improved user experience** - Clear interface allows players to choose which dice to reroll after using a Scroll treasure
+  - **Preserved game mechanics** - All existing scroll reroll functionality remains intact, now extended to treasure tokens
+
 ## [Unreleased] - 2025-08-05
 
 ### Fixed

@@ -239,6 +239,61 @@ class TreasureActions:
                     game_state.use_treasure(choice_idx)
                     return "END_DELVE"
                     
+                elif token.type == TreasureType.SCROLL:
+                    # Use Scroll treasure to re-roll dice
+                    print("Scroll treasure used! Select dice to re-roll (results will be random).")
+                    game_state.use_treasure(choice_idx)
+                    
+                    # Create a list of all available dice to re-roll
+                    print("\nAvailable Dice to Re-roll:")
+                    print("=== Dungeon Dice (excluding Dragon dice) ===")
+                    reroll_options = []
+                    # Add dungeon dice (excluding dragon dice)
+                    for i, die in enumerate(game_state.dungeon_dice):
+                        reroll_options.append(("dungeon", i, die))
+                        print(f"{len(reroll_options)}. Dungeon Die: {die}")
+                    
+                    print("\n=== Party Dice ===")
+                    # Add party dice
+                    for i, die in enumerate(game_state.party_dice):
+                        reroll_options.append(("party", i, die))
+                        print(f"{len(reroll_options)}. Party Die: {die}")
+                    
+                    if not reroll_options:
+                        print("No dice available to re-roll!")
+                        return False
+                    
+                    print(f"{len(reroll_options)+1}. Cancel")
+                    
+                    reroll_choice = input("Choose dice to re-roll (number): ").strip()
+                    try:
+                        reroll_choice_idx = int(reroll_choice) - 1
+                        if reroll_choice_idx == len(reroll_options):
+                            print("Re-roll cancelled.")
+                            return False
+                        if 0 <= reroll_choice_idx < len(reroll_options):
+                            source, idx, old_die = reroll_options[reroll_choice_idx]
+                            
+                            # Re-roll the selected die
+                            from dice import DiceManager
+                            dice_manager = DiceManager()
+                            if source == "dungeon":
+                                new_die = dice_manager.roll_dungeon_dice(1)[0]
+                                game_state.dungeon_dice[idx] = new_die
+                                print(f"Dungeon die re-rolled: {old_die} → {new_die}")
+                            else:  # party
+                                new_die = dice_manager.roll_party_dice(1)[0]
+                                game_state.party_dice[idx] = new_die
+                                print(f"Party die re-rolled: {old_die} → {new_die}")
+                            
+                            return True
+                        else:
+                            print("Invalid choice.")
+                            return False
+                    except ValueError:
+                        print("Invalid input.")
+                        return False
+                    
                 else:  # Companion-like treasures are handled in their respective phases
                     print("This treasure must be used during combat or specific phases.")
                     return False
